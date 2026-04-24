@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence-record.schema.json",
+  "title": "ZTAP Evidence Record",
+  "allOf": [
+    {
+      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "request_hash",
+        "produced_by",
+        "produced_at",
+        "evidence_type",
+        "evidence_hash"
+      ],
+      "properties": {
+        "envelope_type": {
+          "const": "evidence_record"
+        },
+        "evidence_id": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "request_hash": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "produced_by": {
+          "$ref": "ztap-envelope.schema.json#/$defs/actor"
+        },
+        "produced_at": {
+          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+        },
+        "evidence_type": {
+          "$ref": "ztap-envelope.schema.json#/$defs/evidence_type"
+        },
+        "evidence_hash": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "evidence_content": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "evidence_uri": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "evidence_content"
+          ]
+        },
+        {
+          "required": [
+            "evidence_uri"
+          ]
+        }
+      ]
+    }
+  ]
+}

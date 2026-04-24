@@ -1,0 +1,184 @@
+{
+  "_ztap_example": {
+    "title": "Rejected — Policy Denied",
+    "scenario": "A planning agent requests a destructive data purge against a production database. The control plane rejects: the requesting actor lacks the data-steward role required for this capability in production. No execution occurs. A rejection receipt is produced.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "rejected"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "governance_note": "Rejection occurs before any execution. The target actor is never contacted. No action is taken against the target system. The transaction terminates with a rejection receipt."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 3 — Transaction Request",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-04aabb778899",
+      "created_at": "2026-04-24T13:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-004",
+        "role": ["planner", "source_actor"],
+        "display_name": "Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-004",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-002",
+        "role": ["executor", "target_actor"],
+        "display_name": "Database Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-002",
+        "capability_claims": ["org.acme/purge_customer_records"]
+      },
+
+      "requested_action": {
+        "action_id": "act-04aabb778899-purge",
+        "action_type": "data_purge",
+        "profile": "org.acme/database",
+        "description": "GDPR purge of inactive customer records inactive for 365+ days.",
+        "parameters": {
+          "database": "customers-db",
+          "environment": "production",
+          "filter": { "status": "inactive", "inactive_since_days": 365 },
+          "estimated_rows_affected": 14200
+        },
+        "required_capabilities": ["org.acme/purge_customer_records"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "rows_purged" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/purge_customer_records"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-04-rowcount",
+          "check_type": "deployment_status",
+          "description": "Purged row count must be between 14000 and 14400.",
+          "required": true,
+          "expected_result": { "rows_purged_min": 14000, "rows_purged_max": 14400 },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-04-active",
+          "check_type": "service_health",
+          "description": "Active customer records must be untouched.",
+          "required": true,
+          "expected_result": { "active_records_unchanged": true, "target": "customers-db.production" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T13:30:00Z",
+
+      "notes": "Routine GDPR data retention purge. Automated request from data lifecycle workflow.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-04aabb778899-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 3 — Authorization Decision (rejected)",
+      "_note": "Two policy violations: (1) this actor's registered capabilities do not include purge for production scope — only staging; (2) purge_customer_records in production requires the data-steward role, which this actor does not hold.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-04aabb778899",
+      "decision_id": "ztap-dec-04aabb778899-001",
+      "request_hash": "EXAMPLE-HASH-txn-04aabb778899-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T13:00:02Z",
+      "authorization_status": "rejected",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "critical",
+      "risk_evaluation_reason": "Data purge in production classified as critical. Risk elevated from source-declared high.",
+
+      "policy_refs": [
+        "policy://data/production/purge/require-data-steward-role",
+        "policy://agents/planner-004/capability-scope/production-restricted"
+      ],
+
+      "reason_codes": ["POLICY_DENIED", "ROLE_INVALID", "RISK_LEVEL_ESCALATED"],
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-04aabb778899-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 3 — Execution Receipt (rejected)",
+      "_note": "Rejection receipt required. No execution was attempted. actions_attempted and actions_completed are empty arrays.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-04aabb778899",
+      "receipt_id": "ztap-rcpt-04aabb778899-001",
+      "request_hash": "EXAMPLE-HASH-txn-04aabb778899-request",
+      "authorization_decision_ref": "ztap-dec-04aabb778899-001",
+
+      "source_actor": {
+        "actor_id": "agent-planner-004",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-004"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-002",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-002"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T13:00:02Z",
+      "completed_at": "2026-04-24T13:00:02Z",
+      "status": "rejected",
+      "reason_codes": ["POLICY_DENIED", "ROLE_INVALID"],
+
+      "actions_attempted": [],
+      "actions_completed": [],
+      "verification_results": [],
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "none",
+        "rollback_performed": false
+      },
+
+      "notes": "Transaction rejected at policy evaluation. No action taken against customers-db. Source actor should request re-evaluation under a data-steward-role identity or resubmit scoped to staging.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-04aabb778899-receipt"
+      }
+    }
+
+  ]
+}

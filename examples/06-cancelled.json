@@ -1,0 +1,216 @@
+{
+  "_ztap_example": {
+    "title": "Cancelled — Operator Cancellation After Authorization",
+    "scenario": "A batch archive job is authorized. Before the executor accepts, an on-call operator cancels the transaction — an unplanned maintenance window conflicts with the target storage system. The operator submits a cancellation_request amendment. The control plane evaluates it and issues a cancelled receipt.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "cancelled"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "governance_note": "A cancellation_request amendment does not automatically cancel the transaction. The control plane must evaluate the amendment and authorize the cancellation. Both the amendment and the control plane's response are retained in the audit trail."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 4 — Transaction Request",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-06eeff112233",
+      "created_at": "2026-04-24T15:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-006",
+        "role": ["planner", "source_actor"],
+        "display_name": "Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-006",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-batch-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "Batch Processing Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-batch-001",
+        "capability_claims": ["org.acme/run_archive_job"]
+      },
+
+      "requested_action": {
+        "action_id": "act-06eeff112233-archive",
+        "action_type": "archive",
+        "profile": "ztap.core/generic",
+        "description": "Archive Q1 2026 orders before 2026-01-01 to S3.",
+        "parameters": {
+          "job_id": "archive-orders-2026-q1",
+          "source_table": "orders",
+          "archive_before_date": "2026-01-01",
+          "destination": "s3://acme-archives/orders/2026-q1"
+        },
+        "required_capabilities": ["org.acme/run_archive_job"],
+        "risk_level": "medium",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "archive_complete" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/run_archive_job"],
+      "atomicity_mode": "best_effort_allowed",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-06-archive",
+          "check_type": "deployment_status",
+          "description": "Archive object must exist at destination URI.",
+          "required": true,
+          "expected_result": { "uri_reachable": true, "uri": "s3://acme-archives/orders/2026-q1" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-06-counts",
+          "check_type": "service_health",
+          "description": "Row count in archive must match source rows meeting filter criteria.",
+          "required": true,
+          "expected_result": { "source_count_matches_archive": true },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T16:00:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 4 — Authorization Decision (auto_authorized)",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-06eeff112233",
+      "decision_id": "ztap-dec-06eeff112233-001",
+      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T15:00:02Z",
+      "authorization_status": "auto_authorized",
+      "declared_risk_level": "medium",
+      "evaluated_risk_level": "medium",
+
+      "policy_refs": [
+        "policy://batch-jobs/archive/auto-approve"
+      ],
+
+      "reason_codes": [],
+      "authorized_at": "2026-04-24T15:00:02Z",
+      "expires_at": "2026-04-24T15:45:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 4 — Amendment Event (cancellation_request)",
+      "_note": "Operator submits cancellation_request. This does not automatically cancel the transaction. The control plane will evaluate it and produce the cancellation receipt.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "amendment_event",
+      "transaction_id": "ztap-txn-06eeff112233",
+      "amendment_id": "ztap-amend-06eeff112233-001",
+      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+
+      "created_by": {
+        "actor_id": "operator-on-call-001",
+        "role": ["operator"],
+        "display_name": "On-Call Operator",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/on-call-001"
+      },
+
+      "created_at": "2026-04-24T15:08:14Z",
+      "amendment_type": "cancellation_request",
+      "reason_codes": ["CANCELLED"],
+      "linked_envelope_refs": ["ztap-dec-06eeff112233-001"],
+
+      "amendment_content": {
+        "reason": "Unplanned maintenance window declared for s3://acme-archives. Archive target unavailable. Cancelling to prevent failed execution.",
+        "maintenance_window_ref": "maint://2026-04-24/storage-east/unplanned-001"
+      },
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-amendment"
+      }
+    },
+
+    {
+      "_envelope_label": "4 of 4 — Execution Receipt (cancelled)",
+      "_note": "Control plane evaluated the cancellation_request, confirmed operator authority, and issued this receipt. Executor was never contacted.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-06eeff112233",
+      "receipt_id": "ztap-rcpt-06eeff112233-001",
+      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+      "authorization_decision_ref": "ztap-dec-06eeff112233-001",
+
+      "source_actor": {
+        "actor_id": "agent-planner-006",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-006"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-batch-001",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-batch-001"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T15:08:16Z",
+      "completed_at": "2026-04-24T15:08:16Z",
+      "status": "cancelled",
+      "reason_codes": ["CANCELLED"],
+
+      "actions_attempted": [],
+      "actions_completed": [],
+      "verification_results": [],
+
+      "atomicity_result": {
+        "mode_declared": "best_effort_allowed",
+        "outcome": "none",
+        "rollback_performed": false
+      },
+
+      "notes": "Cancelled by operator operator-on-call-001 before executor acceptance. Maintenance window conflict. Amendment ref: ztap-amend-06eeff112233-001.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-receipt"
+      }
+    }
+
+  ]
+}

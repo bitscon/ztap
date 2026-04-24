@@ -1,0 +1,328 @@
+{
+  "_ztap_example": {
+    "title": "Break-Glass — Emergency Authorization (Governed, Not Bypassed)",
+    "scenario": "A production database is returning errors. The incident is active and affecting user payments. An on-call engineer needs to run an emergency remediation query that normally requires multi-day planning approval. The break-glass path is used — but it is a GOVERNED path with elevated evidence requirements. The transaction carries an incident reference, named approver, expiration, compensating controls, and post-incident review commitment. Break-glass has MORE required evidence than standard authorization, not less.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "human_approved (break-glass)", "accepted", "executing", "verifying", "succeeded"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "governance_note": "A break-glass action that bypasses authorization is not a legitimate break-glass — it is an unauthorized action. ZTAP does not have a bypass mode. This example shows that emergency access is governed access with stricter evidence requirements."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 3 — Transaction Request (break-glass)",
+      "_note": "The break-glass transaction uses the standard envelope structure. The elevated evidence is declared in evidence_requirements. The incident reference and compensating controls are embedded in requested_action parameters and notes.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
+      "created_at": "2026-04-24T22:14:05Z",
+
+      "source_actor": {
+        "actor_id": "operator-oncall-002",
+        "role": ["operator", "source_actor"],
+        "display_name": "On-Call SRE",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/oncall-002",
+        "capability_claims": ["approval.request", "org.acme/request_emergency_query"]
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-emergency-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "Emergency Database Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-emergency-001",
+        "capability_claims": ["org.acme/run_remediation_query"]
+      },
+
+      "requested_action": {
+        "action_id": "act-09bg-query",
+        "action_type": "emergency_query",
+        "profile": "org.acme/database",
+        "description": "Clear stuck payment processing queue entries blocking all payment transactions. Emergency remediation for INC-2026-0424-001.",
+        "parameters": {
+          "database": "payments-db",
+          "environment": "production",
+          "query_id": "clear_stuck_queue_entries",
+          "target_table": "payment_queue",
+          "filter": { "status": "stuck", "stuck_since_minutes_gt": 30 },
+          "estimated_rows_affected": 47,
+          "incident_ref": "INC-2026-0424-001"
+        },
+        "required_capabilities": ["org.acme/run_remediation_query"],
+        "risk_level": "critical",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "queue_cleared" },
+          { "type": "service_health", "expected": "payment_processing_healthy" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/run_remediation_query"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-09-queue",
+          "check_type": "deployment_status",
+          "description": "payment_queue must have zero stuck entries after remediation.",
+          "required": true,
+          "expected_result": { "stuck_entry_count": 0, "target": "payments-db.production.payment_queue" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-09-processing",
+          "check_type": "service_health",
+          "description": "Payment processing must recover to healthy state within 2 minutes of remediation.",
+          "required": true,
+          "expected_result": { "status": "healthy", "target": "payment-processing-service.production" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-09-rowcount",
+          "check_type": "deployment_status",
+          "description": "Rows affected must be between 40 and 60 (within expected range for stuck entries).",
+          "required": true,
+          "expected_result": { "rows_affected_min": 40, "rows_affected_max": 60 },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "evidence_requirements": [
+        {
+          "evidence_type": "approval_record",
+          "description": "Incident ticket reference confirming active incident status.",
+          "required": true
+        },
+        {
+          "evidence_type": "approval_record",
+          "description": "Named incident commander approval for break-glass access.",
+          "required": true
+        }
+      ],
+
+      "constraints": {
+        "break_glass": true,
+        "incident_ref": "INC-2026-0424-001",
+        "compensating_controls": [
+          "All query activity is logged to audit store break-glass partition",
+          "Query is read-verified before execution by executor",
+          "SRE lead monitoring in real-time",
+          "Automatic rollback query prepared and staged"
+        ],
+        "post_incident_review_due": "2026-04-25T12:00:00Z",
+        "authorization_expires_in_minutes": 30
+      },
+
+      "break_glass_context": {
+        "incident_ref": "INC-2026-0424-001",
+        "named_approver_requirement": "role://operators/incident-commanders",
+        "reason": "Emergency remediation required to restore payment processing during active incident.",
+        "compensating_controls": [
+          "All query activity is logged to audit store break-glass partition",
+          "Query is read-verified before execution by executor",
+          "SRE lead monitoring in real-time",
+          "Automatic rollback query prepared and staged"
+        ],
+        "expires_at": "2026-04-24T22:44:05Z",
+        "post_incident_review_required": true,
+        "post_incident_review_by": "2026-04-25T12:00:00Z"
+      },
+
+      "expiry_request": "2026-04-24T22:44:05Z",
+
+      "notes": "BREAK-GLASS: Active incident INC-2026-0424-001. Payment processing down 14 minutes. All payments failing. Remediation approved verbally by incident commander, now formalizing as ZTAP transaction.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 3 — Authorization Decision (human_approved, break-glass)",
+      "_note": "Break-glass authorization is issued as human_approved — not auto_authorized. The incident commander is the approver. approval_scope is tightly scoped to this transaction, action, and capabilities. Short expires_at enforces the time-bounded nature of emergency access.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
+      "decision_id": "ztap-dec-09bg-incident-2026-0424-001",
+      "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T22:14:18Z",
+      "authorization_status": "human_approved",
+      "declared_risk_level": "critical",
+      "evaluated_risk_level": "critical",
+
+      "policy_refs": [
+        "policy://break-glass/incident-response/critical/require-incident-commander-approval"
+      ],
+
+      "reason_codes": [],
+
+      "authorized_at": "2026-04-24T22:14:18Z",
+      "expires_at": "2026-04-24T22:44:05Z",
+
+      "human_approval_ref": {
+        "approval_requested_at": "2026-04-24T22:14:05Z",
+        "required_approver": "role://operators/incident-commanders",
+        "approved_by": "actor://operators/incident-commander-001",
+        "approved_at": "2026-04-24T22:14:16Z",
+        "approval_scope": {
+          "transaction_id": "ztap-txn-09bg-incident-2026-0424",
+          "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+          "action_ids": ["act-09bg-query"],
+          "target_actor_id": "agent-executor-db-emergency-001",
+          "approved_capabilities": ["org.acme/run_remediation_query"],
+          "expires_at": "2026-04-24T22:44:05Z",
+          "single_use": true
+        },
+        "approval_evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"]
+      },
+
+      "evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"],
+
+      "break_glass_context": {
+        "incident_ref": "INC-2026-0424-001",
+        "named_approver_requirement": "role://operators/incident-commanders",
+        "reason": "Emergency remediation required to restore payment processing during active incident.",
+        "compensating_controls": [
+          "All query activity is logged to audit store break-glass partition",
+          "Query is read-verified before execution by executor",
+          "SRE lead monitoring in real-time",
+          "Automatic rollback query prepared and staged"
+        ],
+        "expires_at": "2026-04-24T22:44:05Z",
+        "post_incident_review_required": true,
+        "post_incident_review_by": "2026-04-25T12:00:00Z"
+      },
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 3 — Execution Receipt (succeeded)",
+      "_note": "Remediation succeeded. Payment processing recovered. Post-incident review reference is carried in notes.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
+      "receipt_id": "ztap-rcpt-09bg-incident-2026-0424-001",
+      "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+      "authorization_decision_ref": "ztap-dec-09bg-incident-2026-0424-001",
+
+      "source_actor": {
+        "actor_id": "operator-oncall-002",
+        "role": ["operator", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/oncall-002"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-emergency-001",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-emergency-001"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T22:14:25Z",
+      "completed_at": "2026-04-24T22:15:44Z",
+      "status": "succeeded",
+      "reason_codes": [],
+
+      "actions_attempted": [
+        {
+          "action_id": "act-09bg-query",
+          "action_type": "emergency_query",
+          "target": "payments-db.production.payment_queue",
+          "query_id": "clear_stuck_queue_entries"
+        }
+      ],
+
+      "actions_completed": [
+        {
+          "action_id": "act-09bg-query",
+          "action_type": "emergency_query",
+          "target": "payments-db.production.payment_queue",
+          "query_id": "clear_stuck_queue_entries",
+          "rows_affected": 47
+        }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-09-queue",
+          "check_type": "deployment_status",
+          "expected_result": { "stuck_entry_count": 0 },
+          "actual_result": { "stuck_entry_count": 0 },
+          "passed": true
+        },
+        {
+          "check_id": "chk-09-processing",
+          "check_type": "service_health",
+          "expected_result": { "status": "healthy" },
+          "actual_result": { "status": "healthy", "recovery_time_seconds": 78 },
+          "passed": true
+        },
+        {
+          "check_id": "chk-09-rowcount",
+          "check_type": "deployment_status",
+          "expected_result": { "rows_affected_min": 40, "rows_affected_max": 60 },
+          "actual_result": { "rows_affected": 47 },
+          "passed": true
+        }
+      ],
+
+      "evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"],
+
+      "break_glass_context": {
+        "incident_ref": "INC-2026-0424-001",
+        "named_approver_requirement": "role://operators/incident-commanders",
+        "reason": "Emergency remediation required to restore payment processing during active incident.",
+        "compensating_controls": [
+          "All query activity is logged to audit store break-glass partition",
+          "Query is read-verified before execution by executor",
+          "SRE lead monitoring in real-time",
+          "Automatic rollback query prepared and staged"
+        ],
+        "expires_at": "2026-04-24T22:44:05Z",
+        "post_incident_review_required": true,
+        "post_incident_review_by": "2026-04-25T12:00:00Z"
+      },
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "full",
+        "rollback_performed": false
+      },
+
+      "notes": "Break-glass remediation succeeded. Payment processing recovered in 78 seconds. Post-incident review due 2026-04-25T12:00:00Z. Incident: INC-2026-0424-001.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-receipt"
+      }
+    }
+
+  ]
+}

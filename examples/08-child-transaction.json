@@ -1,0 +1,403 @@
+{
+  "_ztap_example": {
+    "title": "Fan-Out Pattern — Parent and Child Transactions",
+    "scenario": "A coordinated release of three microservices. ZTAP v1 is strictly one-source-one-target. Fan-out uses a parent transaction (the release intent) and separate child transactions per service, linked by parent_transaction_id. This example shows the parent and two of three children.",
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "design_rationale": {
+      "why_no_multi_target_in_v1": "Multi-target transactions complicate authority, receipt structure, partial failure, and atomicity. v1 is strictly one-source-one-target to keep every transaction's authorization subject, failure point, and receipt unambiguous.",
+      "fan_out_pattern": "The parent records coordinated intent. Each child is independently authorized and executed. Children link to the parent via parent_transaction_id. The orchestrator collects all child receipts.",
+      "independent_lifecycle": "Each child has its own lifecycle. One can succeed while another fails. Overall release outcome is determined at the orchestration level."
+    }
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 5 — Parent Transaction Request (coordination record)",
+      "_note": "The parent records the coordinated release intent. Its own authorization does not authorize the children — each child is independently evaluated.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-08parent-release-v5",
+      "created_at": "2026-04-24T17:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-008",
+        "role": ["planner", "source_actor"],
+        "display_name": "Release Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-008",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-runtime-orchestrator-001",
+        "role": ["runtime", "target_actor"],
+        "display_name": "Release Orchestration Runtime",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/runtime-orchestrator-001",
+        "capability_claims": ["org.acme/orchestrate_release"]
+      },
+
+      "requested_action": {
+        "action_id": "act-08parent-orchestrate",
+        "action_type": "orchestrate_release",
+        "profile": "org.acme/release-coordination",
+        "description": "Coordinate parallel deployment of release v5.0.0 across three services.",
+        "parameters": {
+          "release_id": "release-v5.0.0",
+          "services": ["user-service", "order-service", "notification-service"],
+          "target_version": "5.0.0",
+          "environment": "production",
+          "strategy": "parallel",
+          "child_transactions": [
+            "ztap-txn-08child-user-service",
+            "ztap-txn-08child-order-service",
+            "ztap-txn-08child-notification-service"
+          ]
+        },
+        "required_capabilities": ["org.acme/orchestrate_release"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "all_child_transactions_receipted" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/orchestrate_release"],
+      "atomicity_mode": "best_effort_allowed",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-08p-children",
+          "check_type": "deployment_status",
+          "description": "All three child transactions must produce receipts.",
+          "required": true,
+          "expected_result": {
+            "child_transaction_receipts_required": [
+              "ztap-txn-08child-user-service",
+              "ztap-txn-08child-order-service",
+              "ztap-txn-08child-notification-service"
+            ]
+          },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T18:00:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 5 — Parent Authorization Decision (auto_authorized)",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-08parent-release-v5",
+      "decision_id": "ztap-dec-08parent-release-v5-001",
+      "request_hash": "EXAMPLE-HASH-txn-08parent-release-v5-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T17:00:03Z",
+      "authorization_status": "auto_authorized",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "high",
+
+      "policy_refs": [
+        "policy://releases/production/coordinated/auto-approve"
+      ],
+
+      "reason_codes": [],
+      "authorized_at": "2026-04-24T17:00:03Z",
+      "expires_at": "2026-04-24T17:45:00Z",
+
+      "_note": "Parent authorization permits the orchestration. It does not authorize child transactions. Each child is independently submitted and evaluated.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 5 — Child Transaction Request: user-service",
+      "_note": "parent_transaction_id links this child to the parent. The orchestrating runtime is the source_actor for this child.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-08child-user-service",
+      "parent_transaction_id": "ztap-txn-08parent-release-v5",
+      "created_at": "2026-04-24T17:00:08Z",
+
+      "source_actor": {
+        "actor_id": "agent-runtime-orchestrator-001",
+        "role": ["runtime", "source_actor"],
+        "display_name": "Release Orchestration Runtime",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/runtime-orchestrator-001",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "runtime-orchestrator-v1"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-deploy-user-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "User Service Deployment Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-deploy-user-001",
+        "capability_claims": ["org.acme/deploy_service"]
+      },
+
+      "requested_action": {
+        "action_id": "act-08child-user-deploy",
+        "action_type": "deploy",
+        "profile": "org.acme/deployment",
+        "description": "Deploy user-service 5.0.0 to production as part of release v5.0.0.",
+        "parameters": {
+          "service": "user-service",
+          "environment": "production",
+          "version": "5.0.0"
+        },
+        "required_capabilities": ["org.acme/deploy_service"],
+        "risk_level": "medium",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "deployed" },
+          { "type": "service_health", "expected": "healthy" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/deploy_service"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-08u-health",
+          "check_type": "service_health",
+          "description": "user-service must be healthy in production.",
+          "required": true,
+          "expected_result": { "status": "healthy", "target": "user-service.production" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-08u-version",
+          "check_type": "deployment_status",
+          "description": "Deployed version must be 5.0.0.",
+          "required": true,
+          "expected_result": { "version": "5.0.0" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T17:30:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-08child-user-service-request"
+      }
+    },
+
+    {
+      "_envelope_label": "4 of 5 — Child Transaction Request: order-service",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-08child-order-service",
+      "parent_transaction_id": "ztap-txn-08parent-release-v5",
+      "created_at": "2026-04-24T17:00:08Z",
+
+      "source_actor": {
+        "actor_id": "agent-runtime-orchestrator-001",
+        "role": ["runtime", "source_actor"],
+        "display_name": "Release Orchestration Runtime",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/runtime-orchestrator-001",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "runtime-orchestrator-v1"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-deploy-order-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "Order Service Deployment Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-deploy-order-001",
+        "capability_claims": ["org.acme/deploy_service"]
+      },
+
+      "requested_action": {
+        "action_id": "act-08child-order-deploy",
+        "action_type": "deploy",
+        "profile": "org.acme/deployment",
+        "description": "Deploy order-service 5.0.0 to production as part of release v5.0.0.",
+        "parameters": {
+          "service": "order-service",
+          "environment": "production",
+          "version": "5.0.0"
+        },
+        "required_capabilities": ["org.acme/deploy_service"],
+        "risk_level": "medium",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "deployed" },
+          { "type": "service_health", "expected": "healthy" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/deploy_service"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-08o-health",
+          "check_type": "service_health",
+          "description": "order-service must be healthy in production.",
+          "required": true,
+          "expected_result": { "status": "healthy", "target": "order-service.production" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-08o-version",
+          "check_type": "deployment_status",
+          "description": "Deployed version must be 5.0.0.",
+          "required": true,
+          "expected_result": { "version": "5.0.0" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T17:30:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-08child-order-service-request"
+      }
+    },
+
+    {
+      "_envelope_label": "5 of 5 — Parent Execution Receipt (orchestrator aggregate)",
+      "_note": "Parent/orchestrator receipt links child outcomes using child_receipt_refs. Third child references are included even though that child envelope sequence is omitted here for brevity.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-08parent-release-v5",
+      "receipt_id": "ztap-rcpt-08parent-release-v5-001",
+      "request_hash": "EXAMPLE-HASH-txn-08parent-release-v5-request",
+      "authorization_decision_ref": "ztap-dec-08parent-release-v5-001",
+
+      "source_actor": {
+        "actor_id": "agent-planner-008",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-008"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-runtime-orchestrator-001",
+        "role": ["runtime", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/runtime-orchestrator-001"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T17:00:10Z",
+      "completed_at": "2026-04-24T17:12:40Z",
+      "status": "succeeded",
+      "reason_codes": [],
+
+      "actions_attempted": [
+        {
+          "action_id": "act-08parent-orchestrate",
+          "action_type": "orchestrate_release",
+          "release_id": "release-v5.0.0",
+          "target_version": "5.0.0"
+        }
+      ],
+
+      "actions_completed": [
+        {
+          "action_id": "act-08parent-orchestrate",
+          "action_type": "orchestrate_release",
+          "release_id": "release-v5.0.0",
+          "result": "all_child_receipts_collected"
+        }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-08p-children",
+          "check_type": "deployment_status",
+          "expected_result": {
+            "child_transaction_receipts_required": [
+              "ztap-txn-08child-user-service",
+              "ztap-txn-08child-order-service",
+              "ztap-txn-08child-notification-service"
+            ]
+          },
+          "actual_result": {
+            "child_transaction_receipts_collected": [
+              "ztap-rcpt-08child-user-service-001",
+              "ztap-rcpt-08child-order-service-001",
+              "ztap-rcpt-08child-notification-service-001"
+            ]
+          },
+          "passed": true
+        }
+      ],
+
+      "child_receipt_refs": [
+        {
+          "child_transaction_id": "ztap-txn-08child-user-service",
+          "child_receipt_ref": "ztap-rcpt-08child-user-service-001",
+          "child_request_hash": "EXAMPLE-HASH-txn-08child-user-service-request",
+          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-user-service-receipt"
+        },
+        {
+          "child_transaction_id": "ztap-txn-08child-order-service",
+          "child_receipt_ref": "ztap-rcpt-08child-order-service-001",
+          "child_request_hash": "EXAMPLE-HASH-txn-08child-order-service-request",
+          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-order-service-receipt"
+        },
+        {
+          "child_transaction_id": "ztap-txn-08child-notification-service",
+          "child_receipt_ref": "ztap-rcpt-08child-notification-service-001",
+          "child_request_hash": "EXAMPLE-HASH-txn-08child-notification-service-request",
+          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-notification-service-receipt"
+        }
+      ],
+
+      "atomicity_result": {
+        "mode_declared": "best_effort_allowed",
+        "outcome": "full",
+        "rollback_performed": false
+      },
+
+      "notes": "Aggregate orchestrator receipt for parent release transaction. Child outcomes linked by child_receipt_refs.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-receipt"
+      }
+    }
+
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "execution-receipt.schema.json",
+  "title": "ZTAP Execution Receipt",
+  "allOf": [
+    {
+      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "receipt_id",
+        "request_hash",
+        "authorization_decision_ref",
+        "source_actor",
+        "target_actor",
+        "control_plane",
+        "started_at",
+        "completed_at",
+        "status",
+        "reason_codes",
+        "actions_attempted",
+        "actions_completed",
+        "verification_results",
+        "atomicity_result"
+      ],
+      "properties": {
+        "envelope_type": {
+          "const": "execution_receipt"
+        },
+        "receipt_id": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "request_hash": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "authorization_decision_ref": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "source_actor": {
+          "allOf": [
+            {
+              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "$ref": "ztap-envelope.schema.json#/$defs/source_actor_role"
+                }
+              }
+            }
+          ]
+        },
+        "target_actor": {
+          "allOf": [
+            {
+              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "$ref": "ztap-envelope.schema.json#/$defs/target_actor_role"
+                }
+              }
+            }
+          ]
+        },
+        "control_plane": {
+          "allOf": [
+            {
+              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "$ref": "ztap-envelope.schema.json#/$defs/control_plane_role"
+                }
+              }
+            }
+          ]
+        },
+        "started_at": {
+          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+        },
+        "completed_at": {
+          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "failed",
+            "rejected",
+            "cancelled",
+            "expired",
+            "timed_out"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "$ref": "ztap-envelope.schema.json#/$defs/reason_code"
+          }
+        },
+        "actions_attempted": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ]
+          }
+        },
+        "actions_completed": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ]
+          }
+        },
+        "verification_results": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            }
+          ]
+        },
+        "atomicity_result": {
+          "$ref": "ztap-envelope.schema.json#/$defs/atomicity_result"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "ztap-envelope.schema.json#/$defs/evidence_ref"
+          }
+        },
+        "prior_state_ref": {
+          "$ref": "ztap-envelope.schema.json#/$defs/state_ref"
+        },
+        "new_state_ref": {
+          "$ref": "ztap-envelope.schema.json#/$defs/state_ref"
+        },
+        "child_receipt_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "ztap-envelope.schema.json#/$defs/child_receipt_ref"
+          }
+        },
+        "break_glass_context": {
+          "$ref": "ztap-envelope.schema.json#/$defs/break_glass_context"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "succeeded"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason_codes": {
+                "type": "array"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reason_codes": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

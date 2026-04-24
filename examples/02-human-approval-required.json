@@ -1,0 +1,279 @@
+{
+  "_ztap_example": {
+    "title": "Human Approval Required",
+    "scenario": "A planning agent requests a production database schema migration. Policy requires explicit operator approval before proceeding. This example shows the initial human_approval_required decision, then the human_approved decision after approval is received. The final decision carries a fully populated approval_scope binding the approval to this specific transaction.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "human_approval_required", "human_approved", "accepted", "executing", "verifying", "succeeded"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "notes_on_human_approval_model": "ZTAP does not define how approval notification is delivered to the operator. The control plane issues a new authorization_decision envelope with status 'human_approved' once approval is received. The original human_approval_required envelope is immutable and retained. Both envelopes appear in the audit trail."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 4 — Transaction Request",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-02ccdd334455",
+      "created_at": "2026-04-24T10:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-002",
+        "role": ["planner", "source_actor"],
+        "display_name": "Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-002",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "Database Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-001",
+        "capability_claims": ["org.acme/run_schema_migration"]
+      },
+
+      "requested_action": {
+        "action_id": "act-02ccdd334455-migrate",
+        "action_type": "schema_migration",
+        "profile": "org.acme/database",
+        "description": "Add audit columns to payments-db.production. Zero-downtime migration. Reversible.",
+        "parameters": {
+          "database": "payments-db",
+          "environment": "production",
+          "migration_id": "mig-2026-04-24-add-audit-columns",
+          "estimated_downtime_seconds": 0,
+          "reversible": true
+        },
+        "required_capabilities": ["org.acme/run_schema_migration"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "migration_applied" },
+          { "type": "service_health", "expected": "row_count_unchanged" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/run_schema_migration"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-02-migration",
+          "check_type": "deployment_status",
+          "description": "Migration mig-2026-04-24-add-audit-columns must be applied to payments-db.production.",
+          "required": true,
+          "expected_result": { "migration_id": "mig-2026-04-24-add-audit-columns", "status": "applied" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-02-rowcount",
+          "check_type": "service_health",
+          "description": "Row count in payments-db.production.transactions must be unchanged after migration.",
+          "required": true,
+          "expected_result": { "check": "row_count_unchanged", "table": "payments-db.production.transactions" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T11:00:00Z",
+
+      "notes": "Schema migration to add audit columns. Zero-downtime. Operator approval required per policy for production database schema changes.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 4 — Authorization Decision (human_approval_required)",
+      "_note": "Policy for production database schema changes requires operator approval. Control plane elevated risk level from high to critical based on schema change to a payments table. RISK_LEVEL_ESCALATED is included in reason_codes.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-02ccdd334455",
+      "decision_id": "ztap-dec-02ccdd334455-001",
+      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T10:00:03Z",
+      "authorization_status": "human_approval_required",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "critical",
+      "risk_evaluation_reason": "Schema changes to payments-db are classified as critical by policy due to PCI scope. Source-declared high was elevated.",
+
+      "policy_refs": [
+        "policy://databases/production/schema-changes/require-operator-approval",
+        "policy://risk/payments-db/pci-scope-critical"
+      ],
+
+      "reason_codes": ["AUTHORITY_MISSING", "RISK_LEVEL_ESCALATED"],
+
+      "human_approval_ref": {
+        "approval_requested_at": "2026-04-24T10:00:03Z",
+        "required_approver": "role://operators/database-approvers",
+        "approval_expires_at": "2026-04-24T10:30:00Z"
+      },
+
+      "expires_at": "2026-04-24T10:45:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-decision-pending"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 4 — Authorization Decision (human_approved)",
+      "_note": "New envelope issued by the control plane after the DBA on-call approved. The original human_approval_required envelope remains immutable in the audit trail. This is a separate envelope with a new decision_id. approval_scope fully binds the approval to this specific transaction, action, target, and capabilities.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-02ccdd334455",
+      "decision_id": "ztap-dec-02ccdd334455-002",
+      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T10:00:03Z",
+      "authorization_status": "human_approved",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "critical",
+      "risk_evaluation_reason": "Schema changes to payments-db classified as critical by policy. Approved by DBA on-call.",
+
+      "policy_refs": [
+        "policy://databases/production/schema-changes/require-operator-approval",
+        "policy://risk/payments-db/pci-scope-critical"
+      ],
+
+      "reason_codes": ["RISK_LEVEL_ESCALATED"],
+
+      "authorized_at": "2026-04-24T10:14:27Z",
+      "expires_at": "2026-04-24T10:45:00Z",
+
+      "human_approval_ref": {
+        "approval_requested_at": "2026-04-24T10:00:03Z",
+        "required_approver": "role://operators/database-approvers",
+        "approved_by": "actor://operators/dba-on-call",
+        "approved_at": "2026-04-24T10:14:25Z",
+        "approval_scope": {
+          "transaction_id": "ztap-txn-02ccdd334455",
+          "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+          "action_ids": ["act-02ccdd334455-migrate"],
+          "target_actor_id": "agent-executor-db-001",
+          "approved_capabilities": ["org.acme/run_schema_migration"],
+          "expires_at": "2026-04-24T10:45:00Z",
+          "single_use": true
+        }
+      },
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-decision-approved"
+      }
+    },
+
+    {
+      "_envelope_label": "4 of 4 — Execution Receipt (succeeded)",
+      "_note": "Execution proceeds against decision-002 (human_approved). Receipt references that decision_id.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-02ccdd334455",
+      "receipt_id": "ztap-rcpt-02ccdd334455-001",
+      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+      "authorization_decision_ref": "ztap-dec-02ccdd334455-002",
+
+      "source_actor": {
+        "actor_id": "agent-planner-002",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-002"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-db-001",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-db-001"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T10:14:35Z",
+      "completed_at": "2026-04-24T10:16:12Z",
+      "status": "succeeded",
+      "reason_codes": [],
+
+      "actions_attempted": [
+        {
+          "action_id": "act-02ccdd334455-migrate",
+          "action_type": "schema_migration",
+          "target": "payments-db.production",
+          "migration_id": "mig-2026-04-24-add-audit-columns"
+        }
+      ],
+
+      "actions_completed": [
+        {
+          "action_id": "act-02ccdd334455-migrate",
+          "action_type": "schema_migration",
+          "target": "payments-db.production",
+          "migration_id": "mig-2026-04-24-add-audit-columns"
+        }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-02-migration",
+          "check_type": "deployment_status",
+          "expected_result": { "migration_id": "mig-2026-04-24-add-audit-columns", "status": "applied" },
+          "actual_result": { "migration_id": "mig-2026-04-24-add-audit-columns", "status": "applied" },
+          "passed": true
+        },
+        {
+          "check_id": "chk-02-rowcount",
+          "check_type": "service_health",
+          "expected_result": { "check": "row_count_unchanged" },
+          "actual_result": { "rows_before": 4821033, "rows_after": 4821033, "delta": 0 },
+          "passed": true
+        }
+      ],
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "full",
+        "rollback_performed": false
+      },
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-receipt"
+      }
+    }
+
+  ]
+}

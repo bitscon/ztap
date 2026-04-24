@@ -1,0 +1,240 @@
+{
+  "_ztap_example": {
+    "title": "Failed — Partial State (PARTIAL_STATE_BLOCKED)",
+    "scenario": "A three-step container workload update is authorized and starts executing. Steps 1 and 2 complete successfully. Step 3 fails (image not found in registry). Because atomicity_mode is atomic_required and the config change in step 2 cannot be rolled back, the executor fails with PARTIAL_STATE_BLOCKED. The receipt records full partial state for operator remediation.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "accepted", "executing", "failed"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 3 — Transaction Request",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-05ccdd990011",
+      "created_at": "2026-04-24T14:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-005",
+        "role": ["planner", "source_actor"],
+        "display_name": "Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-005",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-infra-001",
+        "role": ["executor", "target_actor"],
+        "display_name": "Infrastructure Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-infra-001",
+        "capability_claims": ["org.acme/update_container_workload"]
+      },
+
+      "requested_action": {
+        "action_id": "act-05ccdd990011-update",
+        "action_type": "container_workload_update",
+        "profile": "org.acme/infrastructure",
+        "description": "Rolling update of api-gateway from v4.2.0 to v4.3.0 with config update.",
+        "parameters": {
+          "cluster": "prod-cluster-east",
+          "workload": "api-gateway",
+          "steps": [
+            { "step": 1, "action": "stop_old_containers", "target": "api-gateway:v4.2.0" },
+            { "step": 2, "action": "update_config", "config_key": "api-gateway/routing", "new_version": "cfg-2026-04-24" },
+            { "step": 3, "action": "start_new_containers", "target": "api-gateway:v4.3.0", "count": 3 }
+          ]
+        },
+        "required_capabilities": ["org.acme/update_container_workload"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "containers_running_v4.3.0" },
+          { "type": "service_health", "expected": "healthy" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/update_container_workload"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-05-containers",
+          "check_type": "deployment_status",
+          "description": "3 instances of api-gateway:v4.3.0 must be running in prod-cluster-east.",
+          "required": true,
+          "expected_result": { "version": "v4.3.0", "count": 3, "target": "prod-cluster-east/api-gateway" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-05-health",
+          "check_type": "service_health",
+          "description": "api-gateway must be healthy after update.",
+          "required": true,
+          "expected_result": { "status": "healthy", "target": "prod-cluster-east/api-gateway" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T14:30:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-05ccdd990011-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 3 — Authorization Decision (auto_authorized)",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-05ccdd990011",
+      "decision_id": "ztap-dec-05ccdd990011-001",
+      "request_hash": "EXAMPLE-HASH-txn-05ccdd990011-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T14:00:03Z",
+      "authorization_status": "auto_authorized",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "high",
+
+      "policy_refs": [
+        "policy://infrastructure/production/container-updates/auto-approve"
+      ],
+
+      "reason_codes": [],
+      "authorized_at": "2026-04-24T14:00:03Z",
+      "expires_at": "2026-04-24T14:20:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-05ccdd990011-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 3 — Execution Receipt (failed — PARTIAL_STATE_BLOCKED)",
+      "_note": "Steps 1 and 2 completed. Step 3 failed (image not found). Config change in step 2 is not reversible. Executor fails closed with PARTIAL_STATE_BLOCKED.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-05ccdd990011",
+      "receipt_id": "ztap-rcpt-05ccdd990011-001",
+      "request_hash": "EXAMPLE-HASH-txn-05ccdd990011-request",
+      "authorization_decision_ref": "ztap-dec-05ccdd990011-001",
+
+      "source_actor": {
+        "actor_id": "agent-planner-005",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-005"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-infra-001",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-infra-001"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T14:00:10Z",
+      "completed_at": "2026-04-24T14:02:37Z",
+      "status": "failed",
+      "reason_codes": ["PARTIAL_STATE_BLOCKED", "ACTION_FAILED"],
+
+      "actions_attempted": [
+        { "step": 1, "action_id": "act-05-step1", "action": "stop_old_containers", "target": "prod-cluster-east/api-gateway:v4.2.0" },
+        { "step": 2, "action_id": "act-05-step2", "action": "update_config", "config_key": "api-gateway/routing" },
+        { "step": 3, "action_id": "act-05-step3", "action": "start_new_containers", "target": "prod-cluster-east/api-gateway:v4.3.0" }
+      ],
+
+      "actions_completed": [
+        { "step": 1, "action_id": "act-05-step1", "action": "stop_old_containers", "result": "completed" },
+        { "step": 2, "action_id": "act-05-step2", "action": "update_config", "result": "completed" }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-05-containers",
+          "check_type": "deployment_status",
+          "expected_result": { "version": "v4.3.0", "count": 3 },
+          "actual_result": { "running_count": 0 },
+          "passed": false
+        },
+        {
+          "check_id": "chk-05-health",
+          "check_type": "service_health",
+          "expected_result": { "status": "healthy" },
+          "actual_result": { "status": "no_instances_running" },
+          "passed": false
+        }
+      ],
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "partial",
+        "rollback_performed": false,
+        "rollback_attempted": true,
+        "rollback_failure_reason": "Config store does not support atomic rollback for api-gateway/routing after write commit.",
+        "partial_state_description": {
+          "system": "prod-cluster-east",
+          "workload": "api-gateway",
+          "current_state": "degraded",
+          "completed_steps": [
+            {
+              "step": 1,
+              "description": "Old containers v4.2.0 stopped. No running instances remain.",
+              "reversible": true,
+              "rollback_action": "Manually start api-gateway:v4.2.0"
+            },
+            {
+              "step": 2,
+              "description": "Config api-gateway/routing updated to cfg-2026-04-24. Previous: cfg-2026-04-10.",
+              "reversible": false,
+              "rollback_action": "Manually revert api-gateway/routing to cfg-2026-04-10 via config admin"
+            }
+          ],
+          "failed_step": {
+            "step": 3,
+            "description": "Failed to pull image api-gateway:v4.3.0 from registry. Registry returned 404.",
+            "error": "image not found: registry.acme-corp.internal/api-gateway:v4.3.0"
+          },
+          "operator_remediation_required": true,
+          "suggested_next_actions": [
+            "Verify api-gateway:v4.3.0 has been pushed to registry.acme-corp.internal",
+            "Revert config api-gateway/routing to cfg-2026-04-10 if rolling back to v4.2.0",
+            "Create a new ZTAP transaction to restart api-gateway:v4.2.0 for immediate service restoration"
+          ]
+        }
+      },
+
+      "notes": "OPERATOR ACTION REQUIRED. api-gateway is degraded. Old containers stopped, config updated, but new containers did not start.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-05ccdd990011-receipt"
+      }
+    }
+
+  ]
+}

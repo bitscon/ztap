@@ -1,0 +1,705 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ztap-envelope.schema.json",
+  "title": "ZTAP Envelope",
+  "description": "Validates any ZTAP 1.0-draft envelope type.",
+  "oneOf": [
+    {
+      "$ref": "transaction-request.schema.json"
+    },
+    {
+      "$ref": "authorization-decision.schema.json"
+    },
+    {
+      "$ref": "execution-receipt.schema.json"
+    },
+    {
+      "$ref": "evidence-record.schema.json"
+    },
+    {
+      "$ref": "amendment-event.schema.json"
+    }
+  ],
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "non_empty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "namespaced_identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+/[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "role_value": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "control_plane",
+        "source_actor",
+        "target_actor",
+        "planner",
+        "executor",
+        "validator",
+        "auditor",
+        "runtime"
+      ]
+    },
+    "actor_role": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/role_value"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/role_value"
+          }
+        }
+      ]
+    },
+    "source_actor_role": {
+      "oneOf": [
+        {
+          "type": "string",
+          "const": "source_actor"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": {
+            "const": "source_actor"
+          },
+          "items": {
+            "$ref": "#/$defs/role_value"
+          }
+        }
+      ]
+    },
+    "target_actor_role": {
+      "oneOf": [
+        {
+          "type": "string",
+          "const": "target_actor"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": {
+            "const": "target_actor"
+          },
+          "items": {
+            "$ref": "#/$defs/role_value"
+          }
+        }
+      ]
+    },
+    "control_plane_role": {
+      "oneOf": [
+        {
+          "type": "string",
+          "const": "control_plane"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": {
+            "const": "control_plane"
+          },
+          "items": {
+            "$ref": "#/$defs/role_value"
+          }
+        }
+      ]
+    },
+    "capability": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "file.read",
+            "file.write",
+            "git.commit",
+            "git.push",
+            "test.run",
+            "approval.request",
+            "receipt.emit"
+          ]
+        },
+        {
+          "$ref": "#/$defs/namespaced_identifier"
+        }
+      ]
+    },
+    "profile": {
+      "anyOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ztap.core/fileops",
+            "ztap.core/gitops",
+            "ztap.core/testops",
+            "ztap.core/approval",
+            "ztap.core/evidence",
+            "ztap.core/generic"
+          ]
+        },
+        {
+          "$ref": "#/$defs/namespaced_identifier"
+        }
+      ]
+    },
+    "reason_code": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SCHEMA_INVALID",
+            "ROLE_INVALID",
+            "ACTOR_UNREGISTERED",
+            "AUTHORITY_MISSING",
+            "POLICY_DENIED",
+            "APPROVAL_REPLAYED",
+            "RISK_LEVEL_ESCALATED",
+            "CAPABILITY_MISSING",
+            "TARGET_REJECTED",
+            "ACTION_FAILED",
+            "VERIFY_FAILED",
+            "TIMEOUT",
+            "EXPIRED",
+            "CANCELLED",
+            "INTEGRITY_FAILED",
+            "EVIDENCE_MISSING",
+            "PARTIAL_STATE_BLOCKED",
+            "REGISTRY_INCONSISTENT"
+          ]
+        },
+        {
+          "$ref": "#/$defs/namespaced_identifier"
+        }
+      ]
+    },
+    "evidence_type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "test_result",
+            "command_output",
+            "file_hash",
+            "commit_ref",
+            "pull_request_ref",
+            "approval_record",
+            "policy_decision",
+            "deployment_status",
+            "log_excerpt",
+            "external_uri",
+            "inline_value"
+          ]
+        },
+        {
+          "$ref": "#/$defs/namespaced_identifier"
+        }
+      ]
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "atomicity": {
+      "type": "string",
+      "enum": [
+        "atomic_required",
+        "best_effort_allowed",
+        "non_atomic_explicitly_allowed"
+      ]
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "canonicalization",
+        "hash_algorithm",
+        "hash_value"
+      ],
+      "properties": {
+        "canonicalization": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "hash_algorithm": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "hash_value": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "signed": {
+          "type": "boolean"
+        },
+        "signature_ref": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "actor_id",
+        "role",
+        "organization_id",
+        "registration_ref"
+      ],
+      "properties": {
+        "actor_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "role": {
+          "$ref": "#/$defs/actor_role"
+        },
+        "display_name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "organization_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "registration_ref": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "capability_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "implementation_ref": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "requested_action": {
+      "type": "object",
+      "required": [
+        "action_id",
+        "action_type",
+        "profile",
+        "description",
+        "parameters",
+        "required_capabilities",
+        "risk_level",
+        "expected_outputs"
+      ],
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "action_type": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "profile": {
+          "$ref": "#/$defs/profile"
+        },
+        "description": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "required_capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "risk_level": {
+          "$ref": "#/$defs/risk_level"
+        },
+        "expected_outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "verification_requirement": {
+      "type": "object",
+      "required": [
+        "check_id",
+        "check_type",
+        "description",
+        "required",
+        "expected_result"
+      ],
+      "properties": {
+        "check_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "check_type": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "description": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "expected_evidence_type": {
+          "$ref": "#/$defs/evidence_type"
+        },
+        "expected_result": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "verification_actor": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "failure_reason_code": {
+          "$ref": "#/$defs/reason_code"
+        }
+      }
+    },
+    "verification_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/verification_requirement"
+      }
+    },
+    "approval_scope": {
+      "type": "object",
+      "required": [
+        "transaction_id",
+        "request_hash",
+        "action_ids",
+        "target_actor_id",
+        "approved_capabilities",
+        "expires_at",
+        "single_use"
+      ],
+      "properties": {
+        "transaction_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "request_hash": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "action_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "target_actor_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "approved_capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "expires_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "single_use": {
+          "type": "boolean"
+        }
+      }
+    },
+    "human_approval_ref": {
+      "type": "object",
+      "required": [
+        "approval_requested_at",
+        "required_approver"
+      ],
+      "properties": {
+        "approval_requested_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "required_approver": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "approval_expires_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approved_by": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "approved_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approval_scope": {
+          "$ref": "#/$defs/approval_scope"
+        },
+        "approval_evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        }
+      }
+    },
+    "required_evidence_entry": {
+      "type": "object",
+      "required": [
+        "evidence_type",
+        "description"
+      ],
+      "properties": {
+        "evidence_type": {
+          "$ref": "#/$defs/evidence_type"
+        },
+        "description": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "constraints": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        }
+      }
+    },
+    "evidence_ref": {
+      "$ref": "#/$defs/non_empty_string"
+    },
+    "state_ref": {
+      "type": "object",
+      "properties": {
+        "state_uri": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "state_hash": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "state_label": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "state_uri"
+          ]
+        },
+        {
+          "required": [
+            "state_hash"
+          ]
+        }
+      ]
+    },
+    "child_receipt_ref": {
+      "type": "object",
+      "required": [
+        "child_transaction_id"
+      ],
+      "properties": {
+        "child_transaction_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "child_receipt_ref": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "child_request_hash": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "child_receipt_hash": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "child_receipt_ref"
+          ]
+        },
+        {
+          "required": [
+            "child_request_hash"
+          ]
+        },
+        {
+          "required": [
+            "child_receipt_hash"
+          ]
+        }
+      ]
+    },
+    "break_glass_context": {
+      "type": "object",
+      "required": [
+        "incident_ref",
+        "named_approver_requirement",
+        "reason",
+        "compensating_controls",
+        "expires_at",
+        "post_incident_review_required"
+      ],
+      "properties": {
+        "incident_ref": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "named_approver_requirement": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "reason": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "compensating_controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "expires_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "post_incident_review_required": {
+          "type": "boolean"
+        },
+        "post_incident_review_by": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "atomicity_result": {
+      "type": "object",
+      "required": [
+        "mode_declared",
+        "outcome",
+        "rollback_performed"
+      ],
+      "properties": {
+        "mode_declared": {
+          "$ref": "#/$defs/atomicity"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "full",
+            "partial",
+            "none"
+          ]
+        },
+        "rollback_performed": {
+          "type": "boolean"
+        },
+        "partial_state_description": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "partial"
+              }
+            },
+            "required": [
+              "outcome"
+            ]
+          },
+          "then": {
+            "required": [
+              "partial_state_description"
+            ]
+          }
+        }
+      ]
+    },
+    "common_envelope": {
+      "type": "object",
+      "required": [
+        "ztap_version",
+        "envelope_type",
+        "transaction_id",
+        "integrity"
+      ],
+      "properties": {
+        "ztap_version": {
+          "const": "1.0-draft"
+        },
+        "envelope_type": {
+          "type": "string",
+          "enum": [
+            "transaction_request",
+            "authorization_decision",
+            "execution_receipt",
+            "evidence_record",
+            "amendment_event"
+          ]
+        },
+        "transaction_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity"
+        }
+      }
+    }
+  }
+}

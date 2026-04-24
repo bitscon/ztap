@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "amendment-event.schema.json",
+  "title": "ZTAP Amendment Event",
+  "allOf": [
+    {
+      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+    },
+    {
+      "type": "object",
+      "required": [
+        "amendment_id",
+        "request_hash",
+        "created_by",
+        "created_at",
+        "amendment_type",
+        "reason_codes",
+        "linked_envelope_refs"
+      ],
+      "properties": {
+        "envelope_type": {
+          "const": "amendment_event"
+        },
+        "amendment_id": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "request_hash": {
+          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+        },
+        "created_by": {
+          "$ref": "ztap-envelope.schema.json#/$defs/actor"
+        },
+        "created_at": {
+          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+        },
+        "amendment_type": {
+          "type": "string",
+          "enum": [
+            "context_update",
+            "cancellation_request",
+            "evidence_addition",
+            "deadline_extension_request",
+            "operator_note"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "ztap-envelope.schema.json#/$defs/reason_code"
+          }
+        },
+        "linked_envelope_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          }
+        },
+        "amendment_content": {
+          "type": "object"
+        },
+        "break_glass_context": {
+          "$ref": "ztap-envelope.schema.json#/$defs/break_glass_context"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

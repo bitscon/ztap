@@ -1,0 +1,365 @@
+{
+  "_ztap_example": {
+    "title": "Governance Transaction — Actor Registration Update",
+    "scenario": "The operations team needs to register a new AI executor agent with elevated deployment capabilities. This is a governance-class transaction: it modifies the actor registry and grants production capability claims. Governance transactions use the same ZTAP envelope structure as operational transactions but are held to stricter authorization standards — operator approval required, elevated evidence, and the receipt records prior state and new state.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "human_approved", "accepted", "executing", "verifying", "succeeded"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "governance_note": "A governance transaction modifies the rules under which future operational transactions are evaluated. An actor that can register itself with new capabilities via an auto-authorized transaction would undermine the governance model. Governance transactions require explicit operator approval regardless of other auto-authorization policies."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 5 — Transaction Request (governance class)",
+      "_note": "The source actor is a planner requesting a governance operation. The target is the control plane's registry manager capability. The requested action modifies the actor registry.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-10gov-register-executor",
+      "created_at": "2026-04-24T11:30:00Z",
+
+      "source_actor": {
+        "actor_id": "operator-platform-001",
+        "role": ["operator", "source_actor"],
+        "display_name": "Platform Engineer",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/platform-001",
+        "capability_claims": ["org.acme/manage_actor_registry"]
+      },
+
+      "target_actor": {
+        "actor_id": "control-plane-registry-manager",
+        "role": ["control_plane", "target_actor"],
+        "display_name": "Control Plane Registry Manager",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/registry-manager",
+        "capability_claims": ["org.acme/register_actor", "org.acme/grant_capability"]
+      },
+
+      "requested_action": {
+        "action_id": "act-10gov-register-executor-ml-001",
+        "action_type": "actor_registration",
+        "profile": "ztap.core/generic",
+        "description": "Register new ML inference executor agent with production deployment capabilities for the recommendation service.",
+        "parameters": {
+          "new_actor": {
+            "actor_id": "agent-executor-ml-001",
+            "display_name": "ML Inference Executor",
+            "roles": ["executor", "target_actor"],
+            "organization_id": "org-acme-corp",
+            "initial_capability_claims": [
+              "org.acme/deploy_service",
+              "org.acme/run_inference_job"
+            ],
+            "implementation_ref": "ml-executor-runtime-v1",
+            "registration_scope": "production"
+          },
+          "governance_justification": "New recommendation service requires ML inference executor. Reviewed in architecture board 2026-04-23. ADR-0042.",
+          "prior_state_snapshot_ref": "store://governance/actor-registry/snapshot-2026-04-24-pre-ml-executor"
+        },
+        "required_capabilities": ["org.acme/register_actor", "org.acme/grant_capability"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "actor_registered" },
+          { "type": "policy_decision", "expected": "capabilities_granted" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/register_actor", "org.acme/grant_capability"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-10-registered",
+          "check_type": "deployment_status",
+          "description": "agent-executor-ml-001 must appear in the actor registry as active.",
+          "required": true,
+          "expected_result": { "actor_id": "agent-executor-ml-001", "status": "active" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-10-capabilities",
+          "check_type": "policy_decision",
+          "description": "Capability claims org.acme/deploy_service and org.acme/run_inference_job must be registered for agent-executor-ml-001.",
+          "required": true,
+          "expected_result": {
+            "capabilities_registered": ["org.acme/deploy_service", "org.acme/run_inference_job"],
+            "actor_id": "agent-executor-ml-001"
+          },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-10-prior-state",
+          "check_type": "policy_decision",
+          "description": "Prior actor registry snapshot must be preserved and referenceable.",
+          "required": true,
+          "expected_evidence_type": "external_uri",
+          "expected_result": { "snapshot_ref_exists": true },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "evidence_requirements": [
+        {
+          "evidence_type": "approval_record",
+          "description": "Architecture board approval record for new executor registration.",
+          "required": true
+        },
+        {
+          "evidence_type": "external_uri",
+          "description": "Reference to prior actor registry state snapshot for rollback and audit.",
+          "required": true
+        }
+      ],
+
+      "expiry_request": "2026-04-24T12:30:00Z",
+
+      "notes": "Governance transaction: actor registry modification. Architecture board approved 2026-04-23. ADR-0042 reference. Prior registry state snapshot taken and stored before submission.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-10gov-register-executor-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 5 — Evidence Record (architecture approval)",
+      "_note": "Architecture board approval submitted proactively.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "evidence_record",
+      "transaction_id": "ztap-txn-10gov-register-executor",
+      "evidence_id": "ztap-evid-10gov-arch-board-approval",
+      "request_hash": "EXAMPLE-HASH-txn-10gov-register-executor-request",
+      "produced_by": {
+        "actor_id": "operator-platform-001",
+        "role": ["operator"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/platform-001"
+      },
+      "produced_at": "2026-04-24T11:28:00Z",
+      "evidence_type": "approval_record",
+      "evidence_uri": "store://governance/approvals/arch-board-2026-04-23-adr-0042.json",
+      "evidence_hash": "EXAMPLE-HASH-evidence-arch-board-approval-adr-0042",
+      "notes": "Architecture board approval for ML inference executor registration. Ref: ADR-0042.",
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-evid-10gov-arch-board"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 5 — Evidence Record (prior registry snapshot)",
+      "_note": "Prior registry snapshot reference submitted for rollback/audit.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "evidence_record",
+      "transaction_id": "ztap-txn-10gov-register-executor",
+      "evidence_id": "ztap-evid-10gov-registry-snapshot",
+      "request_hash": "EXAMPLE-HASH-txn-10gov-register-executor-request",
+      "produced_by": {
+        "actor_id": "control-plane-registry-manager",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/registry-manager"
+      },
+      "produced_at": "2026-04-24T11:29:00Z",
+      "evidence_type": "external_uri",
+      "evidence_uri": "store://governance/actor-registry/snapshot-2026-04-24-pre-ml-executor",
+      "evidence_hash": "EXAMPLE-HASH-evidence-registry-snapshot-pre-ml-executor",
+      "notes": "Pre-change registry snapshot. Supports rollback if registration must be undone.",
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-evid-10gov-registry-snapshot"
+      }
+    },
+
+    {
+      "_envelope_label": "4 of 5 — Authorization Decision (human_approved — operator approval required for governance transaction)",
+      "_note": "Policy requires operator approval for all governance-class transactions regardless of other auto-authorization rules. The platform lead approved. approval_scope is tightly bound.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-10gov-register-executor",
+      "decision_id": "ztap-dec-10gov-register-executor-001",
+      "request_hash": "EXAMPLE-HASH-txn-10gov-register-executor-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T11:30:04Z",
+      "authorization_status": "human_approved",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "high",
+
+      "policy_refs": [
+        "policy://governance/actor-registry/require-operator-approval",
+        "policy://capabilities/production/require-operator-approval-for-grant"
+      ],
+
+      "reason_codes": [],
+
+      "authorized_at": "2026-04-24T11:33:12Z",
+      "expires_at": "2026-04-24T12:03:12Z",
+
+      "human_approval_ref": {
+        "approval_requested_at": "2026-04-24T11:30:04Z",
+        "required_approver": "role://operators/platform-leads",
+        "approved_by": "actor://operators/platform-lead-001",
+        "approved_at": "2026-04-24T11:33:10Z",
+        "approval_scope": {
+          "transaction_id": "ztap-txn-10gov-register-executor",
+          "request_hash": "EXAMPLE-HASH-txn-10gov-register-executor-request",
+          "action_ids": ["act-10gov-register-executor-ml-001"],
+          "target_actor_id": "control-plane-registry-manager",
+          "approved_capabilities": ["org.acme/register_actor", "org.acme/grant_capability"],
+          "expires_at": "2026-04-24T12:03:12Z",
+          "single_use": true
+        },
+        "approval_evidence_refs": [
+          "ztap-evid-10gov-arch-board-approval",
+          "ztap-evid-10gov-registry-snapshot"
+        ]
+      },
+
+      "evidence_refs": [
+        "ztap-evid-10gov-arch-board-approval",
+        "ztap-evid-10gov-registry-snapshot"
+      ],
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-10gov-register-executor-decision"
+      }
+    },
+
+    {
+      "_envelope_label": "5 of 5 — Execution Receipt (succeeded)",
+      "_note": "The registry manager registered the new actor and granted capabilities. The receipt records what was done, the prior state reference, and the new state. Governance transaction receipts should record prior_state and new_state to support audit and rollback.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-10gov-register-executor",
+      "receipt_id": "ztap-rcpt-10gov-register-executor-001",
+      "request_hash": "EXAMPLE-HASH-txn-10gov-register-executor-request",
+      "authorization_decision_ref": "ztap-dec-10gov-register-executor-001",
+
+      "source_actor": {
+        "actor_id": "operator-platform-001",
+        "role": ["operator", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://operators/platform-001"
+      },
+
+      "target_actor": {
+        "actor_id": "control-plane-registry-manager",
+        "role": ["control_plane", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/registry-manager"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T11:33:18Z",
+      "completed_at": "2026-04-24T11:33:41Z",
+      "status": "succeeded",
+      "reason_codes": [],
+
+      "actions_attempted": [
+        {
+          "action_id": "act-10gov-register-executor-ml-001",
+          "action_type": "actor_registration",
+          "target": "control-plane-registry",
+          "new_actor_id": "agent-executor-ml-001"
+        }
+      ],
+
+      "actions_completed": [
+        {
+          "action_id": "act-10gov-register-executor-ml-001",
+          "action_type": "actor_registration",
+          "target": "control-plane-registry",
+          "new_actor_id": "agent-executor-ml-001",
+          "result": "registered"
+        }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-10-registered",
+          "check_type": "deployment_status",
+          "expected_result": { "actor_id": "agent-executor-ml-001", "status": "active" },
+          "actual_result": { "actor_id": "agent-executor-ml-001", "status": "active" },
+          "passed": true
+        },
+        {
+          "check_id": "chk-10-capabilities",
+          "check_type": "policy_decision",
+          "expected_result": {
+            "capabilities_registered": ["org.acme/deploy_service", "org.acme/run_inference_job"]
+          },
+          "actual_result": {
+            "capabilities_registered": ["org.acme/deploy_service", "org.acme/run_inference_job"],
+            "actor_id": "agent-executor-ml-001"
+          },
+          "passed": true
+        },
+        {
+          "check_id": "chk-10-prior-state",
+          "check_type": "policy_decision",
+          "expected_result": { "snapshot_ref_exists": true },
+          "actual_result": {
+            "snapshot_ref_exists": true,
+            "snapshot_uri": "store://governance/actor-registry/snapshot-2026-04-24-pre-ml-executor"
+          },
+          "passed": true
+        }
+      ],
+
+      "evidence_refs": [
+        "ztap-evid-10gov-arch-board-approval",
+        "ztap-evid-10gov-registry-snapshot"
+      ],
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "full",
+        "rollback_performed": false
+      },
+
+      "prior_state_ref": {
+        "state_uri": "store://governance/actor-registry/snapshot-2026-04-24-pre-ml-executor",
+        "state_hash": "EXAMPLE-HASH-state-actor-registry-pre-ml-executor",
+        "state_label": "actor-registry-pre-change"
+      },
+
+      "new_state_ref": {
+        "state_uri": "store://governance/actor-registry/snapshot-2026-04-24-post-ml-executor",
+        "state_hash": "EXAMPLE-HASH-state-actor-registry-post-ml-executor",
+        "state_label": "actor-registry-post-change"
+      },
+
+      "notes": "Governance transaction complete. agent-executor-ml-001 registered with production deployment capabilities. Prior registry snapshot retained at store://governance/actor-registry/snapshot-2026-04-24-pre-ml-executor for rollback if needed.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-10gov-register-executor-receipt"
+      }
+    }
+
+  ]
+}

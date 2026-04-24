@@ -1,0 +1,312 @@
+{
+  "_ztap_example": {
+    "title": "Evidence Required",
+    "scenario": "A planning agent requests deployment to a regulated production environment. Policy requires a passing test suite report before the control plane will authorize. The source actor submits an evidence_record. The control plane re-evaluates and issues an auto_authorized decision.",
+    "lifecycle_states": ["created", "submitted", "evaluated", "evidence_required", "evidence submitted", "evaluated", "authorized", "accepted", "executing", "verifying", "succeeded"],
+    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target."
+  },
+
+  "envelopes": [
+
+    {
+      "_envelope_label": "1 of 5 — Transaction Request",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "transaction_request",
+      "transaction_id": "ztap-txn-03eeff556677",
+      "created_at": "2026-04-24T11:00:00Z",
+
+      "source_actor": {
+        "actor_id": "agent-planner-003",
+        "role": ["planner", "source_actor"],
+        "display_name": "Planning Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-003",
+        "capability_claims": ["approval.request"],
+        "implementation_ref": "architect-agent-v2"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-deploy-002",
+        "role": ["executor", "target_actor"],
+        "display_name": "Regulated Deployment Executor",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-deploy-002",
+        "capability_claims": ["org.acme/deploy_service_regulated"]
+      },
+
+      "requested_action": {
+        "action_id": "act-03eeff556677-deploy",
+        "action_type": "deploy",
+        "profile": "org.acme/regulated-deployment",
+        "description": "Deploy payments-processor v3.1.0 to production-regulated environment.",
+        "parameters": {
+          "service": "payments-processor",
+          "environment": "production-regulated",
+          "version": "3.1.0"
+        },
+        "required_capabilities": ["org.acme/deploy_service_regulated"],
+        "risk_level": "high",
+        "expected_outputs": [
+          { "type": "deployment_status", "expected": "deployed" },
+          { "type": "service_health", "expected": "healthy" },
+          { "type": "policy_decision", "expected": "compliance_scan_clean" }
+        ]
+      },
+
+      "requested_capabilities": ["org.acme/deploy_service_regulated"],
+      "atomicity_mode": "atomic_required",
+
+      "verification_requirements": [
+        {
+          "check_id": "chk-03-health",
+          "check_type": "service_health",
+          "description": "payments-processor must be healthy in production-regulated after deployment.",
+          "required": true,
+          "expected_result": { "status": "healthy", "target": "payments-processor.production-regulated" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-03-version",
+          "check_type": "deployment_status",
+          "description": "Deployed version must be 3.1.0.",
+          "required": true,
+          "expected_result": { "version": "3.1.0", "target": "payments-processor.production-regulated" },
+          "failure_reason_code": "VERIFY_FAILED"
+        },
+        {
+          "check_id": "chk-03-compliance",
+          "check_type": "policy_decision",
+          "description": "Compliance scan must return no findings.",
+          "required": true,
+          "expected_evidence_type": "policy_decision",
+          "expected_result": { "scan_result": "no_findings" },
+          "failure_reason_code": "VERIFY_FAILED"
+        }
+      ],
+
+      "expiry_request": "2026-04-24T12:00:00Z",
+
+      "notes": "Deployment of payments-processor v3.1.0 to PCI-scope regulated environment. Evidence required per policy.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-request"
+      }
+    },
+
+    {
+      "_envelope_label": "2 of 5 — Authorization Decision (evidence_required)",
+      "_note": "Policy for production-regulated requires a passing test suite report with integration tag before authorization.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-03eeff556677",
+      "decision_id": "ztap-dec-03eeff556677-001",
+      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T11:00:04Z",
+      "authorization_status": "evidence_required",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "high",
+
+      "policy_refs": [
+        "policy://deployments/production-regulated/require-test-evidence"
+      ],
+
+      "reason_codes": ["EVIDENCE_MISSING"],
+
+      "required_evidence": [
+        {
+          "evidence_type": "test_result",
+          "description": "Full test suite pass report for payments-processor v3.1.0 with integration tag.",
+          "constraints": { "minimum_coverage_percent": 80, "required_tags": ["integration"] }
+        }
+      ],
+
+      "expires_at": "2026-04-24T11:45:00Z",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-decision-evidence-required"
+      }
+    },
+
+    {
+      "_envelope_label": "3 of 5 — Evidence Record",
+      "_note": "CI validator submits test results. Evidence is external by reference; evidence_hash was computed over the referenced content at submission time.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "evidence_record",
+      "transaction_id": "ztap-txn-03eeff556677",
+      "evidence_id": "ztap-evid-03eeff556677-001",
+      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+
+      "produced_by": {
+        "actor_id": "agent-validator-ci-001",
+        "role": ["validator"],
+        "display_name": "CI Validation Agent",
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/validator-ci-001",
+        "capability_claims": ["receipt.emit"]
+      },
+
+      "produced_at": "2026-04-24T10:58:12Z",
+      "evidence_type": "test_result",
+      "evidence_uri": "store://evidence/payments-processor/3.1.0/test-report-2026-04-24.json",
+      "evidence_hash": "EXAMPLE-HASH-evidence-test-report-payments-processor-3.1.0",
+
+      "notes": "847 tests passed, 0 failed. Coverage: 91%. Tags: integration, unit, contract.",
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-evidence-record"
+      }
+    },
+
+    {
+      "_envelope_label": "4 of 5 — Authorization Decision (auto_authorized, after evidence accepted)",
+      "_note": "New authorization decision after evidence validated. evidence_refs links this decision to the accepted evidence record.",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "authorization_decision",
+      "transaction_id": "ztap-txn-03eeff556677",
+      "decision_id": "ztap-dec-03eeff556677-002",
+      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "evaluated_at": "2026-04-24T11:02:11Z",
+      "authorization_status": "auto_authorized",
+      "declared_risk_level": "high",
+      "evaluated_risk_level": "high",
+
+      "policy_refs": [
+        "policy://deployments/production-regulated/require-test-evidence"
+      ],
+
+      "reason_codes": [],
+
+      "authorized_at": "2026-04-24T11:02:11Z",
+      "expires_at": "2026-04-24T11:45:00Z",
+      "evidence_refs": ["ztap-evid-03eeff556677-001"],
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-decision-authorized"
+      }
+    },
+
+    {
+      "_envelope_label": "5 of 5 — Execution Receipt (succeeded)",
+
+      "ztap_version": "1.0-draft",
+      "envelope_type": "execution_receipt",
+      "transaction_id": "ztap-txn-03eeff556677",
+      "receipt_id": "ztap-rcpt-03eeff556677-001",
+      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+      "authorization_decision_ref": "ztap-dec-03eeff556677-002",
+
+      "source_actor": {
+        "actor_id": "agent-planner-003",
+        "role": ["planner", "source_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/planner-003"
+      },
+
+      "target_actor": {
+        "actor_id": "agent-executor-deploy-002",
+        "role": ["executor", "target_actor"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://agents/executor-deploy-002"
+      },
+
+      "control_plane": {
+        "actor_id": "control-plane-primary",
+        "role": ["control_plane"],
+        "organization_id": "org-acme-corp",
+        "registration_ref": "reg://control-plane/primary"
+      },
+
+      "started_at": "2026-04-24T11:02:20Z",
+      "completed_at": "2026-04-24T11:07:45Z",
+      "status": "succeeded",
+      "reason_codes": [],
+
+      "actions_attempted": [
+        {
+          "action_id": "act-03eeff556677-deploy",
+          "action_type": "deploy",
+          "target": "payments-processor",
+          "environment": "production-regulated",
+          "version": "3.1.0"
+        }
+      ],
+
+      "actions_completed": [
+        {
+          "action_id": "act-03eeff556677-deploy",
+          "action_type": "deploy",
+          "target": "payments-processor",
+          "environment": "production-regulated",
+          "version": "3.1.0"
+        }
+      ],
+
+      "verification_results": [
+        {
+          "check_id": "chk-03-health",
+          "check_type": "service_health",
+          "expected_result": { "status": "healthy" },
+          "actual_result": { "status": "healthy" },
+          "passed": true
+        },
+        {
+          "check_id": "chk-03-version",
+          "check_type": "deployment_status",
+          "expected_result": { "version": "3.1.0" },
+          "actual_result": { "version": "3.1.0" },
+          "passed": true
+        },
+        {
+          "check_id": "chk-03-compliance",
+          "check_type": "policy_decision",
+          "expected_result": { "scan_result": "no_findings" },
+          "actual_result": { "scan_result": "no_findings", "findings_count": 0 },
+          "passed": true
+        }
+      ],
+
+      "evidence_refs": ["ztap-evid-03eeff556677-001"],
+
+      "atomicity_result": {
+        "mode_declared": "atomic_required",
+        "outcome": "full",
+        "rollback_performed": false
+      },
+
+      "integrity": {
+        "canonicalization": "RFC8785-JCS",
+        "hash_algorithm": "SHA-256",
+        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-receipt"
+      }
+    }
+
+  ]
+}

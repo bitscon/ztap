@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: "ZTAP: Zero Trust Agent Protocol"
+authors:
+  - family-names: McCormack
+    given-names: Chad
+repository-code: https://github.com/bitscon/ztap
+url: https://github.com/bitscon/ztap
+version: 1.0-draft
+date-released: 2026-04-24
+license: MIT
+abstract: >
+  ZTAP is an open governance envelope and transaction protocol for verifiable
+  AI agent work. It defines how agent-initiated actions must be structured so
+  they are authorized by policy, verifiable by hash, and auditable after the
+  fact. ZTAP does not restrict which agents, models, or tools engineers use —
+  it wraps the transaction, not the toolchain.
+keywords:
+  - AI governance
+  - agent protocol
+  - zero trust
+  - auditability
+  - integrity
+  - ZTI
+  - ZTAP

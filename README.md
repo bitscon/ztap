@@ -183,5 +183,15 @@ Contributions, questions, and alignment discussions are welcome.
 
 ---
 
+## Authorship and Stewardship
+
+ZTAP was created by **Chad McCormack** as part of the Zero-Trust Intelligence (ZTI) protocol family.
+
+This repository is maintained under the `bitscon` GitHub organization and released under the MIT License.
+
+For citation metadata, see [CITATION.cff](CITATION.cff). For author and stewardship information, see [AUTHORS.md](AUTHORS.md).
+
+---
+
 > ZTAP: the open protocol for governed agent transactions.
 > Where ZTI asks "was this decision verified?", ZTAP asks "was this handoff governed?"

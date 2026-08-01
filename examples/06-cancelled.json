@@ -81,7 +81,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-request"
+        "hash_value": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c"
       }
     },
 
@@ -92,7 +92,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-06eeff112233",
       "decision_id": "ztap-dec-06eeff112233-001",
-      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -117,7 +117,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-decision"
+        "hash_value": "de5e7730660d6febf4d56ceefa3bb89d96054d50b9787cbdbe5d5bf36e96f509"
       }
     },
 
@@ -129,7 +129,7 @@
       "envelope_type": "amendment_event",
       "transaction_id": "ztap-txn-06eeff112233",
       "amendment_id": "ztap-amend-06eeff112233-001",
-      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
 
       "created_by": {
         "actor_id": "operator-on-call-001",
@@ -152,7 +152,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-amendment"
+        "hash_value": "344441ef90bcfb2c06b3da5107a6cb599bbbac5c6470883e3654d554399bd8de"
       }
     },
 
@@ -164,7 +164,7 @@
       "envelope_type": "execution_receipt",
       "transaction_id": "ztap-txn-06eeff112233",
       "receipt_id": "ztap-rcpt-06eeff112233-001",
-      "request_hash": "EXAMPLE-HASH-txn-06eeff112233-request",
+      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
       "authorization_decision_ref": "ztap-dec-06eeff112233-001",
 
       "source_actor": {
@@ -208,7 +208,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-06eeff112233-receipt"
+        "hash_value": "f309979c13c68706c82f57991ce4dd94b895d150322abbbdb02ab9f9a172b9a1"
       }
     }
 

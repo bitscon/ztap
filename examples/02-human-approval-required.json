@@ -85,7 +85,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-request"
+        "hash_value": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb"
       }
     },
 
@@ -97,7 +97,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-02ccdd334455",
       "decision_id": "ztap-dec-02ccdd334455-001",
-      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -130,7 +130,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-decision-pending"
+        "hash_value": "0774ebd5b65c79b102c8746b03736679c60e55639408254e0534776c3be29aac"
       }
     },
 
@@ -142,7 +142,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-02ccdd334455",
       "decision_id": "ztap-dec-02ccdd334455-002",
-      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -174,7 +174,7 @@
         "approved_at": "2026-04-24T10:14:25Z",
         "approval_scope": {
           "transaction_id": "ztap-txn-02ccdd334455",
-          "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+          "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
           "action_ids": ["act-02ccdd334455-migrate"],
           "target_actor_id": "agent-executor-db-001",
           "approved_capabilities": ["org.acme/run_schema_migration"],
@@ -186,7 +186,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-decision-approved"
+        "hash_value": "349c4566bddf089997c24719a8df42e50cb1b96de956ad38d1c2718f31f5d9a6"
       }
     },
 
@@ -198,7 +198,7 @@
       "envelope_type": "execution_receipt",
       "transaction_id": "ztap-txn-02ccdd334455",
       "receipt_id": "ztap-rcpt-02ccdd334455-001",
-      "request_hash": "EXAMPLE-HASH-txn-02ccdd334455-request",
+      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
       "authorization_decision_ref": "ztap-dec-02ccdd334455-002",
 
       "source_actor": {
@@ -271,7 +271,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-02ccdd334455-receipt"
+        "hash_value": "eb7d7bc38e6b602ae3fb458edd51a242de4c27a5494d70203f02df4925e59dbe"
       }
     }
 

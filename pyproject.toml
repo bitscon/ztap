@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ztap"
+version = "0.1.0"
+description = "ZTAP reference runtime — RFC 8785 canonicalization, SHA-256 hashing, and integrity verification for the Zero Trust Agent Protocol"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Chad McCormack" }]
+keywords = ["ztap", "zero-trust", "ai-agents", "integrity", "audit", "protocol"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/bitscon/ztap"
+Repository = "https://github.com/bitscon/ztap"
+
+[project.scripts]
+ztap = "ztap.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ztap*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -136,7 +136,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request"
+        "hash_value": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e"
       }
     },
 
@@ -148,7 +148,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-09bg-incident-2026-0424",
       "decision_id": "ztap-dec-09bg-incident-2026-0424-001",
-      "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+      "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -178,7 +178,7 @@
         "approved_at": "2026-04-24T22:14:16Z",
         "approval_scope": {
           "transaction_id": "ztap-txn-09bg-incident-2026-0424",
-          "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+          "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
           "action_ids": ["act-09bg-query"],
           "target_actor_id": "agent-executor-db-emergency-001",
           "approved_capabilities": ["org.acme/run_remediation_query"],
@@ -208,7 +208,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-decision"
+        "hash_value": "ddfb5a8ae07b8057403c208c2a6727d4d2f0c192b7b6b17e0d0fb4ec9d8af077"
       }
     },
 
@@ -220,7 +220,7 @@
       "envelope_type": "execution_receipt",
       "transaction_id": "ztap-txn-09bg-incident-2026-0424",
       "receipt_id": "ztap-rcpt-09bg-incident-2026-0424-001",
-      "request_hash": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-request",
+      "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
       "authorization_decision_ref": "ztap-dec-09bg-incident-2026-0424-001",
 
       "source_actor": {
@@ -320,7 +320,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-09bg-incident-2026-0424-receipt"
+        "hash_value": "a854e1aad2bef3841386f3ea22636e4e13ea12bf4521220beb1989c7955a6997"
       }
     }
 

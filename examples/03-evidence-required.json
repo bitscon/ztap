@@ -92,7 +92,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-request"
+        "hash_value": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565"
       }
     },
 
@@ -104,7 +104,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-03eeff556677",
       "decision_id": "ztap-dec-03eeff556677-001",
-      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -137,7 +137,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-decision-evidence-required"
+        "hash_value": "766da42c3d162ee65c179180001b0b36f331ca1513666ec992e2bd30eef3ecc5"
       }
     },
 
@@ -149,7 +149,7 @@
       "envelope_type": "evidence_record",
       "transaction_id": "ztap-txn-03eeff556677",
       "evidence_id": "ztap-evid-03eeff556677-001",
-      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
 
       "produced_by": {
         "actor_id": "agent-validator-ci-001",
@@ -163,14 +163,14 @@
       "produced_at": "2026-04-24T10:58:12Z",
       "evidence_type": "test_result",
       "evidence_uri": "store://evidence/payments-processor/3.1.0/test-report-2026-04-24.json",
-      "evidence_hash": "EXAMPLE-HASH-evidence-test-report-payments-processor-3.1.0",
+      "evidence_hash": "fafbce7718445f3d8563edd86783c3a33045143c8b632c416b436487cb16b0f1",
 
       "notes": "847 tests passed, 0 failed. Coverage: 91%. Tags: integration, unit, contract.",
 
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-evidence-record"
+        "hash_value": "f006a3ad8bc5694c107672f480ff66971ba35bdd0c046bc89e22c806d2e0eb7f"
       }
     },
 
@@ -182,7 +182,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-03eeff556677",
       "decision_id": "ztap-dec-03eeff556677-002",
-      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -209,7 +209,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-decision-authorized"
+        "hash_value": "18a6e3d1cf6ba82a770f2e26b6a5fb04a1abefb5b0a59a0ec6a357d332f600db"
       }
     },
 
@@ -220,7 +220,7 @@
       "envelope_type": "execution_receipt",
       "transaction_id": "ztap-txn-03eeff556677",
       "receipt_id": "ztap-rcpt-03eeff556677-001",
-      "request_hash": "EXAMPLE-HASH-txn-03eeff556677-request",
+      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
       "authorization_decision_ref": "ztap-dec-03eeff556677-002",
 
       "source_actor": {
@@ -304,7 +304,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-03eeff556677-receipt"
+        "hash_value": "0845b2658c4370f9026b2ece002f0b3ed75b2b56d537325a8a080a9ff1b05214"
       }
     }
 

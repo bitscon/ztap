@@ -89,7 +89,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-request"
+        "hash_value": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0"
       }
     },
 
@@ -100,7 +100,7 @@
       "envelope_type": "authorization_decision",
       "transaction_id": "ztap-txn-08parent-release-v5",
       "decision_id": "ztap-dec-08parent-release-v5-001",
-      "request_hash": "EXAMPLE-HASH-txn-08parent-release-v5-request",
+      "request_hash": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -127,7 +127,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-decision"
+        "hash_value": "a6757c90b6a07711f56180e69ef667d1df8eacd5d8e43b59896a0334f4c0fdfe"
       }
     },
 
@@ -205,7 +205,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-08child-user-service-request"
+        "hash_value": "e665a795cc3cca657d5b79937787ac1f4c1d492deab6d3c2a3f66caa1edd7b0a"
       }
     },
 
@@ -282,7 +282,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-08child-order-service-request"
+        "hash_value": "79671a0b59cf1be7527d862f5a7bc6815eab0bb0f35d460493d862284d25b916"
       }
     },
 
@@ -294,7 +294,7 @@
       "envelope_type": "execution_receipt",
       "transaction_id": "ztap-txn-08parent-release-v5",
       "receipt_id": "ztap-rcpt-08parent-release-v5-001",
-      "request_hash": "EXAMPLE-HASH-txn-08parent-release-v5-request",
+      "request_hash": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0",
       "authorization_decision_ref": "ztap-dec-08parent-release-v5-001",
 
       "source_actor": {
@@ -367,20 +367,20 @@
         {
           "child_transaction_id": "ztap-txn-08child-user-service",
           "child_receipt_ref": "ztap-rcpt-08child-user-service-001",
-          "child_request_hash": "EXAMPLE-HASH-txn-08child-user-service-request",
-          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-user-service-receipt"
+          "child_request_hash": "e665a795cc3cca657d5b79937787ac1f4c1d492deab6d3c2a3f66caa1edd7b0a",
+          "child_receipt_hash": "9ce22a0a06ae9a0d348d50523ef70643b5231bad761e144b5db1975177ed522f"
         },
         {
           "child_transaction_id": "ztap-txn-08child-order-service",
           "child_receipt_ref": "ztap-rcpt-08child-order-service-001",
-          "child_request_hash": "EXAMPLE-HASH-txn-08child-order-service-request",
-          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-order-service-receipt"
+          "child_request_hash": "79671a0b59cf1be7527d862f5a7bc6815eab0bb0f35d460493d862284d25b916",
+          "child_receipt_hash": "ac45a6cb45bf3d7307f18c1ef45e4daa352ddead3b16a28bf3ef43196ea317d3"
         },
         {
           "child_transaction_id": "ztap-txn-08child-notification-service",
           "child_receipt_ref": "ztap-rcpt-08child-notification-service-001",
-          "child_request_hash": "EXAMPLE-HASH-txn-08child-notification-service-request",
-          "child_receipt_hash": "EXAMPLE-HASH-txn-08child-notification-service-receipt"
+          "child_request_hash": "0e2b95303ee4d150fe85cd1e8f8b859e8dbbfe62fee08f5a321220cd713c5f2b",
+          "child_receipt_hash": "a24dae9d174718a8d79870c9c16bd56eefebbd60d74e6c6e7924372209bed125"
         }
       ],
 
@@ -395,7 +395,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "EXAMPLE-HASH-txn-08parent-release-v5-receipt"
+        "hash_value": "c8ab7d15bcab5206f4816d0b8763dbce9a491a085b5a1111390be73ae99da31e"
       }
     }
 

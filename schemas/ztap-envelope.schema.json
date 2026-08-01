@@ -172,6 +172,8 @@
             "TARGET_REJECTED",
             "ACTION_FAILED",
             "VERIFY_FAILED",
+            "COMPLETION_UNVERIFIED",
+            "VERIFY_UNAVAILABLE",
             "TIMEOUT",
             "EXPIRED",
             "CANCELLED",

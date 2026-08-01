@@ -108,8 +108,9 @@ it. Organizations may use ZTI Core or build their own compliant control plane.
 
 ## Conceptual Example
 
-*The following is illustrative only. Field names and schema are not final — formal specification
-is in progress.*
+*The following is illustrative only — a conceptual sketch, not the specified form. The
+specified envelope model lives in `SCHEMA.md` and `schemas/`, with complete lifecycle bundles
+under `examples/`.*
 
 ```json
 {
@@ -161,13 +162,14 @@ The organization defines the policy.
 
 ## What ZTAP Does Not Define (Yet)
 
-ZTAP is in early doctrine and protocol design. The following are not yet specified:
+ZTAP is in draft. The following are not yet specified:
 
-- Canonical schema (field names, required vs. optional fields, versioning)
 - Transport bindings (how artifacts move between agents and the control plane)
 - SDK or library interfaces
 - Identity and signing requirements
-- Hash algorithm requirements
+
+The canonical schema (`SCHEMA.md` and `schemas/`) and the hash requirements (RFC 8785 JSON
+Canonicalization Scheme with SHA-256 integrity hashes) are now specified.
 
 These will be defined as the specification matures. See `VISION.md` for the principles that
 will guide those decisions.
@@ -176,8 +178,14 @@ will guide those decisions.
 
 ## Current Status
 
-ZTAP is in **pre-specification**. The doctrine, lifecycle, and governance model are being defined
-before the schema is formalized. This repository is the canonical home for that work.
+ZTAP is in **draft specification**. The doctrine (`SPEC.md`), envelope schema (`SCHEMA.md` and
+`schemas/`), conformance requirements (`CONFORMANCE.md`), and lifecycle examples (`examples/`)
+are drafted. This repository is the canonical home for that work.
+
+The repository also ships a reference runtime: the `ztap/` Python package implements RFC 8785
+canonicalization, SHA-256 hashing, and hash-chain integrity verification, with a `ztap` CLI
+(`ztap hash`, `ztap verify`) that fails closed on any defect. The integrity hashes in the
+`examples/` files are real and recomputable with it.
 
 Contributions, questions, and alignment discussions are welcome.
 

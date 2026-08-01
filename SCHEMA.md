@@ -395,7 +395,8 @@ Each verification check object must include:
   "2.4.1"}`. Invalid examples: `"looks good"`, `"review manually later"`.
 - **`verification_actor`** — Optional. String. The `actor_id` of the actor expected to
   perform this verification check, if it requires a specific verifier. If absent, the
-  target actor or the control plane may verify.
+  control plane or a designated validator verifies. The target actor's own report of its
+  results is attestation, not verification (see `SPEC.md`, Completion Verification).
 - **`failure_reason_code`** — Optional. String. The reason code to record in the receipt if
   this check fails. Should be a valid ZTAP reason code (e.g., `VERIFY_FAILED`) or a
   namespaced extension code.
@@ -937,8 +938,10 @@ Implementations must canonicalize the envelope using RFC 8785 JCS before computi
 
 ### Hash Construction
 
-The hash is computed over the **canonicalized envelope with exactly one field excluded:
-`integrity.hash_value`**.
+The hash is computed over the **canonicalized envelope with exactly one envelope field
+excluded: `integrity.hash_value`**. Non-normative annotation keys — keys whose names begin
+with an underscore (`_`), used for documentation labels in examples — are not envelope
+fields and are stripped recursively before canonicalization.
 
 Only `integrity.hash_value` is excluded. The rest of the `integrity` object —
 `canonicalization`, `hash_algorithm`, and `signed` — is included in the hash input.
@@ -947,20 +950,23 @@ by the hash. A modification to the declared algorithm or canonicalization method
 hash, making it detectable.
 
 The `integrity.hash_value` field must be excluded because its value depends on the hash
-output — including it creates a circular dependency. No other exclusions are applied to the
-base envelope. If signature fields are added in future versions, their exclusion rules will
-be defined at that time.
+output — including it creates a circular dependency. Beyond `integrity.hash_value` and
+underscore-prefixed annotation keys, no other exclusions are applied to the base envelope.
+If signature fields are added in future versions, their exclusion rules will be defined at
+that time.
 
 The correct procedure:
 
 1. Construct the full envelope object with all required fields populated, including the
    `integrity` object with `canonicalization`, `hash_algorithm`, and `signed` as applicable.
-2. Set `integrity.hash_value` to an empty string `""` or remove only that field.
-   All other `integrity` fields remain present and unchanged.
-3. Apply RFC 8785 JCS canonicalization to the complete envelope.
-4. Compute SHA-256 over the canonical byte sequence.
-5. Encode the result as a lowercase hex string.
-6. Set `integrity.hash_value` to this value.
+2. Remove the `integrity.hash_value` field. (Removal, not an empty-string placeholder —
+   the two are not hash-equivalent under RFC 8785.) All other `integrity` fields remain
+   present and unchanged.
+3. Strip all underscore-prefixed annotation keys, recursively, if any are present.
+4. Apply RFC 8785 JCS canonicalization to the complete envelope.
+5. Compute SHA-256 over the canonical byte sequence.
+6. Encode the result as a lowercase hex string.
+7. Set `integrity.hash_value` to this value.
 
 **Why not exclude the entire `integrity` object?** Excluding the entire object would mean
 the declared `canonicalization` and `hash_algorithm` values are not part of the verified
@@ -1162,6 +1168,8 @@ redefined by extensions.
 |---|---|---|
 | `ACTION_FAILED` | Receipt | The target actor attempted the action and it failed. |
 | `VERIFY_FAILED` | Receipt | The result did not pass the verification requirements. |
+| `COMPLETION_UNVERIFIED` | Receipt | A receipt claimed success but one or more required verification checks were satisfied only by executor attestation and were never independently verified. Checks that run independently and fail are `VERIFY_FAILED`. This is a fail-closed condition. |
+| `VERIFY_UNAVAILABLE` | Receipt | Required verification could not be executed — the verifier was unavailable or the declared checks could not run. The transaction must not resolve as succeeded. This is a fail-closed condition. |
 
 **Temporal**
 
@@ -1477,9 +1485,11 @@ traceability. Open questions that remain unresolved follow.
    querying the control plane's actor registry. This question is closed — receipts remain
    self-contained.
 
-7. ~~**Hash exclusion rule.**~~ Resolved. Exclude only `integrity.hash_value`. The rest of the
-   `integrity` object (`canonicalization`, `hash_algorithm`, `signed`) remains in the hash
-   input, ensuring the declared algorithm and method are tamper-evident.
+7. ~~**Hash exclusion rule.**~~ Resolved. Exclude only `integrity.hash_value` (by removal),
+   plus underscore-prefixed non-normative annotation keys, which are stripped recursively
+   before canonicalization. The rest of the `integrity` object (`canonicalization`,
+   `hash_algorithm`, `signed`) remains in the hash input, ensuring the declared algorithm
+   and method are tamper-evident.
 
 9. ~~**`human_approval_ref` update model.**~~ Resolved. The control plane issues a new
    `authorization_decision` with a new `decision_id` and `authorization_status: "human_approved"`.

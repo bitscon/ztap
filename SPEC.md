@@ -11,9 +11,11 @@
 This document is an early specification draft. It defines the transaction lifecycle, governance
 model, and core concepts of the Zero Trust Agent Protocol in prose.
 
-Field names, schema structures, hash canonicalization rules, transport bindings, and API
-interfaces are NOT finalized here. This document establishes the governing principles and
-lifecycle model that all subsequent schema and implementation work must conform to.
+Field names, schema structures, transport bindings, and API interfaces are NOT finalized
+here. Hash canonicalization is the exception: RFC 8785 JCS with SHA-256 is finalized for v1
+(see Integrity and Hashing). The machine-readable schema drafts live in `SCHEMA.md` and
+`schemas/`. This document establishes the governing principles and lifecycle model that all
+subsequent schema and implementation work must conform to.
 
 This specification will be versioned. The current working version is `0.1-draft`.
 
@@ -66,7 +68,7 @@ ZTAP does not define:
 - **Encryption.** ZTAP v1 requires hash-based integrity, not encryption. Encryption may be
   layered on top for specific deployment contexts but is not a protocol requirement.
 - **Cross-organizational federation.** Initial scope is single-organization deployment. See
-  Section 17 (Next Steps) for future direction.
+  the Next Steps section for future direction.
 
 ---
 
@@ -154,7 +156,7 @@ A protocol-level classification of the function an actor performs within a trans
 Roles are defined by ZTAP and are not implementation-specific. An actor may hold more than
 one role depending on context.
 
-Defined roles are listed in Section 14.
+Defined roles are listed in the Roles and Capabilities section.
 
 ### Capability
 
@@ -222,8 +224,10 @@ The target actor is actively performing the requested work.
 
 **`verifying`**
 The result of execution is being checked against verification requirements defined in the
-transaction or by policy. Verification may be performed by the target actor, a separate
-validator actor, or the control plane.
+transaction or by policy. Verification must be performed by an authority independent of the
+target actor: the control plane, a designated validator actor, or deterministic re-execution
+of the declared checks. The target actor's own report of its results is attestation, not
+verification. See the Completion Verification section.
 
 **`succeeded`**
 The transaction completed, and verification passed. A success receipt is produced and linked
@@ -231,7 +235,7 @@ to the original transaction.
 
 **`failed`**
 The transaction failed. Failure may occur during evaluation, authorization, execution,
-or verification. A failure receipt is produced with a structured reason code. See Section 12
+or verification. A failure receipt is produced with a structured reason code. See the Failure Model and Reason Codes section
 for defined reason categories.
 
 **`cancelled`**
@@ -404,7 +408,7 @@ a role without authorizing every capability that role may hold, and vice versa.
 An actor's `implementation_ref` — the underlying tool, model, or system it is built on —
 is metadata for audit readability and debugging. It is not a role. It carries no governance
 authority. The control plane evaluates the registered role and capability claims, not the
-implementation identity. See the normative rule in Section 14 (Roles and Capabilities).
+implementation identity. See the normative rule in Roles and Capabilities.
 
 ### Unregistered Actors
 
@@ -470,10 +474,13 @@ original transaction by its stable identifier and by the hash of the original re
 Confirm that the receipt corresponds to the authorized transaction:
 - the transaction identifier matches,
 - the request hash in the receipt matches the original envelope hash,
-- the receipt is structurally valid.
+- the receipt is structurally valid,
+- every required verification check has been independently satisfied — by the control plane,
+  a designated validator, or deterministic re-execution of the declared checks — not merely
+  attested by the executor. See the Completion Verification section.
 
 Verification may be performed by the control plane, a validator actor, or both, as defined by
-policy.
+policy. It must not be performed solely by the target actor that executed the action.
 
 ### 8. Retain Audit Trail
 
@@ -513,6 +520,85 @@ affect the validity of an authorization decision about to be issued.
 
 ---
 
+## Completion Verification
+
+**An executor's claim of success is attestation. It is not verification.**
+
+A transaction is not complete because the actor that performed the work says it is complete.
+It is complete when the verification requirements declared in the request have passed under
+an authority independent of that actor. The boundary between claimed completion and verified
+completion is where the protocol's guarantees live.
+
+### Verification Is Declared Before Execution
+
+Verification requirements are declared in the transaction request, before any action is
+taken. The `verification_requirements` of the envelope state what checks must pass for the
+outcome to count as success. See `SCHEMA.md` for the full field definition. Criteria invented
+after execution are not verification requirements; the envelope hash binds the checks that
+count to the request that was authorized.
+
+### The Independence Requirement
+
+Verification must be performed by an authority independent of the target actor that executed
+the action:
+
+- the control plane,
+- a designated `validator` actor, or
+- deterministic re-execution of the declared checks.
+
+The executor's own report of its results is attestation, not verification. Attestation is
+input to verification — evidence to be checked, never the check itself. Attestation alone
+must never satisfy a required verification check.
+
+*The entity that executes does not verify its own work. This is the same separation that
+forbids self-authorization, applied to completion.*
+
+### Fail-Closed Acceptance
+
+A receipt claiming `succeeded` is accepted as `succeeded` only when every required
+verification check has passed under independent verification. The failure modes are
+distinct and carry distinct reason codes:
+
+- A required check that was independently executed and did not pass resolves the
+  transaction `failed` with reason code `VERIFY_FAILED`.
+- A required check that was never independently verified — satisfied only by executor
+  attestation — resolves the transaction `failed` with reason code `COMPLETION_UNVERIFIED`.
+- If required verification cannot be executed at all — the verifier is unavailable, the
+  checks cannot run — the transaction must not resolve `succeeded`. It resolves `failed`
+  with reason code `VERIFY_UNAVAILABLE`. An unverifiable success is not a success.
+
+This is fail-closed behavior. There is no partial credit for checks that were merely
+attested.
+
+### Recorded Results
+
+The `verification_results` recorded in the receipt must identify the verifying authority —
+the `verification_actor` field defined in `SCHEMA.md` — and the per-check outcomes. The
+receipt binds these results under the envelope hash: the record of who verified what, and
+how it resolved, is as tamper-evident as the request it verifies.
+
+### Determinism
+
+Verification must be deterministic and reproducible: the same checks, evaluated against the
+same state, must produce the same result. A verification that cannot be re-run has no
+evidentiary weight.
+
+**The governing principle:** an unverified success claim is indistinguishable from a failure
+that reports itself as a success. If the only evidence of completion is the word of the actor
+whose work is being judged, the record proves nothing.
+
+**The practical implication:** a control plane must not record `succeeded` on the strength of
+executor-supplied results alone. It must confirm — itself, through a validator, or by
+re-running the declared checks — that every required check passed, before the success receipt
+is accepted into the audit trail.
+
+*Non-normative rationale:* autonomous agents reporting success for work that did not succeed,
+or did not occur, is a documented failure mode of agent systems — not a hypothetical. ZTAP's
+answer is structural rather than behavioral: the protocol does not ask executors to be more
+honest. It removes the executor's claim from the position of settling the question.
+
+---
+
 ## Integrity and Hashing
 
 ZTAP v1 requires hash-based integrity verification. Encryption is not required by the initial
@@ -545,9 +631,16 @@ value — must produce a different hash, invalidating the hash reference chain.
 
 ### Algorithm
 
-SHA-256 is assumed as the default hash algorithm for ZTAP v1. The exact canonicalization
-rules — how a JSON envelope is serialized before hashing, how whitespace and key ordering
-are handled — are a specification detail that must be finalized before the v1 schema is frozen.
+ZTAP v1 uses SHA-256 as the hash algorithm and **RFC 8785 (JSON Canonicalization Scheme)**
+as the canonicalization rule. This is finalized, not provisional. The integrity hash is
+computed over the RFC 8785 canonical form of the envelope with the `integrity.hash_value`
+field excluded and with non-normative annotation fields — keys beginning with an
+underscore — removed. See `SCHEMA.md` (Integrity Object and Hashing) for the full hash
+construction rules.
+
+*Informative:* the repository's reference runtime — the `ztap/` package, with the
+`ztap hash` and `ztap verify` CLI commands — implements this canonicalization and hashing
+end-to-end.
 
 Canonicalization must be deterministic: the same logical envelope must always produce the
 same hash, regardless of how it was serialized or by whom.
@@ -635,8 +728,8 @@ Failure without a receipt is not ZTAP-compliant.
 
 ### Draft Reason Code Categories
 
-The following are initial reason code categories. Final codes, descriptions, and subcategories
-will be specified before schema freeze.
+The following are initial reason code categories. The authoritative registry — final codes,
+categories, and extension rules — is the Core Reason Code Registry in `SCHEMA.md`.
 
 | Reason Code | Category | Description |
 |---|---|---|
@@ -649,6 +742,8 @@ will be specified before schema freeze.
 | `TARGET_REJECTED` | Acceptance | The target actor declined to accept the authorized transaction. |
 | `ACTION_FAILED` | Execution | The target actor attempted the action and it failed. |
 | `VERIFY_FAILED` | Verification | The result did not pass verification requirements. |
+| `COMPLETION_UNVERIFIED` | Verification | A required verification check was satisfied only by executor attestation and was never independently verified. Checks that run independently and fail resolve as `VERIFY_FAILED`. |
+| `VERIFY_UNAVAILABLE` | Verification | Required verification could not be executed. The transaction must not resolve as succeeded. |
 | `TIMEOUT` | Temporal | A required step was not completed within the allowed time window. |
 | `EXPIRED` | Temporal | The transaction's validity window elapsed. |
 | `CANCELLED` | Control | The transaction was explicitly cancelled by an authorized actor. |
@@ -921,9 +1016,10 @@ State: `executing`
 
 **Step 7: Result is verified.**
 
-The executor (or a registered validator) confirms the deployment succeeded: the service is
-running, health checks pass, the version matches. The result is checked against the
-verification requirements specified in the transaction.
+The executor reports its results: the service is running, health checks pass, the version
+matches. That report is attestation. A registered validator — acting independently of the
+executor — evaluates the declared checks against the verification requirements specified in
+the transaction and confirms the deployment succeeded.
 
 State: `verifying`
 
@@ -998,9 +1094,10 @@ The following decisions required operator input before the ZTAP schema could be 
 8. **Multi-target transactions** — does ZTAP v1 support transactions that request actions from
    more than one target actor? Or is a ZTAP transaction strictly one source, one target?
 
-9. **Canonical JSON and hash construction** — what is the exact canonicalization rule? (e.g.,
-   alphabetical key ordering, no whitespace, UTF-8 encoding.) This must be specified before
-   any schema is finalized.
+9. **Canonical JSON and hash construction** — Resolved. RFC 8785 (JSON Canonicalization
+   Scheme) with SHA-256 is the canonicalization and hash rule for ZTAP v1. Specified in
+   `SCHEMA.md` (Integrity Object and Hashing) and implemented by the reference runtime
+   (`ztap/` package, `ztap hash` / `ztap verify`).
 
 10. **Control plane minimum conformance** — what is the minimum set of operations and behaviors
     a control plane must implement to be considered ZTAP-compliant? This is required before
@@ -1014,9 +1111,11 @@ This document has established the doctrine, lifecycle, governance model, and cor
 that govern ZTAP. The logical sequence from here:
 
 **Immediate: Resolve open questions.**
-The questions in Section 16 are blocking schema work. Answers to questions 1 (validity window),
-2 (receipt structure), 8 (multi-target), and 9 (canonicalization) are required before any
-schema file can be written with confidence.
+The remaining questions in the Open Questions section gate schema stability. Answers to
+questions 1 (validity window), 2 (receipt structure), and 8 (multi-target) are required
+before the machine-readable schema files can be frozen with confidence. Question 9
+(canonicalization) is resolved: RFC 8785 JCS with SHA-256, specified in `SCHEMA.md` and
+implemented by the reference runtime.
 
 **Next: Create `SCHEMA.md` or `schemas/`.**
 Once the open questions are resolved, a formal schema document can define field names, required

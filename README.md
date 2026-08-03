@@ -17,6 +17,26 @@
 
 ---
 
+## Try It (60 seconds)
+
+```bash
+pip install --pre ztip          # the reference runtime + CLI (pre-release)
+git clone https://github.com/bitscon/ztip.git && cd ztip
+
+ztip verify examples/01-auto-authorized-success.json
+# integrity verified — every hash in the bundle recomputed and checked
+
+ztip hash examples/01-auto-authorized-success.json
+# prints the RFC 8785 + SHA-256 envelope hashes
+```
+
+All ten lifecycle examples under `examples/` carry real, recomputable integrity
+hashes — tamper with any field and `ztip verify` fails closed. The protocol
+summary is also on file with the IETF:
+[draft-mccormack-ztip](https://datatracker.ietf.org/doc/draft-mccormack-ztip/).
+
+---
+
 ## What Is ZTIP?
 
 ZTIP is an open protocol for governed agent transactions.

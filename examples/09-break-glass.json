@@ -1,10 +1,10 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Break-Glass — Emergency Authorization (Governed, Not Bypassed)",
     "scenario": "A production database is returning errors. The incident is active and affecting user payments. An on-call engineer needs to run an emergency remediation query that normally requires multi-day planning approval. The break-glass path is used — but it is a GOVERNED path with elevated evidence requirements. The transaction carries an incident reference, named approver, expiration, compensating controls, and post-incident review commitment. Break-glass has MORE required evidence than standard authorization, not less.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approved (break-glass)", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
-    "governance_note": "A break-glass action that bypasses authorization is not a legitimate break-glass — it is an unauthorized action. ZTAP does not have a bypass mode. This example shows that emergency access is governed access with stricter evidence requirements."
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
+    "governance_note": "A break-glass action that bypasses authorization is not a legitimate break-glass — it is an unauthorized action. ZTIP does not have a bypass mode. This example shows that emergency access is governed access with stricter evidence requirements."
   },
 
   "envelopes": [
@@ -15,7 +15,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
+      "transaction_id": "ztip-txn-09bg-incident-2026-0424",
       "created_at": "2026-04-24T22:14:05Z",
 
       "source_actor": {
@@ -131,12 +131,12 @@
 
       "expiry_request": "2026-04-24T22:44:05Z",
 
-      "notes": "BREAK-GLASS: Active incident INC-2026-0424-001. Payment processing down 14 minutes. All payments failing. Remediation approved verbally by incident commander, now formalizing as ZTAP transaction.",
+      "notes": "BREAK-GLASS: Active incident INC-2026-0424-001. Payment processing down 14 minutes. All payments failing. Remediation approved verbally by incident commander, now formalizing as ZTIP transaction.",
 
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e"
+        "hash_value": "5529c65bd99a9a245f2787bdad56a3f7a83fdcea312ad68138c43e03eefff388"
       }
     },
 
@@ -146,9 +146,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
-      "decision_id": "ztap-dec-09bg-incident-2026-0424-001",
-      "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
+      "transaction_id": "ztip-txn-09bg-incident-2026-0424",
+      "decision_id": "ztip-dec-09bg-incident-2026-0424-001",
+      "request_hash": "5529c65bd99a9a245f2787bdad56a3f7a83fdcea312ad68138c43e03eefff388",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -177,18 +177,18 @@
         "approved_by": "actor://operators/incident-commander-001",
         "approved_at": "2026-04-24T22:14:16Z",
         "approval_scope": {
-          "transaction_id": "ztap-txn-09bg-incident-2026-0424",
-          "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
+          "transaction_id": "ztip-txn-09bg-incident-2026-0424",
+          "request_hash": "5529c65bd99a9a245f2787bdad56a3f7a83fdcea312ad68138c43e03eefff388",
           "action_ids": ["act-09bg-query"],
           "target_actor_id": "agent-executor-db-emergency-001",
           "approved_capabilities": ["org.acme/run_remediation_query"],
           "expires_at": "2026-04-24T22:44:05Z",
           "single_use": true
         },
-        "approval_evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"]
+        "approval_evidence_refs": ["ztip-evid-09bg-incident-ticket", "ztip-evid-09bg-ic-approval"]
       },
 
-      "evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"],
+      "evidence_refs": ["ztip-evid-09bg-incident-ticket", "ztip-evid-09bg-ic-approval"],
 
       "break_glass_context": {
         "incident_ref": "INC-2026-0424-001",
@@ -208,7 +208,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "ddfb5a8ae07b8057403c208c2a6727d4d2f0c192b7b6b17e0d0fb4ec9d8af077"
+        "hash_value": "d6bfe6c34474e0f4ae257c558dd53a5d3918763d943eac9d0e0b9c814f664c97"
       }
     },
 
@@ -218,10 +218,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-09bg-incident-2026-0424",
-      "receipt_id": "ztap-rcpt-09bg-incident-2026-0424-001",
-      "request_hash": "4e799042e813ec5e958939f692d6d7a4fdd970d87c25c0639c74edbb9f961c0e",
-      "authorization_decision_ref": "ztap-dec-09bg-incident-2026-0424-001",
+      "transaction_id": "ztip-txn-09bg-incident-2026-0424",
+      "receipt_id": "ztip-rcpt-09bg-incident-2026-0424-001",
+      "request_hash": "5529c65bd99a9a245f2787bdad56a3f7a83fdcea312ad68138c43e03eefff388",
+      "authorization_decision_ref": "ztip-dec-09bg-incident-2026-0424-001",
 
       "source_actor": {
         "actor_id": "operator-oncall-002",
@@ -292,7 +292,7 @@
         }
       ],
 
-      "evidence_refs": ["ztap-evid-09bg-incident-ticket", "ztap-evid-09bg-ic-approval"],
+      "evidence_refs": ["ztip-evid-09bg-incident-ticket", "ztip-evid-09bg-ic-approval"],
 
       "break_glass_context": {
         "incident_ref": "INC-2026-0424-001",
@@ -320,7 +320,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "a854e1aad2bef3841386f3ea22636e4e13ea12bf4521220beb1989c7955a6997"
+        "hash_value": "877edf166541a5d31180b05120f7795d18f335777dd888c639c03633325f79c6"
       }
     }
 

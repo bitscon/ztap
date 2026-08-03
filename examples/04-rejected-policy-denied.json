@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Rejected — Policy Denied",
     "scenario": "A planning agent requests a destructive data purge against a production database. The control plane rejects: the requesting actor lacks the data-steward role required for this capability in production. No execution occurs. A rejection receipt is produced.",
     "lifecycle_states": ["created", "submitted", "evaluated", "rejected"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
     "governance_note": "Rejection occurs before any execution. The target actor is never contacted. No action is taken against the target system. The transaction terminates with a rejection receipt."
   },
 
@@ -14,7 +14,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-04aabb778899",
+      "transaction_id": "ztip-txn-04aabb778899",
       "created_at": "2026-04-24T13:00:00Z",
 
       "source_actor": {
@@ -83,7 +83,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "53b96586aa93a4496085489ddc0c016c0d62b3f98e982e99536f1703414e444f"
+        "hash_value": "258386bbddb662e4bdbfeaa8af022e18d785c7df0ff77cb9cbc916133ccd2b7c"
       }
     },
 
@@ -93,9 +93,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-04aabb778899",
-      "decision_id": "ztap-dec-04aabb778899-001",
-      "request_hash": "53b96586aa93a4496085489ddc0c016c0d62b3f98e982e99536f1703414e444f",
+      "transaction_id": "ztip-txn-04aabb778899",
+      "decision_id": "ztip-dec-04aabb778899-001",
+      "request_hash": "258386bbddb662e4bdbfeaa8af022e18d785c7df0ff77cb9cbc916133ccd2b7c",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -120,7 +120,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "aaf2dc39ccee10794d02c05f1c910c0ca02c1b4c6afb33da0b9c4bda84aa132f"
+        "hash_value": "d5956e8d94abbdb3d432b46350ccb3125d2a2e4b2fa7fa585bea7fec3fce977d"
       }
     },
 
@@ -130,10 +130,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-04aabb778899",
-      "receipt_id": "ztap-rcpt-04aabb778899-001",
-      "request_hash": "53b96586aa93a4496085489ddc0c016c0d62b3f98e982e99536f1703414e444f",
-      "authorization_decision_ref": "ztap-dec-04aabb778899-001",
+      "transaction_id": "ztip-txn-04aabb778899",
+      "receipt_id": "ztip-rcpt-04aabb778899-001",
+      "request_hash": "258386bbddb662e4bdbfeaa8af022e18d785c7df0ff77cb9cbc916133ccd2b7c",
+      "authorization_decision_ref": "ztip-dec-04aabb778899-001",
 
       "source_actor": {
         "actor_id": "agent-planner-004",
@@ -176,7 +176,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "6019eb66836af0dea79332517b4390298f0166cd78a783b02310c56e0da4432c"
+        "hash_value": "ce6f33559a9bc4dccb7cd9b061a39d3669e8b77847d634d347148f36e781b2a5"
       }
     }
 

@@ -1,6 +1,6 @@
-"""ZTAP reference runtime — canonicalization, hashing, and integrity verification.
+"""ZTIP reference runtime — canonicalization, hashing, and integrity verification.
 
-Reference implementation for the ZTAP (Zero Trust Agent Protocol) open standard.
+Reference implementation for the ZTIP (Zero Trust Intelligence Protocol) open standard.
 Self-contained: depends only on the Python standard library, so the protocol
 repository builds and verifies on its own (per AGENTS.md portability rules).
 """

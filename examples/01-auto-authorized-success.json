@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Happy Path — Auto-Authorized Success",
     "scenario": "A planning agent requests a production deployment. The control plane evaluates policy and auto-authorizes. The executor deploys the service, verification passes, and a succeeded receipt is returned.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify)."
   },
 
   "envelopes": [
@@ -13,7 +13,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-01aabb001122",
+      "transaction_id": "ztip-txn-01aabb001122",
       "created_at": "2026-04-24T09:00:00Z",
 
       "source_actor": {
@@ -82,7 +82,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "620441388168bd2053f03c11f3d358b8160f283fd4805d410c2c4ef968b03c20"
+        "hash_value": "ddd90ccf50e22d6b30fca2ca6048f68a540ac8e8bc20d9c5d5796680a8767fe6"
       }
     },
 
@@ -92,9 +92,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-01aabb001122",
-      "decision_id": "ztap-dec-01aabb001122-001",
-      "request_hash": "620441388168bd2053f03c11f3d358b8160f283fd4805d410c2c4ef968b03c20",
+      "transaction_id": "ztip-txn-01aabb001122",
+      "decision_id": "ztip-dec-01aabb001122-001",
+      "request_hash": "ddd90ccf50e22d6b30fca2ca6048f68a540ac8e8bc20d9c5d5796680a8767fe6",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -120,7 +120,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "1270722d1113ef1ba85604c5900a99a02bb5bf8a16fad8a5acfdda8545252fa4"
+        "hash_value": "fbe86c34c113d4b1b9b8f075664fa756e578565d085ca4336e3707284e568a5b"
       }
     },
 
@@ -129,10 +129,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-01aabb001122",
-      "receipt_id": "ztap-rcpt-01aabb001122-001",
-      "request_hash": "620441388168bd2053f03c11f3d358b8160f283fd4805d410c2c4ef968b03c20",
-      "authorization_decision_ref": "ztap-dec-01aabb001122-001",
+      "transaction_id": "ztip-txn-01aabb001122",
+      "receipt_id": "ztip-rcpt-01aabb001122-001",
+      "request_hash": "ddd90ccf50e22d6b30fca2ca6048f68a540ac8e8bc20d9c5d5796680a8767fe6",
+      "authorization_decision_ref": "ztip-dec-01aabb001122-001",
 
       "source_actor": {
         "actor_id": "agent-planner-001",
@@ -206,7 +206,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "82170e00a2e0f9b2ce7bb3f7e401f13470b005a51b6f2e803af28524163292f2"
+        "hash_value": "737743fcd2f415d71be9511715ac19829ba2f0570d686a704912beabeaca131e"
       }
     }
 

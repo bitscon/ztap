@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate examples/*.json against schemas/ztap-bundle.schema.json."""
+"""Validate examples/*.json against schemas/ztip-bundle.schema.json."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     schemas_dir = repo_root / "schemas"
     examples_dir = repo_root / "examples"
-    bundle_schema_path = schemas_dir / "ztap-bundle.schema.json"
+    bundle_schema_path = schemas_dir / "ztip-bundle.schema.json"
 
     if not bundle_schema_path.exists():
         print(f"ERROR: Schema not found: {bundle_schema_path}")

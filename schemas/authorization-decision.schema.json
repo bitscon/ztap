@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "authorization-decision.schema.json",
-  "title": "ZTAP Authorization Decision",
+  "title": "ZTIP Authorization Decision",
   "allOf": [
     {
-      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+      "$ref": "ztip-envelope.schema.json#/$defs/common_envelope"
     },
     {
       "type": "object",
@@ -22,28 +22,28 @@
           "const": "authorization_decision"
         },
         "decision_id": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "request_hash": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "control_plane": {
           "allOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+              "$ref": "ztip-envelope.schema.json#/$defs/actor"
             },
             {
               "type": "object",
               "properties": {
                 "role": {
-                  "$ref": "ztap-envelope.schema.json#/$defs/control_plane_role"
+                  "$ref": "ztip-envelope.schema.json#/$defs/control_plane_role"
                 }
               }
             }
           ]
         },
         "evaluated_at": {
-          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+          "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
         },
         "authorization_status": {
           "type": "string",
@@ -60,29 +60,29 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+            "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
           }
         },
         "reason_codes": {
           "type": "array",
           "items": {
-            "$ref": "ztap-envelope.schema.json#/$defs/reason_code"
+            "$ref": "ztip-envelope.schema.json#/$defs/reason_code"
           }
         },
         "authorized_at": {
-          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+          "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
         },
         "expires_at": {
-          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+          "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
         },
         "human_approval_ref": {
-          "$ref": "ztap-envelope.schema.json#/$defs/human_approval_ref"
+          "$ref": "ztip-envelope.schema.json#/$defs/human_approval_ref"
         },
         "declared_risk_level": {
-          "$ref": "ztap-envelope.schema.json#/$defs/risk_level"
+          "$ref": "ztip-envelope.schema.json#/$defs/risk_level"
         },
         "evaluated_risk_level": {
-          "$ref": "ztap-envelope.schema.json#/$defs/risk_level"
+          "$ref": "ztip-envelope.schema.json#/$defs/risk_level"
         },
         "risk_evaluation_reason": {
           "type": "string"
@@ -90,13 +90,13 @@
         "required_evidence": {
           "oneOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/required_evidence_entry"
+              "$ref": "ztip-envelope.schema.json#/$defs/required_evidence_entry"
             },
             {
               "type": "array",
               "minItems": 1,
               "items": {
-                "$ref": "ztap-envelope.schema.json#/$defs/required_evidence_entry"
+                "$ref": "ztip-envelope.schema.json#/$defs/required_evidence_entry"
               }
             }
           ]
@@ -104,11 +104,11 @@
         "evidence_refs": {
           "type": "array",
           "items": {
-            "$ref": "ztap-envelope.schema.json#/$defs/evidence_ref"
+            "$ref": "ztip-envelope.schema.json#/$defs/evidence_ref"
           }
         },
         "break_glass_context": {
-          "$ref": "ztap-envelope.schema.json#/$defs/break_glass_context"
+          "$ref": "ztip-envelope.schema.json#/$defs/break_glass_context"
         }
       },
       "allOf": [

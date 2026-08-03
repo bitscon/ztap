@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "transaction-request.schema.json",
-  "title": "ZTAP Transaction Request",
+  "title": "ZTIP Transaction Request",
   "allOf": [
     {
-      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+      "$ref": "ztip-envelope.schema.json#/$defs/common_envelope"
     },
     {
       "type": "object",
@@ -22,12 +22,12 @@
           "const": "transaction_request"
         },
         "created_at": {
-          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+          "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
         },
         "source_actor": {
           "allOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+              "$ref": "ztip-envelope.schema.json#/$defs/actor"
             },
             {
               "type": "object",
@@ -36,13 +36,13 @@
               ],
               "properties": {
                 "role": {
-                  "$ref": "ztap-envelope.schema.json#/$defs/source_actor_role"
+                  "$ref": "ztip-envelope.schema.json#/$defs/source_actor_role"
                 },
                 "capability_claims": {
                   "type": "array",
                   "minItems": 1,
                   "items": {
-                    "$ref": "ztap-envelope.schema.json#/$defs/capability"
+                    "$ref": "ztip-envelope.schema.json#/$defs/capability"
                   }
                 }
               }
@@ -52,7 +52,7 @@
         "target_actor": {
           "allOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/actor"
+              "$ref": "ztip-envelope.schema.json#/$defs/actor"
             },
             {
               "type": "object",
@@ -61,13 +61,13 @@
               ],
               "properties": {
                 "role": {
-                  "$ref": "ztap-envelope.schema.json#/$defs/target_actor_role"
+                  "$ref": "ztip-envelope.schema.json#/$defs/target_actor_role"
                 },
                 "capability_claims": {
                   "type": "array",
                   "minItems": 1,
                   "items": {
-                    "$ref": "ztap-envelope.schema.json#/$defs/capability"
+                    "$ref": "ztip-envelope.schema.json#/$defs/capability"
                   }
                 }
               }
@@ -75,34 +75,34 @@
           ]
         },
         "requested_action": {
-          "$ref": "ztap-envelope.schema.json#/$defs/requested_action"
+          "$ref": "ztip-envelope.schema.json#/$defs/requested_action"
         },
         "requested_capabilities": {
           "type": "array",
           "minItems": 1,
           "items": {
-            "$ref": "ztap-envelope.schema.json#/$defs/capability"
+            "$ref": "ztip-envelope.schema.json#/$defs/capability"
           }
         },
         "atomicity_mode": {
-          "$ref": "ztap-envelope.schema.json#/$defs/atomicity"
+          "$ref": "ztip-envelope.schema.json#/$defs/atomicity"
         },
         "verification_requirements": {
-          "$ref": "ztap-envelope.schema.json#/$defs/verification_requirements"
+          "$ref": "ztip-envelope.schema.json#/$defs/verification_requirements"
         },
         "parent_transaction_id": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "evidence_requirements": {
           "oneOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/required_evidence_entry"
+              "$ref": "ztip-envelope.schema.json#/$defs/required_evidence_entry"
             },
             {
               "type": "array",
               "minItems": 1,
               "items": {
-                "$ref": "ztap-envelope.schema.json#/$defs/required_evidence_entry"
+                "$ref": "ztip-envelope.schema.json#/$defs/required_evidence_entry"
               }
             }
           ]
@@ -110,7 +110,7 @@
         "expiry_request": {
           "oneOf": [
             {
-              "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+              "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
             },
             {
               "type": "string",
@@ -122,7 +122,7 @@
           "type": "object"
         },
         "break_glass_context": {
-          "$ref": "ztap-envelope.schema.json#/$defs/break_glass_context"
+          "$ref": "ztip-envelope.schema.json#/$defs/break_glass_context"
         },
         "notes": {
           "type": "string"

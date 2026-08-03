@@ -13,9 +13,9 @@
 - Prepare public-facing launch materials and onboarding docs.
 
 ## Phase 4: Reference Validators / SDKs
-- Provide reference validator implementations. *(delivered — the `ztap/` runtime and `scripts/validate-examples.py`)*
+- Provide reference validator implementations. *(delivered — the `ztip/` runtime and `scripts/validate-examples.py`)*
 - Publish minimal SDK utilities for envelope creation and verification.
 
 ## Phase 5: Ecosystem Compatibility
 - Document compatibility patterns for MCP/A2A where appropriate.
-- Preserve ZTAP transport neutrality while improving interoperability guidance.
+- Preserve ZTIP transport neutrality while improving interoperability guidance.

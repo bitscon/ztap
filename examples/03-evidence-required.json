@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Evidence Required",
     "scenario": "A planning agent requests deployment to a regulated production environment. Policy requires a passing test suite report before the control plane will authorize. The source actor submits an evidence_record. The control plane re-evaluates and issues an auto_authorized decision.",
     "lifecycle_states": ["created", "submitted", "evaluated", "evidence_required", "evidence submitted", "evaluated", "authorized", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify)."
   },
 
   "envelopes": [
@@ -13,7 +13,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-03eeff556677",
+      "transaction_id": "ztip-txn-03eeff556677",
       "created_at": "2026-04-24T11:00:00Z",
 
       "source_actor": {
@@ -92,7 +92,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565"
+        "hash_value": "ba974ae5d104f002a4106122dbd66f2113163d9c33a3f3d4a15bc23dfd12ff4f"
       }
     },
 
@@ -102,9 +102,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-03eeff556677",
-      "decision_id": "ztap-dec-03eeff556677-001",
-      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
+      "transaction_id": "ztip-txn-03eeff556677",
+      "decision_id": "ztip-dec-03eeff556677-001",
+      "request_hash": "ba974ae5d104f002a4106122dbd66f2113163d9c33a3f3d4a15bc23dfd12ff4f",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -137,7 +137,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "766da42c3d162ee65c179180001b0b36f331ca1513666ec992e2bd30eef3ecc5"
+        "hash_value": "38910a8835d1435906b953d84b66b498e07d300ed284675ce908de88b7a495f0"
       }
     },
 
@@ -147,9 +147,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "evidence_record",
-      "transaction_id": "ztap-txn-03eeff556677",
-      "evidence_id": "ztap-evid-03eeff556677-001",
-      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
+      "transaction_id": "ztip-txn-03eeff556677",
+      "evidence_id": "ztip-evid-03eeff556677-001",
+      "request_hash": "ba974ae5d104f002a4106122dbd66f2113163d9c33a3f3d4a15bc23dfd12ff4f",
 
       "produced_by": {
         "actor_id": "agent-validator-ci-001",
@@ -170,7 +170,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "f006a3ad8bc5694c107672f480ff66971ba35bdd0c046bc89e22c806d2e0eb7f"
+        "hash_value": "c0c167d6698b0aa9055c8b424c4615f8b2c327c657b6aa311134474081685570"
       }
     },
 
@@ -180,9 +180,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-03eeff556677",
-      "decision_id": "ztap-dec-03eeff556677-002",
-      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
+      "transaction_id": "ztip-txn-03eeff556677",
+      "decision_id": "ztip-dec-03eeff556677-002",
+      "request_hash": "ba974ae5d104f002a4106122dbd66f2113163d9c33a3f3d4a15bc23dfd12ff4f",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -204,12 +204,12 @@
 
       "authorized_at": "2026-04-24T11:02:11Z",
       "expires_at": "2026-04-24T11:45:00Z",
-      "evidence_refs": ["ztap-evid-03eeff556677-001"],
+      "evidence_refs": ["ztip-evid-03eeff556677-001"],
 
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "18a6e3d1cf6ba82a770f2e26b6a5fb04a1abefb5b0a59a0ec6a357d332f600db"
+        "hash_value": "67743a6c539a9718d56b9705869ab09f96bdaf9d9f29182b25811d2c71c54695"
       }
     },
 
@@ -218,10 +218,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-03eeff556677",
-      "receipt_id": "ztap-rcpt-03eeff556677-001",
-      "request_hash": "821388f709ce23a99fdf7457e77e9abbab6d4f720332ba15498e7db5ab2a0565",
-      "authorization_decision_ref": "ztap-dec-03eeff556677-002",
+      "transaction_id": "ztip-txn-03eeff556677",
+      "receipt_id": "ztip-rcpt-03eeff556677-001",
+      "request_hash": "ba974ae5d104f002a4106122dbd66f2113163d9c33a3f3d4a15bc23dfd12ff4f",
+      "authorization_decision_ref": "ztip-dec-03eeff556677-002",
 
       "source_actor": {
         "actor_id": "agent-planner-003",
@@ -293,7 +293,7 @@
         }
       ],
 
-      "evidence_refs": ["ztap-evid-03eeff556677-001"],
+      "evidence_refs": ["ztip-evid-03eeff556677-001"],
 
       "atomicity_result": {
         "mode_declared": "atomic_required",
@@ -304,7 +304,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "0845b2658c4370f9026b2ece002f0b3ed75b2b56d537325a8a080a9ff1b05214"
+        "hash_value": "7499e573af598944ceb61e61f71aecac05591f71b91f2c218bce4e69380764fe"
       }
     }
 

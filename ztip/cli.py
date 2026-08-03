@@ -1,7 +1,7 @@
-"""``ztap`` command-line interface.
+"""``ztip`` command-line interface.
 
-    ztap hash <file>     Print the SHA-256 (RFC 8785) hash of each envelope.
-    ztap verify <file>   Recompute hashes and check references; fail-closed on any defect.
+    ztip hash <file>     Print the SHA-256 (RFC 8785) hash of each envelope.
+    ztip verify <file>   Recompute hashes and check references; fail-closed on any defect.
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="ztap", description="ZTAP reference runtime")
+    parser = argparse.ArgumentParser(prog="ztip", description="ZTIP reference runtime")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_hash = sub.add_parser("hash", help="print the hash of each envelope in a file")

@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Cancelled — Operator Cancellation After Authorization",
     "scenario": "A batch archive job is authorized. Before the executor accepts, an on-call operator cancels the transaction — an unplanned maintenance window conflicts with the target storage system. The operator submits a cancellation_request amendment. The control plane evaluates it and issues a cancelled receipt.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "cancelled"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
     "governance_note": "A cancellation_request amendment does not automatically cancel the transaction. The control plane must evaluate the amendment and authorize the cancellation. Both the amendment and the control plane's response are retained in the audit trail."
   },
 
@@ -14,7 +14,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-06eeff112233",
+      "transaction_id": "ztip-txn-06eeff112233",
       "created_at": "2026-04-24T15:00:00Z",
 
       "source_actor": {
@@ -39,7 +39,7 @@
       "requested_action": {
         "action_id": "act-06eeff112233-archive",
         "action_type": "archive",
-        "profile": "ztap.core/generic",
+        "profile": "ztip.core/generic",
         "description": "Archive Q1 2026 orders before 2026-01-01 to S3.",
         "parameters": {
           "job_id": "archive-orders-2026-q1",
@@ -81,7 +81,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c"
+        "hash_value": "f44afc2fdd82c1c40aef4a30d76eea2309b11d8b37a3f62a908ec9b54dbef38e"
       }
     },
 
@@ -90,9 +90,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-06eeff112233",
-      "decision_id": "ztap-dec-06eeff112233-001",
-      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
+      "transaction_id": "ztip-txn-06eeff112233",
+      "decision_id": "ztip-dec-06eeff112233-001",
+      "request_hash": "f44afc2fdd82c1c40aef4a30d76eea2309b11d8b37a3f62a908ec9b54dbef38e",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -117,7 +117,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "de5e7730660d6febf4d56ceefa3bb89d96054d50b9787cbdbe5d5bf36e96f509"
+        "hash_value": "554a0a61dba6f820223de8fc5efbbd41d93553a8f851fd6d47d9217f380d9bea"
       }
     },
 
@@ -127,9 +127,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "amendment_event",
-      "transaction_id": "ztap-txn-06eeff112233",
-      "amendment_id": "ztap-amend-06eeff112233-001",
-      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
+      "transaction_id": "ztip-txn-06eeff112233",
+      "amendment_id": "ztip-amend-06eeff112233-001",
+      "request_hash": "f44afc2fdd82c1c40aef4a30d76eea2309b11d8b37a3f62a908ec9b54dbef38e",
 
       "created_by": {
         "actor_id": "operator-on-call-001",
@@ -142,7 +142,7 @@
       "created_at": "2026-04-24T15:08:14Z",
       "amendment_type": "cancellation_request",
       "reason_codes": ["CANCELLED"],
-      "linked_envelope_refs": ["ztap-dec-06eeff112233-001"],
+      "linked_envelope_refs": ["ztip-dec-06eeff112233-001"],
 
       "amendment_content": {
         "reason": "Unplanned maintenance window declared for s3://acme-archives. Archive target unavailable. Cancelling to prevent failed execution.",
@@ -152,7 +152,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "344441ef90bcfb2c06b3da5107a6cb599bbbac5c6470883e3654d554399bd8de"
+        "hash_value": "b492231d4cb22e7fb19f354e83e3192fa435bd3b3d1fc6dd3dbc9052f357da6b"
       }
     },
 
@@ -162,10 +162,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-06eeff112233",
-      "receipt_id": "ztap-rcpt-06eeff112233-001",
-      "request_hash": "ecdc3720bcafe3d76ea18aa75264cf23abb2fdca260cf6faeb7bf98e3ac4cd2c",
-      "authorization_decision_ref": "ztap-dec-06eeff112233-001",
+      "transaction_id": "ztip-txn-06eeff112233",
+      "receipt_id": "ztip-rcpt-06eeff112233-001",
+      "request_hash": "f44afc2fdd82c1c40aef4a30d76eea2309b11d8b37a3f62a908ec9b54dbef38e",
+      "authorization_decision_ref": "ztip-dec-06eeff112233-001",
 
       "source_actor": {
         "actor_id": "agent-planner-006",
@@ -203,12 +203,12 @@
         "rollback_performed": false
       },
 
-      "notes": "Cancelled by operator operator-on-call-001 before executor acceptance. Maintenance window conflict. Amendment ref: ztap-amend-06eeff112233-001.",
+      "notes": "Cancelled by operator operator-on-call-001 before executor acceptance. Maintenance window conflict. Amendment ref: ztip-amend-06eeff112233-001.",
 
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "f309979c13c68706c82f57991ce4dd94b895d150322abbbdb02ab9f9a172b9a1"
+        "hash_value": "9b40350f5a5a662e398041c2fd0f72391d3a2e30256ef8d4f8a988e00bc4c4fc"
       }
     }
 

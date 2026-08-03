@@ -1,16 +1,16 @@
 # Authors
 
-ZTAP — Zero Trust Agent Protocol — was created and is maintained by:
+ZTIP — Zero Trust Intelligence Protocol — was created and is maintained by:
 
 **Chad McCormack**
 Founder / protocol steward
 
 ## Project Stewardship
 
-ZTAP is part of the Zero Trust Intelligence (ZTI) ecosystem.
+ZTIP is part of the Zero Trust Intelligence (ZTI) ecosystem.
 
 - ZTI defines the doctrine.
-- ZTAP defines the open protocol for governed agent transactions.
+- ZTIP defines the open protocol for governed agent transactions.
 - ZTI Core is a separate commercial/control-plane implementation.
 
 ## Contributions

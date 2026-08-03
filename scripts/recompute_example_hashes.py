@@ -18,7 +18,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from ztap.hashing import envelope_hash  # noqa: E402
+from ztip.hashing import envelope_hash  # noqa: E402
 
 PLACEHOLDER_PREFIX = "EXAMPLE-HASH-"
 
@@ -103,12 +103,69 @@ def resolve_bundle(bundle: dict) -> tuple[dict[str, str], list]:
     return resolved, unresolved
 
 
+def refresh_bundle(bundle: dict) -> tuple[dict[str, str], list]:
+    """Return (stale hash -> fresh hash, unresolved) after example content edits.
+
+    Same dependency-order resolution as ``resolve_bundle``, but keyed on each
+    envelope's CURRENT (stale) ``integrity.hash_value`` instead of a
+    placeholder: seal envelopes whose cross-references are already refreshed,
+    map old digest -> new digest, and let later envelopes (receipts, children)
+    pick the fresh values up through substitution. External illustrative
+    digests are not any envelope's own hash, so they pass through untouched.
+    """
+    envelopes = bundle.get("envelopes", [])
+    own_hashes = {
+        (env.get("integrity") or {}).get("hash_value")
+        for env in envelopes
+    }
+    own_hashes.discard(None)
+    resolved: dict[str, str] = {}
+
+    def stale_refs(node, own) -> set[str]:
+        found: set[str] = set()
+
+        def walk(value) -> None:
+            if isinstance(value, str):
+                if value in own_hashes and value != own:
+                    found.add(value)
+            elif isinstance(value, dict):
+                for item in value.values():
+                    walk(item)
+            elif isinstance(value, list):
+                for item in value:
+                    walk(item)
+
+        walk(node)
+        return found
+
+    unsealed = list(envelopes)
+    progress = True
+    while unsealed and progress:
+        progress = False
+        for env in list(unsealed):
+            own = (env.get("integrity") or {}).get("hash_value")
+            if stale_refs(env, own) <= set(resolved):
+                sealed = substitute(env, resolved)
+                digest = envelope_hash(sealed)
+                if isinstance(own, str):
+                    resolved[own] = digest
+                unsealed.remove(env)
+                progress = True
+    unresolved = [(env.get("integrity") or {}).get("hash_value") for env in unsealed]
+    return resolved, unresolved
+
+
 def main() -> int:
+    refresh = "--refresh" in sys.argv[1:]
     examples_dir = REPO_ROOT / "examples"
     total = 0
     for path in sorted(examples_dir.glob("*.json")):
         bundle = json.loads(path.read_text(encoding="utf-8"))
-        mapping, unresolved = resolve_bundle(bundle)
+        if refresh:
+            mapping, unresolved = refresh_bundle(bundle)
+            mapping = {old: new for old, new in mapping.items() if old != new}
+        else:
+            mapping, unresolved = resolve_bundle(bundle)
         if unresolved:
             print(f"WARN {path.name}: unresolved placeholders: {unresolved}")
         text = path.read_text(encoding="utf-8")
@@ -121,7 +178,7 @@ def main() -> int:
         path.write_text(text, encoding="utf-8")
         total += replaced
         print(f"{path.name}: {replaced} replacement(s) across {len(mapping)} hash(es)")
-    print(f"\nDone: {total} total placeholder replacement(s).")
+    print(f"\nDone: {total} total {'refresh' if refresh else 'placeholder'} replacement(s).")
     return 0
 
 

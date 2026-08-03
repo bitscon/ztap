@@ -1,4 +1,4 @@
-"""Tests for the ZTAP reference runtime: canonicalization, hashing, integrity."""
+"""Tests for the ZTIP reference runtime: canonicalization, hashing, integrity."""
 
 import json
 import sys
@@ -7,9 +7,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from ztap.canonical import canonicalize  # noqa: E402
-from ztap.chain import verify_bundle  # noqa: E402
-from ztap.hashing import envelope_hash, verify_envelope_hash  # noqa: E402
+from ztip.canonical import canonicalize  # noqa: E402
+from ztip.chain import verify_bundle  # noqa: E402
+from ztip.hashing import envelope_hash, verify_envelope_hash  # noqa: E402
 
 
 def test_object_keys_sorted():

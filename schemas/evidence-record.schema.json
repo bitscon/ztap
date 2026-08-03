@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "evidence-record.schema.json",
-  "title": "ZTAP Evidence Record",
+  "title": "ZTIP Evidence Record",
   "allOf": [
     {
-      "$ref": "ztap-envelope.schema.json#/$defs/common_envelope"
+      "$ref": "ztip-envelope.schema.json#/$defs/common_envelope"
     },
     {
       "type": "object",
@@ -21,22 +21,22 @@
           "const": "evidence_record"
         },
         "evidence_id": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "request_hash": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "produced_by": {
-          "$ref": "ztap-envelope.schema.json#/$defs/actor"
+          "$ref": "ztip-envelope.schema.json#/$defs/actor"
         },
         "produced_at": {
-          "$ref": "ztap-envelope.schema.json#/$defs/timestamp"
+          "$ref": "ztip-envelope.schema.json#/$defs/timestamp"
         },
         "evidence_type": {
-          "$ref": "ztap-envelope.schema.json#/$defs/evidence_type"
+          "$ref": "ztip-envelope.schema.json#/$defs/evidence_type"
         },
         "evidence_hash": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "evidence_content": {
           "oneOf": [
@@ -53,7 +53,7 @@
           ]
         },
         "evidence_uri": {
-          "$ref": "ztap-envelope.schema.json#/$defs/non_empty_string"
+          "$ref": "ztip-envelope.schema.json#/$defs/non_empty_string"
         },
         "notes": {
           "type": "string"

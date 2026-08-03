@@ -1,4 +1,4 @@
-"""Integrity verification for ZTAP bundles.
+"""Integrity verification for ZTIP bundles.
 
 Recomputes each envelope's hash and confirms cross-envelope hash references
 resolve. A bundle with no findings is intact and tamper-free.

@@ -1,6 +1,6 @@
-# ZTAP Schema Draft
+# ZTIP Schema Draft
 
-*Zero Trust Agent Protocol — Envelope Types, Field Definitions, and Integrity Model*
+*Zero Trust Intelligence Protocol — Envelope Types, Field Definitions, and Integrity Model*
 
 ---
 
@@ -8,7 +8,7 @@
 
 **DRAFT — Prose field model for `1.0-draft`.**
 
-This document defines the field-level structure of ZTAP envelopes in prose. It resolves the
+This document defines the field-level structure of ZTIP envelopes in prose. It resolves the
 open questions documented in `SPEC.md` and establishes the schema decisions that machine-
 readable schema files and reference implementations must conform to.
 
@@ -25,7 +25,7 @@ governance model, and core concepts that this schema implements.
 
 ## Design Principles
 
-Every ZTAP schema decision is governed by the following principles, in order of precedence:
+Every ZTIP schema decision is governed by the following principles, in order of precedence:
 
 **1. Machine-verifiable.**
 Every field required for governance decisions must be structurally checkable without human
@@ -33,12 +33,12 @@ interpretation. Governance cannot depend on free-text fields.
 
 **2. Human-auditable.**
 Every field required for audit must be readable by a person without decryption, decoding, or
-proprietary tooling. ZTAP envelopes are plain JSON.
+proprietary tooling. ZTIP envelopes are plain JSON.
 
 **3. Transport-agnostic.**
 No field assumes a specific delivery mechanism. An envelope delivered by API, file, message
 queue, or any other channel must be structurally identical. Transport metadata is not part of
-the ZTAP envelope.
+the ZTIP envelope.
 
 **4. Immutable submitted requests.**
 The transaction request envelope is the canonical, unalterable record of what was asked.
@@ -67,7 +67,7 @@ that serves toolchain preferences, not governance requirements, is deferred or e
 
 ## Envelope Types
 
-ZTAP v1 defines five envelope types. Each envelope is a discrete JSON object with a defined
+ZTIP v1 defines five envelope types. Each envelope is a discrete JSON object with a defined
 purpose, required fields, and an integrity record. Envelopes are not mutated after they are
 finalized. New information is expressed as new envelopes, linked to prior ones by identifier
 and hash.
@@ -86,16 +86,22 @@ All five types share a set of common fields defined in Section 5.
 
 ## Shared Envelope Fields
 
-These fields are required on every ZTAP envelope regardless of type.
+These fields are required on every ZTIP envelope regardless of type.
 
 ### `ztap_version`
 
 **Required. String.**
 
-The ZTAP protocol version under which this envelope was created. Implementations must reject
+The ZTIP protocol version under which this envelope was created. Implementations must reject
 envelopes with unsupported major versions unless explicitly configured otherwise.
 
 The current working version is `1.0-draft`. When v1 is finalized, this value becomes `1.0`.
+
+> **Legacy field name.** The protocol was drafted under the working name ZTAP; the field is
+> named `ztap_version` for that historical reason and is retained unchanged because the field
+> name sits inside the canonicalized content that envelope hashes cover — renaming it would
+> invalidate every existing hash. Treat it as a fixed protocol identifier, not a brand
+> reference.
 
 ### `envelope_type`
 
@@ -114,7 +120,7 @@ Implementations must reject envelopes with unrecognized or absent `envelope_type
 
 **Required. String.**
 
-A stable, globally unique identifier for the ZTAP transaction this envelope belongs to. All
+A stable, globally unique identifier for the ZTIP transaction this envelope belongs to. All
 envelopes in a transaction's lifecycle share the same `transaction_id`.
 
 The transaction ID is assigned by the control plane upon receipt of the first
@@ -141,7 +147,7 @@ See Section 12 for canonicalization rules, hash construction, and the full field
 
 ## Actor Object
 
-The actor object is used wherever an actor is referenced in a ZTAP envelope. It is not a
+The actor object is used wherever an actor is referenced in a ZTIP envelope. It is not a
 standalone envelope type — it is an embedded object used within `source_actor`,
 `target_actor`, `control_plane`, `produced_by`, `created_by`, and similar fields.
 
@@ -152,8 +158,8 @@ A stable, unique identifier for this actor within the organization's control pla
 the canonical reference used across all envelopes and audit records.
 
 **`role`** — Required. String or array of strings.
-The ZTAP protocol role(s) this actor is performing in this transaction. Must be one or more
-of the defined ZTAP roles: `operator`, `control_plane`, `source_actor`, `target_actor`,
+The ZTIP protocol role(s) this actor is performing in this transaction. Must be one or more
+of the defined ZTIP roles: `operator`, `control_plane`, `source_actor`, `target_actor`,
 `planner`, `executor`, `validator`, `auditor`, `runtime`.
 
 **`display_name`** — Optional. String.
@@ -190,7 +196,7 @@ this actor?*
 
 These are separate claims. They must never be conflated. Tool names, model names, vendor
 names, and platform names must not appear as `role` values. The `role` field must only contain
-valid ZTAP protocol role identifiers.
+valid ZTIP protocol role identifiers.
 
 **Valid actor declarations:**
 
@@ -210,21 +216,21 @@ valid ZTAP protocol role identifiers.
 ```
 
 A control plane must reject any envelope where `role` contains a value not in the defined
-ZTAP role set. The reason code is `ROLE_INVALID`. There is no pass-through mode for
+ZTIP role set. The reason code is `ROLE_INVALID`. There is no pass-through mode for
 unrecognized role values.
 
 The reason this rule is enforced at the schema level: if implementation names become protocol
-roles, the governance model becomes vendor-dependent. ZTAP must remain implementable by any
+roles, the governance model becomes vendor-dependent. ZTIP must remain implementable by any
 compliant control plane regardless of which tools actors use internally.
 
 ---
 
 ## Capability Registry Model
 
-ZTAP uses an **open governed registry** for capability identifiers, consistent with the reason
+ZTIP uses an **open governed registry** for capability identifiers, consistent with the reason
 code, evidence type, and profile registries.
 
-**Core capabilities** are reserved simple-name identifiers defined by the ZTAP protocol.
+**Core capabilities** are reserved simple-name identifiers defined by the ZTIP protocol.
 They are stable across implementations and must be recognized by all conforming control planes.
 
 | Capability | Description |
@@ -235,9 +241,9 @@ They are stable across implementations and must be recognized by all conforming 
 | `git.push` | Push commits to a remote git repository. |
 | `test.run` | Execute an automated test suite and capture results. |
 | `approval.request` | Submit a request for human approval of a governed action. |
-| `receipt.emit` | Produce and submit a ZTAP execution receipt. |
+| `receipt.emit` | Produce and submit a ZTIP execution receipt. |
 
-Additional core capabilities will be defined as the ZTAP profile ecosystem develops.
+Additional core capabilities will be defined as the ZTIP profile ecosystem develops.
 
 **Extension capabilities** address domain-specific actions not covered by the core set.
 They must be namespaced using a reverse-domain format:
@@ -264,7 +270,7 @@ vendor.tool/create_ticket
 
 ## Transaction Request Envelope
 
-The transaction request envelope is the source record of a ZTAP transaction. It is created
+The transaction request envelope is the source record of a ZTIP transaction. It is created
 by the source actor, submitted to the control plane, and — once submitted — is immutable.
 
 All subsequent envelopes in the transaction reference this envelope by `transaction_id` and
@@ -292,13 +298,13 @@ The actor being requested to perform the action. Must include `actor_id`, `role`
 `organization_id`, `registration_ref`, and `capability_claims` for the capability being
 invoked.
 
-ZTAP v1 supports exactly one `target_actor` per transaction. For fan-out work requiring
+ZTIP v1 supports exactly one `target_actor` per transaction. For fan-out work requiring
 multiple targets, create separate child transactions linked by `parent_transaction_id`.
 
 **`requested_action`** — Required. Object.
-A structured description of what action is being requested, using the ZTAP standard action
+A structured description of what action is being requested, using the ZTIP standard action
 wrapper. The wrapper defines the governance-relevant fields. Profile-specific parameters are
-opaque to ZTAP core but are covered by the envelope hash.
+opaque to ZTIP core but are covered by the envelope hash.
 
 The `requested_action` object must include:
 
@@ -310,28 +316,28 @@ The `requested_action` object must include:
   requested (e.g., `deploy`, `query`, `notify`, `migrate`, `archive`). Used by policy engines
   to route authorization decisions. Must be machine-readable.
 - **`profile`** — Required. String. The action profile that governs how `parameters` are
-  interpreted. ZTAP uses an open governed registry for profiles, consistent with the reason
-  code, evidence type, and capability registries. Core profiles are reserved by ZTAP;
+  interpreted. ZTIP uses an open governed registry for profiles, consistent with the reason
+  code, evidence type, and capability registries. Core profiles are reserved by ZTIP;
   extension profiles must be namespaced.
 
-  **Core profiles (ZTAP-defined):**
-  - `ztap.core/fileops` — file system read/write operations
-  - `ztap.core/gitops` — git repository operations (commit, push, branch)
-  - `ztap.core/testops` — automated test execution and result capture
-  - `ztap.core/approval` — human approval request transactions
-  - `ztap.core/evidence` — evidence record submission transactions
-  - `ztap.core/generic` — general-purpose transactions not covered by a specific core profile
+  **Core profiles (ZTIP-defined):**
+  - `ztip.core/fileops` — file system read/write operations
+  - `ztip.core/gitops` — git repository operations (commit, push, branch)
+  - `ztip.core/testops` — automated test execution and result capture
+  - `ztip.core/approval` — human approval request transactions
+  - `ztip.core/evidence` — evidence record submission transactions
+  - `ztip.core/generic` — general-purpose transactions not covered by a specific core profile
 
   **Extension profiles** must be namespaced: `org.example/deploy`, `company.internal/migration`.
 
   Unknown profiles must **fail closed** — the transaction is rejected with `SCHEMA_INVALID`
   unless the control plane's policy explicitly allows unrecognized profiles. Profile-specific
-  parameter validation is permitted but not required by ZTAP core. Parameters are always
+  parameter validation is permitted but not required by ZTIP core. Parameters are always
   covered by the envelope hash regardless of whether they are profile-validated.
 - **`description`** — Required. String. A human-readable description of what this action does.
   Used for audit readability and operator approval display. Not used for policy decisions.
 - **`parameters`** — Required. Object.
-  Profile-specific parameters required to perform the action. The content is opaque to ZTAP
+  Profile-specific parameters required to perform the action. The content is opaque to ZTIP
   core and interpreted according to the declared `profile`. Parameters are still included in
   the envelope hash, so any modification is detectable. They must not contain credentials,
   secrets, or PII unless the deployment context explicitly governs this.
@@ -398,7 +404,7 @@ Each verification check object must include:
   control plane or a designated validator verifies. The target actor's own report of its
   results is attestation, not verification (see `SPEC.md`, Completion Verification).
 - **`failure_reason_code`** — Optional. String. The reason code to record in the receipt if
-  this check fails. Should be a valid ZTAP reason code (e.g., `VERIFY_FAILED`) or a
+  this check fails. Should be a valid ZTIP reason code (e.g., `VERIFY_FAILED`) or a
   namespaced extension code.
 
 Vague or free-text-only verification requirements are schema-invalid. A check whose
@@ -612,7 +618,7 @@ requirements.
 
 ## Execution Receipt Envelope
 
-The execution receipt is the outcome record of a ZTAP transaction. It is produced by the
+The execution receipt is the outcome record of a ZTIP transaction. It is produced by the
 target actor (or a validator actor) after execution completes — whether successfully or not.
 It is submitted to the control plane for verification and retention.
 
@@ -775,11 +781,11 @@ The actor that produced or submitted this evidence.
 When this evidence was produced or captured.
 
 **`evidence_type`** — Required. String.
-A structured identifier for the type of evidence. ZTAP defines a set of core evidence types.
+A structured identifier for the type of evidence. ZTIP defines a set of core evidence types.
 Extension evidence types are permitted but must use a namespaced format
 (`org.example/custom-type`). An unknown non-namespaced type must be rejected.
 
-**Core evidence types (ZTAP-defined):**
+**Core evidence types (ZTIP-defined):**
 
 | Type | Description |
 |---|---|
@@ -827,7 +833,7 @@ An amendment event records a change to the context, parameters, or standing of a
 after the original request was submitted. It does not modify the original `transaction_request`
 envelope. The original request is immutable; the amendment event is a linked record.
 
-An amendment event is itself a ZTAP envelope, subject to the same governance model. It must
+An amendment event is itself a ZTIP envelope, subject to the same governance model. It must
 be authorized by the control plane. An unauthorized amendment event is not a valid amendment.
 
 ### Required Fields
@@ -895,8 +901,8 @@ contains the additional context. For `operator_note`, this contains the structur
 
 ## Integrity Object and Hashing
 
-Every ZTAP envelope contains an `integrity` object. This object records how the envelope was
-hashed and the resulting hash value. It is the foundation of ZTAP's tamper-detection model.
+Every ZTIP envelope contains an `integrity` object. This object records how the envelope was
+hashed and the resulting hash value. It is the foundation of ZTIP's tamper-detection model.
 
 ### Integrity Object Fields
 
@@ -910,7 +916,7 @@ The hash algorithm used. Default value: `SHA-256`.
 The hex-encoded hash of the canonicalized envelope. See "Hash Construction" below.
 
 **`signed`** — Optional. Boolean. Future use.
-Whether this envelope has been cryptographically signed. Signing is not required by ZTAP v1.
+Whether this envelope has been cryptographically signed. Signing is not required by ZTIP v1.
 This field is reserved for future use. If absent, treated as `false`.
 
 **`signature_ref`** — Optional. String. Future use.
@@ -918,7 +924,7 @@ A reference to the signature record, if `signed` is `true`. Undefined for v1.
 
 ### Canonicalization
 
-ZTAP v1 uses **RFC 8785 JSON Canonicalization Scheme (JCS)** as the default canonicalization
+ZTIP v1 uses **RFC 8785 JSON Canonicalization Scheme (JCS)** as the default canonicalization
 method.
 
 RFC 8785 defines a deterministic canonical representation of JSON for cryptographic operations.
@@ -927,8 +933,8 @@ applies deterministic property sorting and Unicode normalization. The result is 
 logical JSON object produces the same byte sequence regardless of how it was originally
 serialized, by whom, or on which platform.
 
-ZTAP requires RFC 8785 JCS canonicalization because:
-- ZTAP envelopes may move between systems over any transport.
+ZTIP requires RFC 8785 JCS canonicalization because:
+- ZTIP envelopes may move between systems over any transport.
 - Different serializers may produce whitespace differences, property ordering differences,
   or number representation differences.
 - Hash verification must succeed across systems. This requires the canonical form to be
@@ -975,7 +981,7 @@ Including these fields in the hash input ensures they are tamper-evident.
 
 ### Hash Linkage Chain
 
-ZTAP's audit integrity depends on the following hash linkage:
+ZTIP's audit integrity depends on the following hash linkage:
 
 ```
 transaction_request.integrity.hash_value
@@ -1010,7 +1016,7 @@ A receipt whose `request_hash` does not match the original transaction request's
 
 ## Validity Windows
 
-ZTAP v1 governs transaction time boundaries with three required timestamps and one optional
+ZTIP v1 governs transaction time boundaries with three required timestamps and one optional
 source request field.
 
 ### Timestamp Fields
@@ -1107,9 +1113,9 @@ Reason codes are arrays. Multiple codes may apply to a single outcome.
 
 ### Reason Code Registry Model
 
-ZTAP uses an **open governed registry** for reason codes:
+ZTIP uses an **open governed registry** for reason codes:
 
-- **Core reason codes** are defined and maintained by the ZTAP protocol. They are reserved
+- **Core reason codes** are defined and maintained by the ZTIP protocol. They are reserved
   identifiers. Implementations must recognize and correctly handle core codes. An unknown
   core reason code in a received envelope is a structural error.
 - **Extension reason codes** allow implementations to express domain-specific failure modes
@@ -1125,20 +1131,20 @@ organizations to extend reason code coverage for their specific deployment conte
 
 ### Core Reason Code Registry
 
-The following codes are defined by ZTAP v1. They are reserved identifiers and must not be
+The following codes are defined by ZTIP v1. They are reserved identifiers and must not be
 redefined by extensions.
 
 **Structural**
 
 | Code | Appears In | Meaning |
 |---|---|---|
-| `SCHEMA_INVALID` | Decision, Receipt | The envelope does not conform to the required ZTAP schema. |
+| `SCHEMA_INVALID` | Decision, Receipt | The envelope does not conform to the required ZTIP schema. |
 
 **Identity**
 
 | Code | Appears In | Meaning |
 |---|---|---|
-| `ROLE_INVALID` | Decision, Receipt | The actor does not hold a valid ZTAP role for this operation. |
+| `ROLE_INVALID` | Decision, Receipt | The actor does not hold a valid ZTIP role for this operation. |
 | `ACTOR_UNREGISTERED` | Decision, Receipt | The actor is not registered with the control plane. |
 
 **Authorization**
@@ -1225,8 +1231,9 @@ redefined by extensions.
 
 ### `ztap_version`
 
-Every ZTAP envelope must include a `ztap_version` field. This field identifies the version
-of the ZTAP protocol specification under which the envelope was created.
+Every ZTIP envelope must include a `ztap_version` field. This field identifies the version
+of the ZTIP protocol specification under which the envelope was created. (The field keeps
+the protocol's original working name — see the legacy-field note in Section 5.)
 
 The current working version is `1.0-draft`. When v1 is finalized, envelopes should use `1.0`.
 
@@ -1238,7 +1245,7 @@ Examples: `1.0`, `1.1`, `1.0-draft`, `2.0-rc1`
 
 - **Implementations must reject envelopes with an unsupported major version** unless
   explicitly configured to accept them. An implementation that supports `1.x` must reject
-  a `2.0` envelope unless it has been explicitly updated to support ZTAP v2.
+  a `2.0` envelope unless it has been explicitly updated to support ZTIP v2.
 - **Minor versions within the same major version must be backwards-compatible.** A `1.1`
   envelope must be processable by a `1.0` implementation, though the `1.0` implementation
   may not understand new optional fields introduced in `1.1`.
@@ -1251,14 +1258,14 @@ Examples: `1.0`, `1.1`, `1.0-draft`, `2.0-rc1`
 
 ### Control Plane Version Enforcement
 
-A compliant ZTAP control plane must:
+A compliant ZTIP control plane must:
 - Record the `ztap_version` from every submitted envelope.
 - Reject envelopes with unsupported major versions with reason code `SCHEMA_INVALID`.
 - Include its own supported version range in its conformance documentation.
 
 ### Multi-Version Audit Trail
 
-As ZTAP protocol versions evolve, a control plane's audit log will accumulate envelopes from
+As ZTIP protocol versions evolve, a control plane's audit log will accumulate envelopes from
 multiple versions. The governing rule:
 
 **Every envelope is verified according to the `ztap_version` declared in that envelope.**
@@ -1283,7 +1290,7 @@ Specifically:
 
 ## Conceptual Examples
 
-The following examples illustrate ZTAP envelope structure using the field names defined in
+The following examples illustrate ZTIP envelope structure using the field names defined in
 this document.
 
 > **Draft notation.** These examples are conceptual. Field names, value formats, and
@@ -1301,7 +1308,7 @@ is expected per policy.
 {
   "ztap_version": "1.0-draft",
   "envelope_type": "transaction_request",
-  "transaction_id": "ztap-txn-0a1b2c3d4e5f",
+  "transaction_id": "ztip-txn-0a1b2c3d4e5f",
   "created_at": "2026-04-24T14:00:00Z",
   "source_actor": {
     "actor_id": "agent-planner-001",
@@ -1360,8 +1367,8 @@ The control plane evaluates the above request and auto-authorizes it.
 {
   "ztap_version": "1.0-draft",
   "envelope_type": "authorization_decision",
-  "transaction_id": "ztap-txn-0a1b2c3d4e5f",
-  "decision_id": "ztap-dec-9f8e7d6c5b4a",
+  "transaction_id": "ztip-txn-0a1b2c3d4e5f",
+  "decision_id": "ztip-dec-9f8e7d6c5b4a",
   "request_hash": "a3f9e1c7b2d04851...",
   "control_plane": {
     "actor_id": "control-plane-primary",
@@ -1399,10 +1406,10 @@ The deployment completes and verification passes.
 {
   "ztap_version": "1.0-draft",
   "envelope_type": "execution_receipt",
-  "transaction_id": "ztap-txn-0a1b2c3d4e5f",
-  "receipt_id": "ztap-rcpt-1a2b3c4d5e6f",
+  "transaction_id": "ztip-txn-0a1b2c3d4e5f",
+  "receipt_id": "ztip-rcpt-1a2b3c4d5e6f",
   "request_hash": "a3f9e1c7b2d04851...",
-  "authorization_decision_ref": "ztap-dec-9f8e7d6c5b4a",
+  "authorization_decision_ref": "ztip-dec-9f8e7d6c5b4a",
   "source_actor": {
     "actor_id": "agent-planner-001",
     "role": ["planner", "source_actor"],
@@ -1460,16 +1467,16 @@ traceability. Open questions that remain unresolved follow.
 
 **Resolved:**
 
-1. ~~**`requested_action` sub-structure.**~~ Resolved. ZTAP defines a standard action wrapper
+1. ~~**`requested_action` sub-structure.**~~ Resolved. ZTIP defines a standard action wrapper
    with required fields: `action_id`, `action_type`, `profile`, `description`, `parameters`,
-   `required_capabilities`, `risk_level`, `expected_outputs`. Parameters are opaque to ZTAP
+   `required_capabilities`, `risk_level`, `expected_outputs`. Parameters are opaque to ZTIP
    core but covered by the envelope hash. Unknown profiles fail closed unless policy allows.
 
-2. ~~**`verification_requirements` sub-structure.**~~ Resolved. ZTAP defines a standard
+2. ~~**`verification_requirements` sub-structure.**~~ Resolved. ZTIP defines a standard
    verification check array. Each check requires: `check_id`, `check_type`, `description`,
    `required`, `expected_result`. Free-text-only checks are invalid.
 
-3. ~~**Reason code registry governance.**~~ Resolved. Open governed registry. ZTAP core defines
+3. ~~**Reason code registry governance.**~~ Resolved. Open governed registry. ZTIP core defines
    reserved codes. Extension codes must be namespaced (`org.example/CODE`). Unknown un-namespaced
    codes are schema-invalid.
 
@@ -1511,7 +1518,7 @@ traceability. Open questions that remain unresolved follow.
     (`org.example/deploy_service`). Unknown un-namespaced capabilities are schema-invalid.
 
 11. ~~**`requested_action.profile` registry.**~~ Resolved. Open governed registry. Core profiles
-    are `ztap.core/*`. Extension profiles must be namespaced. Unknown profiles fail closed unless
+    are `ztip.core/*`. Extension profiles must be namespaced. Unknown profiles fail closed unless
     policy explicitly allows. Defined in Transaction Request Envelope section.
 
 12. ~~**`risk_level` policy integration.**~~ Resolved. Source actor declares; control plane
@@ -1526,14 +1533,14 @@ A. **Break-glass envelope type.** The break-glass principle is defined in SPEC.m
    or a dedicated amendment type.
 
 B. **`requested_action.profile` versioning.** When a profile's parameter schema changes, how
-   are profile versions expressed? e.g., `ztap.core/gitops@2` or `ztap.core/gitops/v2`.
+   are profile versions expressed? e.g., `ztip.core/gitops@2` or `ztip.core/gitops/v2`.
    Currently unspecified.
 
 ---
 
 ## Next Steps
 
-This document has defined the prose schema for all five ZTAP v1 envelope types, the actor
+This document has defined the prose schema for all five ZTIP v1 envelope types, the actor
 and integrity objects, the validity window model, atomicity fields, reason codes, and
 versioning rules.
 
@@ -1562,6 +1569,6 @@ names for a `1.0` release.
 
 ---
 
-> ZTAP Schema Draft — `1.0-draft`.
+> ZTIP Schema Draft — `1.0-draft`.
 > Derived from `SPEC.md`; implemented as the JSON Schemas under `schemas/`.
 > **Freedom for engineers. Governance for the organization.**

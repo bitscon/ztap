@@ -1,10 +1,10 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Human Approval Required",
     "scenario": "A planning agent requests a production database schema migration. Policy requires explicit operator approval before proceeding. This example shows the initial human_approval_required decision, then the human_approved decision after approval is received. The final decision carries a fully populated approval_scope binding the approval to this specific transaction.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approval_required", "human_approved", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
-    "notes_on_human_approval_model": "ZTAP does not define how approval notification is delivered to the operator. The control plane issues a new authorization_decision envelope with status 'human_approved' once approval is received. The original human_approval_required envelope is immutable and retained. Both envelopes appear in the audit trail."
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
+    "notes_on_human_approval_model": "ZTIP does not define how approval notification is delivered to the operator. The control plane issues a new authorization_decision envelope with status 'human_approved' once approval is received. The original human_approval_required envelope is immutable and retained. Both envelopes appear in the audit trail."
   },
 
   "envelopes": [
@@ -14,7 +14,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-02ccdd334455",
+      "transaction_id": "ztip-txn-02ccdd334455",
       "created_at": "2026-04-24T10:00:00Z",
 
       "source_actor": {
@@ -85,7 +85,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb"
+        "hash_value": "d34a69df88f1e1ad06d03e62e3cb6087b312e106adb1bc07a7a4fd87508ad0d6"
       }
     },
 
@@ -95,9 +95,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-02ccdd334455",
-      "decision_id": "ztap-dec-02ccdd334455-001",
-      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
+      "transaction_id": "ztip-txn-02ccdd334455",
+      "decision_id": "ztip-dec-02ccdd334455-001",
+      "request_hash": "d34a69df88f1e1ad06d03e62e3cb6087b312e106adb1bc07a7a4fd87508ad0d6",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -130,7 +130,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "0774ebd5b65c79b102c8746b03736679c60e55639408254e0534776c3be29aac"
+        "hash_value": "1c3605aa5e4ae38938bdd0790eed1f2e64c6273c17089d809d3526040333fb72"
       }
     },
 
@@ -140,9 +140,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-02ccdd334455",
-      "decision_id": "ztap-dec-02ccdd334455-002",
-      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
+      "transaction_id": "ztip-txn-02ccdd334455",
+      "decision_id": "ztip-dec-02ccdd334455-002",
+      "request_hash": "d34a69df88f1e1ad06d03e62e3cb6087b312e106adb1bc07a7a4fd87508ad0d6",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -173,8 +173,8 @@
         "approved_by": "actor://operators/dba-on-call",
         "approved_at": "2026-04-24T10:14:25Z",
         "approval_scope": {
-          "transaction_id": "ztap-txn-02ccdd334455",
-          "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
+          "transaction_id": "ztip-txn-02ccdd334455",
+          "request_hash": "d34a69df88f1e1ad06d03e62e3cb6087b312e106adb1bc07a7a4fd87508ad0d6",
           "action_ids": ["act-02ccdd334455-migrate"],
           "target_actor_id": "agent-executor-db-001",
           "approved_capabilities": ["org.acme/run_schema_migration"],
@@ -186,7 +186,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "349c4566bddf089997c24719a8df42e50cb1b96de956ad38d1c2718f31f5d9a6"
+        "hash_value": "674c490ce9e7651d9598b4b0d057ca1028294eb7185d6c0b60ca7827c73a656c"
       }
     },
 
@@ -196,10 +196,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-02ccdd334455",
-      "receipt_id": "ztap-rcpt-02ccdd334455-001",
-      "request_hash": "df6ba893eed78b0a0a25fe75f51eeecf9e07e6263daeab9ae3a2709d2f9023bb",
-      "authorization_decision_ref": "ztap-dec-02ccdd334455-002",
+      "transaction_id": "ztip-txn-02ccdd334455",
+      "receipt_id": "ztip-rcpt-02ccdd334455-001",
+      "request_hash": "d34a69df88f1e1ad06d03e62e3cb6087b312e106adb1bc07a7a4fd87508ad0d6",
+      "authorization_decision_ref": "ztip-dec-02ccdd334455-002",
 
       "source_actor": {
         "actor_id": "agent-planner-002",
@@ -271,7 +271,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "eb7d7bc38e6b602ae3fb458edd51a242de4c27a5494d70203f02df4925e59dbe"
+        "hash_value": "47e40dec280b22cc2136fa3e85eb41204c2cbb237900fcad20ba63dd73f3352d"
       }
     }
 

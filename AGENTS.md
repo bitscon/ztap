@@ -2,7 +2,7 @@
 
 ## System Identity
 
-ztap is the canonical home of the ZTAP (Zero Trust Agent Protocol) specification,
+ztip is the canonical home of the ZTIP (Zero Trust Intelligence Protocol) specification,
 schemas, conformance criteria, and examples. It is a standalone open-source project:
 the repository MUST build, validate, and be understood on its own, with no dependency
 on any private sibling repository or a parent workspace's private state.
@@ -10,7 +10,7 @@ on any private sibling repository or a parent workspace's private state.
 ## Project Identity
 
 - **Type:** python-tool (spec corpus + validator/runtime tooling)
-- **GitHub remote:** bitscon/ztap
+- **GitHub remote:** bitscon/ztip
 - **Deploy target:** none
 
 ## Source-of-Truth Rules
@@ -37,9 +37,9 @@ The worth of an open protocol is that it is implementation-agnostic. Therefore:
 
 ## Prohibited Actions
 
-- Modify files outside ztap/
+- Modify files outside ztip/
 - Delete files without explicit instruction
-- Claim ZTAP replaces MCP or A2A, or imply encryption is mandatory (see the public
+- Claim ZTIP replaces MCP or A2A, or imply encryption is mandatory (see the public
   positioning/alignment docs for locked terminology)
 - Add a dependency on any private repository's paths, runtime state, or governance logic
 

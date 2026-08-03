@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Governance Transaction — Actor Registration Update",
-    "scenario": "The operations team needs to register a new AI executor agent with elevated deployment capabilities. This is a governance-class transaction: it modifies the actor registry and grants production capability claims. Governance transactions use the same ZTAP envelope structure as operational transactions but are held to stricter authorization standards — operator approval required, elevated evidence, and the receipt records prior state and new state.",
+    "scenario": "The operations team needs to register a new AI executor agent with elevated deployment capabilities. This is a governance-class transaction: it modifies the actor registry and grants production capability claims. Governance transactions use the same ZTIP envelope structure as operational transactions but are held to stricter authorization standards — operator approval required, elevated evidence, and the receipt records prior state and new state.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approved", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
     "governance_note": "A governance transaction modifies the rules under which future operational transactions are evaluated. An actor that can register itself with new capabilities via an auto-authorized transaction would undermine the governance model. Governance transactions require explicit operator approval regardless of other auto-authorization policies."
   },
 
@@ -15,7 +15,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-10gov-register-executor",
+      "transaction_id": "ztip-txn-10gov-register-executor",
       "created_at": "2026-04-24T11:30:00Z",
 
       "source_actor": {
@@ -39,7 +39,7 @@
       "requested_action": {
         "action_id": "act-10gov-register-executor-ml-001",
         "action_type": "actor_registration",
-        "profile": "ztap.core/generic",
+        "profile": "ztip.core/generic",
         "description": "Register new ML inference executor agent with production deployment capabilities for the recommendation service.",
         "parameters": {
           "new_actor": {
@@ -119,7 +119,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254"
+        "hash_value": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69"
       }
     },
 
@@ -129,9 +129,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "evidence_record",
-      "transaction_id": "ztap-txn-10gov-register-executor",
-      "evidence_id": "ztap-evid-10gov-arch-board-approval",
-      "request_hash": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254",
+      "transaction_id": "ztip-txn-10gov-register-executor",
+      "evidence_id": "ztip-evid-10gov-arch-board-approval",
+      "request_hash": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69",
       "produced_by": {
         "actor_id": "operator-platform-001",
         "role": ["operator"],
@@ -146,7 +146,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "2e7c160ee83077df214f8c22deb4d2eaf22f13c32feb2a71992a2727c6490799"
+        "hash_value": "22139d82591bf9b9687f7f9223a73e1e2d165f139a98942a77969b49827e3267"
       }
     },
 
@@ -156,9 +156,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "evidence_record",
-      "transaction_id": "ztap-txn-10gov-register-executor",
-      "evidence_id": "ztap-evid-10gov-registry-snapshot",
-      "request_hash": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254",
+      "transaction_id": "ztip-txn-10gov-register-executor",
+      "evidence_id": "ztip-evid-10gov-registry-snapshot",
+      "request_hash": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69",
       "produced_by": {
         "actor_id": "control-plane-registry-manager",
         "role": ["control_plane"],
@@ -173,7 +173,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "cdb531bfaf2fda56e91f6c657ea6790a1e9db21ca3662fedc0952b538bf03a0c"
+        "hash_value": "32d70ce40f120c68c8a1f1f03520e77b2a580975633e445e9aba1d65547cea74"
       }
     },
 
@@ -183,9 +183,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-10gov-register-executor",
-      "decision_id": "ztap-dec-10gov-register-executor-001",
-      "request_hash": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254",
+      "transaction_id": "ztip-txn-10gov-register-executor",
+      "decision_id": "ztip-dec-10gov-register-executor-001",
+      "request_hash": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -215,8 +215,8 @@
         "approved_by": "actor://operators/platform-lead-001",
         "approved_at": "2026-04-24T11:33:10Z",
         "approval_scope": {
-          "transaction_id": "ztap-txn-10gov-register-executor",
-          "request_hash": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254",
+          "transaction_id": "ztip-txn-10gov-register-executor",
+          "request_hash": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69",
           "action_ids": ["act-10gov-register-executor-ml-001"],
           "target_actor_id": "control-plane-registry-manager",
           "approved_capabilities": ["org.acme/register_actor", "org.acme/grant_capability"],
@@ -224,20 +224,20 @@
           "single_use": true
         },
         "approval_evidence_refs": [
-          "ztap-evid-10gov-arch-board-approval",
-          "ztap-evid-10gov-registry-snapshot"
+          "ztip-evid-10gov-arch-board-approval",
+          "ztip-evid-10gov-registry-snapshot"
         ]
       },
 
       "evidence_refs": [
-        "ztap-evid-10gov-arch-board-approval",
-        "ztap-evid-10gov-registry-snapshot"
+        "ztip-evid-10gov-arch-board-approval",
+        "ztip-evid-10gov-registry-snapshot"
       ],
 
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "cb1e04e5cd8d243c7e23d34eac80b44b42cc245bd081a9d2a5b38db3f25d12d7"
+        "hash_value": "610454a2fe3f8952d5f5953c1f2e59cde86fe1d5607a4f3e1471895c71d9ee3f"
       }
     },
 
@@ -247,10 +247,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-10gov-register-executor",
-      "receipt_id": "ztap-rcpt-10gov-register-executor-001",
-      "request_hash": "1ad72fbeeb111afbf7876b71374d6b05eb42d0e03d6e88a0c5ceaccd0030c254",
-      "authorization_decision_ref": "ztap-dec-10gov-register-executor-001",
+      "transaction_id": "ztip-txn-10gov-register-executor",
+      "receipt_id": "ztip-rcpt-10gov-register-executor-001",
+      "request_hash": "cdfd587d4f9fe14aa053454e7059f73cff195f97436fab4d973f7f6a417c7f69",
+      "authorization_decision_ref": "ztip-dec-10gov-register-executor-001",
 
       "source_actor": {
         "actor_id": "operator-platform-001",
@@ -330,8 +330,8 @@
       ],
 
       "evidence_refs": [
-        "ztap-evid-10gov-arch-board-approval",
-        "ztap-evid-10gov-registry-snapshot"
+        "ztip-evid-10gov-arch-board-approval",
+        "ztip-evid-10gov-registry-snapshot"
       ],
 
       "atomicity_result": {
@@ -357,7 +357,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "5ac810504b6defb410e854e45a1b4f1544a38282149a91164ded0a67d5e28219"
+        "hash_value": "1648b25d48f7c6226f134f1fa5751463c2ecf147a2e720e5f68b54c768ee9447"
       }
     }
 

@@ -1,16 +1,16 @@
-# Contributing to ZTAP
+# Contributing to ZTIP
 
-Thanks for helping improve ZTAP. This repository is the public protocol source for the Zero Trust Agent Protocol.
+Thanks for helping improve ZTIP. This repository is the public protocol source for the Zero Trust Intelligence Protocol.
 
 ## Project Purpose
-ZTAP defines governance rules and machine-readable envelope formats for governed agent work. This repo contains protocol docs, schemas, examples, and validation tooling.
+ZTIP defines governance rules and machine-readable envelope formats for governed agent work. This repo contains protocol docs, schemas, examples, and validation tooling.
 
 ## Contribution Scope
 In scope:
 - Protocol documentation (`SPEC.md`, `SCHEMA.md`, `CONFORMANCE.md`)
 - JSON Schema files under `schemas/`
 - Example envelopes under `examples/`
-- The reference runtime under `ztap/` and its tests under `tests/`
+- The reference runtime under `ztip/` and its tests under `tests/`
 - Validation and contributor tooling under `scripts/`
 
 Out of scope for this repo:
@@ -19,7 +19,7 @@ Out of scope for this repo:
 
 ## Protocol Guardrails
 Please preserve these protocol constraints in all contributions:
-- Use only ZTAP protocol roles in `role` fields. Do not use vendor, tool, platform, or model names as roles.
+- Use only ZTIP protocol roles in `role` fields. Do not use vendor, tool, platform, or model names as roles.
 - Do not add ZTI Core implementation code to this repo.
 - Do not introduce implementation-specific runtime dependencies. Protocol artifacts must remain portable.
 - Preserve transport neutrality.

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ztip-bundle.schema.json",
+  "title": "ZTIP Bundle",
+  "description": "Accepts either one ZTIP envelope object or an array of ZTIP envelope objects.",
+  "oneOf": [
+    {
+      "$ref": "ztip-envelope.schema.json"
+    },
+    {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "ztip-envelope.schema.json"
+      }
+    }
+  ]
+}

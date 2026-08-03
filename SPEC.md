@@ -1,6 +1,6 @@
-# ZTAP Specification Draft
+# ZTIP Specification Draft
 
-*Zero Trust Agent Protocol — Transaction Lifecycle and Governance Model*
+*Zero Trust Intelligence Protocol — Transaction Lifecycle and Governance Model*
 
 ---
 
@@ -9,12 +9,12 @@
 **DRAFT — `1.0-draft`. Pre-release; not yet a frozen production target.**
 
 This document is the specification draft. It defines the transaction lifecycle, governance
-model, and core concepts of the Zero Trust Agent Protocol in prose.
+model, and core concepts of the Zero Trust Intelligence Protocol in prose.
 
 Field names, schema structures, transport bindings, and API interfaces are NOT finalized
 here. Hash canonicalization is the exception: RFC 8785 JCS with SHA-256 is finalized for v1
 (see Integrity and Hashing). The machine-readable JSON Schemas live in `schemas/` (with the
-prose field model in `SCHEMA.md`), and a reference runtime lives in `ztap/`. This document
+prose field model in `SCHEMA.md`), and a reference runtime lives in `ztip/`. This document
 establishes the governing principles and lifecycle model that all schema and implementation
 work must conform to.
 
@@ -28,17 +28,17 @@ implementations, not yet a frozen target for production guarantees.
 
 ## Purpose
 
-ZTAP defines how governed transactions between agents — and between agents, humans, and systems
+ZTIP defines how governed transactions between agents — and between agents, humans, and systems
 — must be structured so that every interaction is authorized, verifiable, and auditable.
 
-The core problem ZTAP addresses: in modern multi-agent AI systems, one agent invokes another
+The core problem ZTIP addresses: in modern multi-agent AI systems, one agent invokes another
 with a plain function call or message. No policy is evaluated. No authorization is recorded.
 No verifiable receipt is produced. The interaction happens, and nothing proves what was
 requested, what was permitted, or what occurred.
 
 This is ambient authority. It is incompatible with organizational governance.
 
-ZTAP solves this by defining a structured transaction model in which:
+ZTIP solves this by defining a structured transaction model in which:
 
 - every request is captured in a formal envelope before any action is taken,
 - every envelope is submitted to a control plane for policy evaluation,
@@ -46,8 +46,8 @@ ZTAP solves this by defining a structured transaction model in which:
 - every result is returned as a linked receipt that can be verified against the original request,
 - and the complete record is tamper-detectable via cryptographic hashes.
 
-ZTAP is transport-agnostic. A ZTAP envelope may move by API, file, message queue, GitHub PR,
-chat message, workflow engine, email, or any other channel. ZTAP governs the transaction
+ZTIP is transport-agnostic. A ZTIP envelope may move by API, file, message queue, GitHub PR,
+chat message, workflow engine, email, or any other channel. ZTIP governs the transaction
 object, not the delivery mechanism.
 
 **Freedom for engineers. Governance for the organization.**
@@ -56,19 +56,19 @@ object, not the delivery mechanism.
 
 ## Non-Goals
 
-ZTAP does not define:
+ZTIP does not define:
 
-- **Transport protocols.** How envelopes move between actors is out of scope. ZTAP defines
+- **Transport protocols.** How envelopes move between actors is out of scope. ZTIP defines
   what must be in the envelope, not how it is delivered.
-- **Model selection.** ZTAP does not govern which AI models agents use or how they generate
+- **Model selection.** ZTIP does not govern which AI models agents use or how they generate
   outputs.
-- **Tool implementation.** ZTAP does not define how agent tools work internally. It governs
+- **Tool implementation.** ZTIP does not define how agent tools work internally. It governs
   transactions between actors, not the internals of any actor.
 - **User interfaces.** How operators interact with the control plane, review approvals, or
   browse audit logs is implementation-specific.
-- **Vendor-specific APIs.** ZTAP defines a conceptual control plane contract. Specific API
+- **Vendor-specific APIs.** ZTIP defines a conceptual control plane contract. Specific API
   endpoints, SDKs, and service configurations are outside the protocol scope.
-- **Encryption.** ZTAP v1 requires hash-based integrity, not encryption. Encryption may be
+- **Encryption.** ZTIP v1 requires hash-based integrity, not encryption. Encryption may be
   layered on top for specific deployment contexts but is not a protocol requirement.
 - **Cross-organizational federation.** Initial scope is single-organization deployment. See
   the Next Steps section for future direction.
@@ -77,23 +77,23 @@ ZTAP does not define:
 
 ## The Trust Boundary
 
-**ZTAP does not secure the pipe. ZTAP governs the action.**
+**ZTIP does not secure the pipe. ZTIP governs the action.**
 
-ZTAP governance is not enforced by transport. An envelope that travels over a secure channel,
+ZTIP governance is not enforced by transport. An envelope that travels over a secure channel,
 an authenticated API, an encrypted tunnel, or a trusted network is not a governed transaction
 by virtue of its delivery method. Transport security and transaction governance are orthogonal.
 
-ZTAP governance is enforced at the point of action. A target actor must refuse to perform
-work unless it holds a valid, verifiable ZTAP authorization record for that specific action.
+ZTIP governance is enforced at the point of action. A target actor must refuse to perform
+work unless it holds a valid, verifiable ZTIP authorization record for that specific action.
 The authorization record — issued by the control plane — is what makes a transaction governed.
 The transport is irrelevant.
 
 This means:
 
 - An ungoverned message may exist. It cannot become accepted, authorized, governed work inside
-  a ZTAP-compliant environment unless it passes through the control plane's evaluation and
+  a ZTIP-compliant environment unless it passes through the control plane's evaluation and
   produces a valid authorization record.
-- A compliant target actor does not execute instructions delivered without a valid ZTAP
+- A compliant target actor does not execute instructions delivered without a valid ZTIP
   authorization record, regardless of how those instructions arrived or who sent them.
 - A compliant control plane does not issue authorizations without evaluating policy, regardless
   of how well-trusted the source actor appears to be.
@@ -102,13 +102,13 @@ This means:
   entity that executes does not self-authorize.
 
 The trust boundary is not defined by the network perimeter. It is defined by the authorization
-record. This is the foundational principle from which ZTAP's entire governance model derives.
+record. This is the foundational principle from which ZTIP's entire governance model derives.
 
 ---
 
 ## Core Concepts
 
-### ZTAP Transaction
+### ZTIP Transaction
 
 The full governed unit of work. A transaction begins when a source actor creates a request and
 ends when a final receipt is produced — whether the outcome is success, failure, rejection, or
@@ -117,7 +117,7 @@ cancellation.
 A transaction is not a single message. It is a lifecycle. Multiple envelopes and receipts may
 be associated with a single transaction as it moves through its states.
 
-### ZTAP Envelope
+### ZTIP Envelope
 
 The serialized JSON object that carries a transaction event. An envelope captures a point-in-time
 state of a transaction: the original request, an authorization decision, an evidence submission,
@@ -127,7 +127,7 @@ Submitted envelopes are immutable. Once a transaction envelope has been submitte
 plane, it cannot be modified. Subsequent events — results, evidence, approvals — are separate
 linked envelopes, not modifications to the original.
 
-### ZTAP Receipt
+### ZTIP Receipt
 
 The result envelope produced after a transaction reaches a terminal or intermediate state.
 A receipt references the original transaction and the original request envelope by hash, links
@@ -137,26 +137,26 @@ corresponds to the authorized action.
 Receipts are produced for all terminal outcomes: success, failure, rejection, cancellation,
 and expiry.
 
-### ZTAP Control Plane
+### ZTIP Control Plane
 
 The authority layer responsible for evaluating policy, recording authorization decisions, and
 governing whether transactions may proceed. The control plane is the single authoritative
 source for whether a given transaction is permitted under organizational policy.
 
-The control plane is not defined by ZTAP as a specific product. ZTAP defines the conceptual
+The control plane is not defined by ZTIP as a specific product. ZTIP defines the conceptual
 contract the control plane must satisfy. ZTI Core is one compliant implementation of this
 contract.
 
 ### Actor
 
-Any entity that participates in a ZTAP transaction — source, target, approver, or auditor.
+Any entity that participates in a ZTIP transaction — source, target, approver, or auditor.
 Actors may be AI agents, automated systems, or humans. All actors must be identifiable to the
 control plane.
 
 ### Role
 
 A protocol-level classification of the function an actor performs within a transaction.
-Roles are defined by ZTAP and are not implementation-specific. An actor may hold more than
+Roles are defined by ZTIP and are not implementation-specific. An actor may hold more than
 one role depending on context.
 
 Defined roles are listed in the Roles and Capabilities section.
@@ -183,7 +183,7 @@ Evidence envelopes are linked to the transaction by hash.
 
 ## Transaction Lifecycle
 
-A ZTAP transaction progresses through a defined set of states. Not all states are reached in
+A ZTIP transaction progresses through a defined set of states. Not all states are reached in
 every transaction — a rejected transaction does not enter `executing`, and a cancelled
 transaction may be cancelled from multiple earlier states.
 
@@ -287,7 +287,7 @@ created
 
 ## Authorization Model
 
-Authorization is determined by the control plane based on organizational policy. ZTAP does not
+Authorization is determined by the control plane based on organizational policy. ZTIP does not
 define authorization outcomes based on transaction type, actor identity, or any other attribute
 directly. Policy governs.
 
@@ -318,17 +318,17 @@ to the `expired` terminal state.
 
 ### Human-in-the-Loop
 
-ZTAP supports human-in-the-loop approval as a policy-conditional outcome. Human approval is
+ZTIP supports human-in-the-loop approval as a policy-conditional outcome. Human approval is
 not required for every transaction. Whether a transaction requires human approval, may be
 auto-authorized, or must be rejected is determined entirely by organizational policy.
 
-When human approval is required, ZTAP requires that:
+When human approval is required, ZTIP requires that:
 - the approval request be recorded in the transaction,
 - the approver identity be recorded,
 - the approval timestamp be recorded, and
 - the approval record be hash-linked to the transaction envelope.
 
-An approval that is not recorded in the transaction is not a ZTAP-compliant approval.
+An approval that is not recorded in the transaction is not a ZTIP-compliant approval.
 
 Approvals are action-specific and single-use. An approval issued for one transaction may not
 be applied to a different transaction. An authorization record that was consumed to advance a
@@ -348,7 +348,7 @@ pathways with elevated evidence requirements, not authorization bypasses.
 
 **Break-glass has more required evidence than standard authorization, not less.**
 
-A ZTAP-compliant break-glass transaction must carry — at minimum — structured evidence
+A ZTIP-compliant break-glass transaction must carry — at minimum — structured evidence
 establishing:
 
 - **Incident or ticket reference** — a stable identifier for the incident or event requiring
@@ -366,7 +366,7 @@ An expired or incomplete break-glass authorization is invalid and must fail clos
 break-glass action that bypasses authorization is not a legitimate break-glass — it is an
 unauthorized action, and must be treated as such in the audit trail.
 
-ZTAP v1 does not define a dedicated break-glass envelope type. Break-glass transactions use
+ZTIP v1 does not define a dedicated break-glass envelope type. Break-glass transactions use
 the existing authorization and evidence model, with policy requirements specifying the
 evidence fields described above. This principle is normative; the schema implementation is
 in progress.
@@ -375,8 +375,8 @@ in progress.
 
 ## Identity and Actor Registration
 
-All actors that participate in ZTAP transactions must be identifiable to the control plane.
-ZTAP defines the identity *claims* that actors must be able to make; it does not mandate the
+All actors that participate in ZTIP transactions must be identifiable to the control plane.
+ZTIP defines the identity *claims* that actors must be able to make; it does not mandate the
 authentication mechanism used to verify those claims.
 
 Compliant identity mechanisms may include, but are not limited to:
@@ -387,7 +387,7 @@ Compliant identity mechanisms may include, but are not limited to:
 - Enterprise SSO delegation
 - Platform-native identity (e.g., GitHub identity, cloud IAM role)
 
-ZTAP requires that an actor's identity record include, at minimum, the conceptual equivalents of:
+ZTIP requires that an actor's identity record include, at minimum, the conceptual equivalents of:
 
 - **Actor identifier** — a stable, unique reference for this actor within the organization's
   control plane. Not necessarily a human-readable name.
@@ -416,14 +416,14 @@ implementation identity. See the normative rule in Roles and Capabilities.
 ### Unregistered Actors
 
 A transaction submitted by an unregistered actor, or requesting action from an unregistered
-target, must be rejected with reason code `ACTOR_UNREGISTERED`. ZTAP is fail-closed. An
+target, must be rejected with reason code `ACTOR_UNREGISTERED`. ZTIP is fail-closed. An
 unknown actor is not a trusted actor.
 
 ---
 
 ## Control Plane Contract
 
-The ZTAP control plane must support the following logical operations. This section defines the
+The ZTIP control plane must support the following logical operations. This section defines the
 conceptual contract, not HTTP endpoints or API signatures. Those are implementation details.
 
 ### 1. Submit Transaction
@@ -596,7 +596,7 @@ re-running the declared checks — that every required check passed, before the 
 is accepted into the audit trail.
 
 *Non-normative rationale:* autonomous agents reporting success for work that did not succeed,
-or did not occur, is a documented failure mode of agent systems — not a hypothetical. ZTAP's
+or did not occur, is a documented failure mode of agent systems — not a hypothetical. ZTIP's
 answer is structural rather than behavioral: the protocol does not ask executors to be more
 honest. It removes the executor's claim from the position of settling the question.
 
@@ -604,7 +604,7 @@ honest. It removes the executor's claim from the position of settling the questi
 
 ## Integrity and Hashing
 
-ZTAP v1 requires hash-based integrity verification. Encryption is not required by the initial
+ZTIP v1 requires hash-based integrity verification. Encryption is not required by the initial
 protocol specification and may be added as an optional layer in future versions or specific
 deployment contexts.
 
@@ -634,15 +634,15 @@ value — must produce a different hash, invalidating the hash reference chain.
 
 ### Algorithm
 
-ZTAP v1 uses SHA-256 as the hash algorithm and **RFC 8785 (JSON Canonicalization Scheme)**
+ZTIP v1 uses SHA-256 as the hash algorithm and **RFC 8785 (JSON Canonicalization Scheme)**
 as the canonicalization rule. This is finalized, not provisional. The integrity hash is
 computed over the RFC 8785 canonical form of the envelope with the `integrity.hash_value`
 field excluded and with non-normative annotation fields — keys beginning with an
 underscore — removed. See `SCHEMA.md` (Integrity Object and Hashing) for the full hash
 construction rules.
 
-*Informative:* the repository's reference runtime — the `ztap/` package, with the
-`ztap hash` and `ztap verify` CLI commands — implements this canonicalization and hashing
+*Informative:* the repository's reference runtime — the `ztip/` package, with the
+`ztip hash` and `ztip verify` CLI commands — implements this canonicalization and hashing
 end-to-end.
 
 Canonicalization must be deterministic: the same logical envelope must always produce the
@@ -671,7 +671,7 @@ If the original request must change after submission, the correct actions are:
 2. **Create a linked amendment event** — a separate envelope that references the original
    transaction and records what changed, why, and under what authority.
 
-Amendment events are themselves ZTAP envelopes. They are subject to the same governance model
+Amendment events are themselves ZTIP envelopes. They are subject to the same governance model
 as original transactions. An amendment that was not authorized by the control plane is not a
 valid amendment.
 
@@ -699,9 +699,9 @@ to permission.
 A compliant actor, control plane, or implementation must reject a transaction under any of
 the following conditions, without exception:
 
-- **Invalid schema.** The envelope does not conform to the required ZTAP structure.
+- **Invalid schema.** The envelope does not conform to the required ZTIP structure.
 - **Unknown actor.** The submitting or target actor is not registered with the control plane.
-- **Invalid role.** The actor's claimed role is not a recognized ZTAP protocol role.
+- **Invalid role.** The actor's claimed role is not a recognized ZTIP protocol role.
 - **Missing authority.** Required authority or delegation is absent from the envelope.
 - **Missing capability.** The target actor does not hold the requested capability in its
   registered capability claims.
@@ -727,7 +727,7 @@ Every failure must produce a structured receipt containing:
 - a timestamp, and
 - a hash of the original request envelope (where available).
 
-Failure without a receipt is not ZTAP-compliant.
+Failure without a receipt is not ZTIP-compliant.
 
 ### Draft Reason Code Categories
 
@@ -737,7 +737,7 @@ categories, and extension rules — is the Core Reason Code Registry in `SCHEMA.
 | Reason Code | Category | Description |
 |---|---|---|
 | `SCHEMA_INVALID` | Structural | The envelope does not conform to the required schema. |
-| `ROLE_INVALID` | Identity | The requesting actor does not hold a valid ZTAP role. |
+| `ROLE_INVALID` | Identity | The requesting actor does not hold a valid ZTIP role. |
 | `ACTOR_UNREGISTERED` | Identity | The actor is not registered with the control plane. |
 | `AUTHORITY_MISSING` | Authorization | Required authority or delegation is absent. |
 | `POLICY_DENIED` | Policy | The control plane policy explicitly denies this transaction. |
@@ -762,11 +762,11 @@ categories, and extension rules — is the Core Reason Code Registry in `SCHEMA.
 
 Not all real-world operations are reversible. A deployment may succeed on three of four
 services before failing on the fourth. A message may be sent before a downstream step fails.
-ZTAP must handle partial execution states without assuming that rollback is always possible.
+ZTIP must handle partial execution states without assuming that rollback is always possible.
 
 ### Declared Atomicity Modes
 
-Every ZTAP transaction must declare — or be evaluated against a policy that specifies — one
+Every ZTIP transaction must declare — or be evaluated against a policy that specifies — one
 of the following atomicity modes:
 
 **`atomic_required`** *(default)*
@@ -805,7 +805,7 @@ It is never the default. It is never inferred.
 
 ### Operational vs. Governance Transactions
 
-Not all transactions carry the same governance risk. ZTAP distinguishes between two classes:
+Not all transactions carry the same governance risk. ZTIP distinguishes between two classes:
 
 **Operational transactions** request ordinary work against systems, services, data, or
 infrastructure. Deploying a service, running a query, sending a notification, archiving a
@@ -826,9 +826,9 @@ the governance model has a fundamental gap. The authorization rules for governan
 transactions must be stricter — not equal to or more permissive than — the authorization
 rules for operational transactions.
 
-### ZTAP v1 Guidance
+### ZTIP v1 Guidance
 
-ZTAP v1 does not define a separate envelope type for governance transactions. Governance
+ZTIP v1 does not define a separate envelope type for governance transactions. Governance
 transactions use the same envelope structure as operational transactions. They are
 distinguished by:
 
@@ -879,21 +879,21 @@ role: "gpt-4o"          // model identifier is not a protocol role
 ```
 
 A control plane must reject any transaction envelope where an actor's `role` field contains a
-value that is not a defined ZTAP protocol role. The reason code is `ROLE_INVALID`. There is
+value that is not a defined ZTIP protocol role. The reason code is `ROLE_INVALID`. There is
 no pass-through mode for unrecognized role values.
 
-Protocol roles must remain product-neutral so that ZTAP remains implementable by any
+Protocol roles must remain product-neutral so that ZTIP remains implementable by any
 compliant control plane, regardless of which tools, models, or vendors actors use internally.
 
 ### Protocol Roles
 
-The following roles are defined by the ZTAP protocol. They describe an actor's function in
+The following roles are defined by the ZTIP protocol. They describe an actor's function in
 the governance model — not their identity, implementation, or internal structure.
 
 | Role | Description |
 |---|---|
 | `operator` | A human or human-delegated authority that configures policy, approves transactions when required, and manages the control plane. |
-| `control_plane` | The ZTAP control plane instance. Evaluates policy, issues authorization records, records decisions, and retains the audit trail. |
+| `control_plane` | The ZTIP control plane instance. Evaluates policy, issues authorization records, records decisions, and retains the audit trail. |
 | `source_actor` | The actor that initiates a transaction — creates the request envelope and submits it to the control plane. |
 | `target_actor` | The actor that receives an authorized transaction, accepts it, and performs the requested work. |
 | `planner` | An actor that produces structured plans or task decompositions, typically as input to executors. A planner does not execute. |
@@ -918,7 +918,7 @@ claims. A capability not registered against an actor may not be invoked, regardl
 
 The following is an illustrative mapping, not a protocol requirement:
 
-| Concrete Actor | ZTAP Role(s) |
+| Concrete Actor | ZTIP Role(s) |
 |---|---|
 | Human engineer / system owner | `operator` |
 | Orchestration layer | `control_plane` |
@@ -931,7 +931,7 @@ The following is an illustrative mapping, not a protocol requirement:
 
 ## Example Lifecycle Walkthrough
 
-The following is a plain-language walkthrough of a ZTAP transaction for a production deployment
+The following is a plain-language walkthrough of a ZTIP transaction for a production deployment
 request. Field names are illustrative. This example assumes auto-authorization by policy —
 no human approval is required.
 
@@ -940,7 +940,7 @@ no human approval is required.
 **Step 1: Source actor creates the transaction envelope.**
 
 A planning agent has determined that service `billing-api` should be deployed to the production
-environment. It constructs a ZTAP transaction envelope containing:
+environment. It constructs a ZTIP transaction envelope containing:
 - its own identity claim,
 - the role it is acting in (`planner`, `source_actor`),
 - the identity of the target actor (the executor registered for production deployments),
@@ -957,7 +957,7 @@ State: `created`
 
 **Step 2: Source actor submits the envelope to the control plane.**
 
-The planning agent delivers the envelope to the ZTAP control plane. The transport used (API
+The planning agent delivers the envelope to the ZTIP control plane. The transport used (API
 call, message queue, etc.) is irrelevant to the protocol.
 
 The control plane acknowledges receipt and assigns a stable transaction identifier.
@@ -1030,7 +1030,7 @@ State: `verifying`
 
 **Step 8: Receipt is produced and returned.**
 
-The executor produces a ZTAP receipt containing:
+The executor produces a ZTIP receipt containing:
 - the transaction identifier,
 - the hash of the original request envelope,
 - the execution outcome (success),
@@ -1066,7 +1066,7 @@ detectable at any link.
 > open). They remain here for historical traceability until the schema is finalized and a
 > changelog or decision log replaces them.
 
-The following decisions required operator input before the ZTAP schema could be drafted:
+The following decisions required operator input before the ZTIP schema could be drafted:
 
 1. **Validity window** — how is a transaction's validity window expressed? Is it a duration,
    an absolute timestamp, or both? Who sets it — the source actor, the control plane policy,
@@ -1095,16 +1095,16 @@ The following decisions required operator input before the ZTAP schema could be 
    structure of the failure receipt? What information must be recorded to support recovery or
    manual remediation?
 
-8. **Multi-target transactions** — does ZTAP v1 support transactions that request actions from
-   more than one target actor? Or is a ZTAP transaction strictly one source, one target?
+8. **Multi-target transactions** — does ZTIP v1 support transactions that request actions from
+   more than one target actor? Or is a ZTIP transaction strictly one source, one target?
 
 9. **Canonical JSON and hash construction** — Resolved. RFC 8785 (JSON Canonicalization
-   Scheme) with SHA-256 is the canonicalization and hash rule for ZTAP v1. Specified in
+   Scheme) with SHA-256 is the canonicalization and hash rule for ZTIP v1. Specified in
    `SCHEMA.md` (Integrity Object and Hashing) and implemented by the reference runtime
-   (`ztap/` package, `ztap hash` / `ztap verify`).
+   (`ztip/` package, `ztip hash` / `ztip verify`).
 
 10. **Control plane minimum conformance** — what is the minimum set of operations and behaviors
-    a control plane must implement to be considered ZTAP-compliant? This is required before
+    a control plane must implement to be considered ZTIP-compliant? This is required before
     third-party control plane implementations can be evaluated.
 
 ---
@@ -1112,7 +1112,7 @@ The following decisions required operator input before the ZTAP schema could be 
 ## Next Steps
 
 This document has established the doctrine, lifecycle, governance model, and core principles
-that govern ZTAP. The logical sequence from here:
+that govern ZTIP. The logical sequence from here:
 
 **Immediate: Resolve the remaining open questions.**
 Most of the questions in the Open Questions section are resolved by decisions recorded in
@@ -1136,13 +1136,13 @@ problem, the solution, and the governance model for an executive or architect au
 not a technical reference — it is the adoption document.
 
 **Future: Cross-organizational federation.**
-Multi-organization ZTAP interaction — where one organization's agents transact with another's,
+Multi-organization ZTIP interaction — where one organization's agents transact with another's,
 each validated by their respective control planes — is explicitly deferred from v1 scope. It
 is the logical extension of the single-organization model and should be addressed in a future
 specification revision after v1 is stable.
 
 ---
 
-> ZTAP Specification Draft — `1.0-draft`.
-> Zero Trust Agent Protocol: the open protocol for governed agent transactions.
+> ZTIP Specification Draft — `1.0-draft`.
+> Zero Trust Intelligence Protocol: the open protocol for governed agent transactions.
 > **Freedom for engineers. Governance for the organization.**

@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Expired — Transaction Not Accepted Before expires_at",
     "scenario": "A time-sensitive deployment is authorized with a 15-minute window. The executor agent is unavailable and does not accept before expires_at. The control plane detects expiry and produces an expired receipt. A new transaction must be submitted to retry.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "expired"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
     "governance_note": "Expiry is terminal. The control plane produces the expired receipt when expires_at elapses. No execution occurred."
   },
 
@@ -14,7 +14,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-07ggaa334455",
+      "transaction_id": "ztip-txn-07ggaa334455",
       "created_at": "2026-04-24T16:00:00Z",
 
       "source_actor": {
@@ -84,7 +84,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "be50f9ac49c2a790d985cb25e7c9a15f1a9f9fbb3080962e423269c977fccf78"
+        "hash_value": "fca284723a0bad0bdc6117a564b7b506ab588485a0200dda17099103f3f3edde"
       }
     },
 
@@ -94,9 +94,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-07ggaa334455",
-      "decision_id": "ztap-dec-07ggaa334455-001",
-      "request_hash": "be50f9ac49c2a790d985cb25e7c9a15f1a9f9fbb3080962e423269c977fccf78",
+      "transaction_id": "ztip-txn-07ggaa334455",
+      "decision_id": "ztip-dec-07ggaa334455-001",
+      "request_hash": "fca284723a0bad0bdc6117a564b7b506ab588485a0200dda17099103f3f3edde",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -121,7 +121,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "28db89adf48d9e3cc073850e151929e1afc303fd1272c5c2669f7230a7c9a62d"
+        "hash_value": "6f84be2e556d97f6b592ddb1478d703c167e805fa2e624ab8db285f3a40ab2ee"
       }
     },
 
@@ -131,10 +131,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-07ggaa334455",
-      "receipt_id": "ztap-rcpt-07ggaa334455-001",
-      "request_hash": "be50f9ac49c2a790d985cb25e7c9a15f1a9f9fbb3080962e423269c977fccf78",
-      "authorization_decision_ref": "ztap-dec-07ggaa334455-001",
+      "transaction_id": "ztip-txn-07ggaa334455",
+      "receipt_id": "ztip-rcpt-07ggaa334455-001",
+      "request_hash": "fca284723a0bad0bdc6117a564b7b506ab588485a0200dda17099103f3f3edde",
+      "authorization_decision_ref": "ztip-dec-07ggaa334455-001",
 
       "source_actor": {
         "actor_id": "agent-planner-007",
@@ -177,7 +177,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "97aa6312fd264ee04527a87c19e0c1132332d161be689a7554b1acc8b19ab609"
+        "hash_value": "4bfb43f4fd595fa6c2664edcd84f21ee24148738671d99fdb8e1f7da7fd1edc5"
       }
     }
 

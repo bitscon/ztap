@@ -1,20 +1,20 @@
-# ZTAP — Zero Trust Agent Protocol
+# ZTIP — Zero Trust Intelligence Protocol
 
-> Every agent handoff is a trust decision. ZTAP makes that decision provable.
+> Every agent handoff is a trust decision. ZTIP makes that decision provable.
 
 **Freedom for engineers. Governance for the organization.**
 
 ---
 
-## What Is ZTAP?
+## What Is ZTIP?
 
-ZTAP is an open protocol for governed agent transactions.
+ZTIP is an open protocol for governed agent transactions.
 
 When one AI agent invokes another — or when an agent requests an action from a system, a human,
-or a workflow — that interaction is a transaction. ZTAP defines how that transaction must be
+or a workflow — that interaction is a transaction. ZTIP defines how that transaction must be
 structured so it is authorized, verifiable, and auditable after the fact.
 
-ZTAP does not dictate transport. It does not restrict which agent framework, model, or tool your
+ZTIP does not dictate transport. It does not restrict which agent framework, model, or tool your
 engineers use. It governs the **transaction itself**: what was requested, whether it was authorized
 by policy, and what happened.
 
@@ -27,7 +27,7 @@ The transport does not matter:
 - Chat message
 - Workflow engine trigger
 
-ZTAP governs the **transaction artifact**, not how it moves.
+ZTIP governs the **transaction artifact**, not how it moves.
 
 ---
 
@@ -46,7 +46,7 @@ At the same time, the answer is not to lock down which tools engineers can use. 
 friction, slows delivery, and drives workarounds. Engineers need freedom to use whatever agent
 tools help them move fast.
 
-ZTAP solves both sides of that tension.
+ZTIP solves both sides of that tension.
 
 **Freedom for engineers. Governance for the organization.**
 
@@ -54,7 +54,7 @@ ZTAP solves both sides of that tension.
 
 ## Key Benefits
 
-- **Tool-agnostic governance.** Engineers use any agent, model, or framework. ZTAP wraps the
+- **Tool-agnostic governance.** Engineers use any agent, model, or framework. ZTIP wraps the
   transaction, not the tool. No forced migration. No approved-tools list.
 - **Every handoff is auditable.** Requests and their outcomes are captured as structured JSON
   artifacts with cryptographic integrity hashes. Every transaction leaves a record.
@@ -63,35 +63,35 @@ ZTAP solves both sides of that tension.
   decides — not the transport, not the agent.
 - **No implicit trust.** There is no "trusted internal network" where governance is relaxed.
   A transaction without a valid authorization record does not pass.
-- **Human-readable artifacts.** ZTAP artifacts are plain JSON. Integrity is enforced via
+- **Human-readable artifacts.** ZTIP artifacts are plain JSON. Integrity is enforced via
   cryptographic hashes, not encryption. Any person or system can read, store, and verify them.
 
 ---
 
 ## Relationship to ZTI and ZTI Core
 
-ZTAP is part of the Zero Trust Intelligence (ZTI) ecosystem. The three components are distinct:
+ZTIP is part of the Zero Trust Intelligence (ZTI) ecosystem. The three components are distinct:
 
 | Component | What It Is |
 |-----------|-----------|
 | **ZTI** | The verification doctrine: do not trust AI output blindly — verify it before it acts. |
-| **ZTAP** | The open protocol: defines how governed agent transactions are structured and recorded. |
-| **ZTI Core** | A control-plane implementation: evaluates policy, issues authorization records, and stores ZTAP artifacts. |
+| **ZTIP** | The open protocol: defines how governed agent transactions are structured and recorded. |
+| **ZTI Core** | A control-plane implementation: evaluates policy, issues authorization records, and stores ZTIP artifacts. |
 
 ```text
 ZTI (verification doctrine)
-  └── ZTAP (open transaction protocol)
+  └── ZTIP (open transaction protocol)
         └── ZTI Core (control plane — evaluates policy, authorizes, audits)
 ```
 
-ZTAP is the protocol. ZTI Core is one compliant implementation of the control plane that enforces
+ZTIP is the protocol. ZTI Core is one compliant implementation of the control plane that enforces
 it. Organizations may use ZTI Core or build their own compliant control plane.
 
 ---
 
 ## How a Governed Transaction Works
 
-1. **An agent initiates a request.** It packages the request as a ZTAP transaction artifact —
+1. **An agent initiates a request.** It packages the request as a ZTIP transaction artifact —
    structured JSON describing what is being requested, by whom, and for what purpose.
 2. **The control plane evaluates policy.** The artifact is submitted to the control plane (e.g.,
    ZTI Core). Policy determines the outcome: auto-authorize, require human approval, request
@@ -138,6 +138,8 @@ under `examples/`.*
 > **Note:** This example illustrates the concept of a governed transaction artifact. The
 > specified form differs — see `SCHEMA.md` and the JSON Schemas under `schemas/` for the
 > canonical envelope model, and `VISION.md` for the governing principles behind the design.
+> The version field is named `ztap_version` after the protocol's original working name; it is
+> retained for hash stability (see the legacy-field note in `SCHEMA.md`).
 
 In this example, the transaction was authorized by policy automatically — no human approval was
 required. A different policy configuration might have required a human to approve before
@@ -147,7 +149,7 @@ required. A different policy configuration might have required a human to approv
 
 ## Authorization Is Policy-Conditional
 
-ZTAP does not require human approval for every transaction. Authorization is determined by
+ZTIP does not require human approval for every transaction. Authorization is determined by
 organizational policy, evaluated by the control plane. Possible outcomes include:
 
 - **Auto-authorized** — policy permits this transaction without human review.
@@ -155,14 +157,14 @@ organizational policy, evaluated by the control plane. Possible outcomes include
 - **Additional evidence required** — policy requires supplemental context before a decision.
 - **Rejected** — policy does not permit this transaction.
 
-ZTAP supports all of these outcomes. The protocol records the outcome and the basis for it.
+ZTIP supports all of these outcomes. The protocol records the outcome and the basis for it.
 The organization defines the policy.
 
 ---
 
-## What ZTAP Does Not Define (Yet)
+## What ZTIP Does Not Define (Yet)
 
-ZTAP is in draft. The following are not yet specified:
+ZTIP is in draft. The following are not yet specified:
 
 - Transport bindings (how artifacts move between agents and the control plane)
 - SDK or library interfaces
@@ -178,13 +180,13 @@ will guide those decisions.
 
 ## Current Status
 
-ZTAP is in **draft specification**. The doctrine (`SPEC.md`), envelope schema (`SCHEMA.md` and
+ZTIP is in **draft specification**. The doctrine (`SPEC.md`), envelope schema (`SCHEMA.md` and
 `schemas/`), conformance requirements (`CONFORMANCE.md`), and lifecycle examples (`examples/`)
 are drafted. This repository is the canonical home for that work.
 
-The repository also ships a reference runtime: the `ztap/` Python package implements RFC 8785
-canonicalization, SHA-256 hashing, and hash-chain integrity verification, with a `ztap` CLI
-(`ztap hash`, `ztap verify`) that fails closed on any defect. The integrity hashes in the
+The repository also ships a reference runtime: the `ztip/` Python package implements RFC 8785
+canonicalization, SHA-256 hashing, and hash-chain integrity verification, with a `ztip` CLI
+(`ztip hash`, `ztip verify`) that fails closed on any defect. The integrity hashes in the
 `examples/` files are real and recomputable with it.
 
 Contributions, questions, and alignment discussions are welcome.
@@ -193,7 +195,7 @@ Contributions, questions, and alignment discussions are welcome.
 
 ## Authorship and Stewardship
 
-ZTAP was created by **Chad McCormack** as part of the Zero Trust Intelligence (ZTI) ecosystem.
+ZTIP was created by **Chad McCormack** as part of the Zero Trust Intelligence (ZTI) ecosystem.
 
 This repository is maintained under the `bitscon` GitHub organization and released under the MIT License.
 
@@ -201,5 +203,5 @@ For citation metadata, see [CITATION.cff](CITATION.cff). For author and stewards
 
 ---
 
-> ZTAP: the open protocol for governed agent transactions.
-> Where ZTI asks "was this decision verified?", ZTAP asks "was this handoff governed?"
+> ZTIP: the open protocol for governed agent transactions.
+> Where ZTI asks "was this decision verified?", ZTIP asks "was this handoff governed?"

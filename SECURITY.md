@@ -22,10 +22,10 @@ When reporting, include:
 
 ## Security Scope
 In scope for this repo:
-- ZTAP specification and conformance text
+- ZTIP specification and conformance text
 - JSON Schemas under `schemas/`
 - Example envelopes under `examples/`
-- The reference runtime under `ztap/` (canonicalization, hashing, verification)
+- The reference runtime under `ztip/` (canonicalization, hashing, verification)
 - Validation tooling under `scripts/`
 
 Out of scope for this repo:

@@ -1,8 +1,8 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Fan-Out Pattern — Parent and Child Transactions",
-    "scenario": "A coordinated release of three microservices. ZTAP v1 is strictly one-source-one-target. Fan-out uses a parent transaction (the release intent) and separate child transactions per service, linked by parent_transaction_id. This example shows the parent and two of three children.",
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
+    "scenario": "A coordinated release of three microservices. ZTIP v1 is strictly one-source-one-target. Fan-out uses a parent transaction (the release intent) and separate child transactions per service, linked by parent_transaction_id. This example shows the parent and two of three children.",
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify).",
     "design_rationale": {
       "why_no_multi_target_in_v1": "Multi-target transactions complicate authority, receipt structure, partial failure, and atomicity. v1 is strictly one-source-one-target to keep every transaction's authorization subject, failure point, and receipt unambiguous.",
       "fan_out_pattern": "The parent records coordinated intent. Each child is independently authorized and executed. Children link to the parent via parent_transaction_id. The orchestrator collects all child receipts.",
@@ -18,7 +18,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-08parent-release-v5",
+      "transaction_id": "ztip-txn-08parent-release-v5",
       "created_at": "2026-04-24T17:00:00Z",
 
       "source_actor": {
@@ -52,9 +52,9 @@
           "environment": "production",
           "strategy": "parallel",
           "child_transactions": [
-            "ztap-txn-08child-user-service",
-            "ztap-txn-08child-order-service",
-            "ztap-txn-08child-notification-service"
+            "ztip-txn-08child-user-service",
+            "ztip-txn-08child-order-service",
+            "ztip-txn-08child-notification-service"
           ]
         },
         "required_capabilities": ["org.acme/orchestrate_release"],
@@ -75,9 +75,9 @@
           "required": true,
           "expected_result": {
             "child_transaction_receipts_required": [
-              "ztap-txn-08child-user-service",
-              "ztap-txn-08child-order-service",
-              "ztap-txn-08child-notification-service"
+              "ztip-txn-08child-user-service",
+              "ztip-txn-08child-order-service",
+              "ztip-txn-08child-notification-service"
             ]
           },
           "failure_reason_code": "VERIFY_FAILED"
@@ -89,7 +89,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0"
+        "hash_value": "d3b044fc53cebac854e6b87d6637d2f53517d6326087f03ae697ae1d7e4186eb"
       }
     },
 
@@ -98,9 +98,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-08parent-release-v5",
-      "decision_id": "ztap-dec-08parent-release-v5-001",
-      "request_hash": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0",
+      "transaction_id": "ztip-txn-08parent-release-v5",
+      "decision_id": "ztip-dec-08parent-release-v5-001",
+      "request_hash": "d3b044fc53cebac854e6b87d6637d2f53517d6326087f03ae697ae1d7e4186eb",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -127,7 +127,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "a6757c90b6a07711f56180e69ef667d1df8eacd5d8e43b59896a0334f4c0fdfe"
+        "hash_value": "5d5d2d314f947eb6876c49d6165b44e5dd2204c6c4487e19f929340b9cf18abe"
       }
     },
 
@@ -137,8 +137,8 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-08child-user-service",
-      "parent_transaction_id": "ztap-txn-08parent-release-v5",
+      "transaction_id": "ztip-txn-08child-user-service",
+      "parent_transaction_id": "ztip-txn-08parent-release-v5",
       "created_at": "2026-04-24T17:00:08Z",
 
       "source_actor": {
@@ -205,7 +205,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "e665a795cc3cca657d5b79937787ac1f4c1d492deab6d3c2a3f66caa1edd7b0a"
+        "hash_value": "3f3414982436aef70410fc530bc2861b2864045703aafd681d8ae2b59ed50c6f"
       }
     },
 
@@ -214,8 +214,8 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-08child-order-service",
-      "parent_transaction_id": "ztap-txn-08parent-release-v5",
+      "transaction_id": "ztip-txn-08child-order-service",
+      "parent_transaction_id": "ztip-txn-08parent-release-v5",
       "created_at": "2026-04-24T17:00:08Z",
 
       "source_actor": {
@@ -282,7 +282,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "79671a0b59cf1be7527d862f5a7bc6815eab0bb0f35d460493d862284d25b916"
+        "hash_value": "8a6aa6ba9c8524ab4c520e73530605974e9467aa4283356a92498dd6c321a4c1"
       }
     },
 
@@ -292,10 +292,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-08parent-release-v5",
-      "receipt_id": "ztap-rcpt-08parent-release-v5-001",
-      "request_hash": "481247bca8d86b76dc27d322f935dfe0705584be799e3f102948639cb31684d0",
-      "authorization_decision_ref": "ztap-dec-08parent-release-v5-001",
+      "transaction_id": "ztip-txn-08parent-release-v5",
+      "receipt_id": "ztip-rcpt-08parent-release-v5-001",
+      "request_hash": "d3b044fc53cebac854e6b87d6637d2f53517d6326087f03ae697ae1d7e4186eb",
+      "authorization_decision_ref": "ztip-dec-08parent-release-v5-001",
 
       "source_actor": {
         "actor_id": "agent-planner-008",
@@ -347,16 +347,16 @@
           "check_type": "deployment_status",
           "expected_result": {
             "child_transaction_receipts_required": [
-              "ztap-txn-08child-user-service",
-              "ztap-txn-08child-order-service",
-              "ztap-txn-08child-notification-service"
+              "ztip-txn-08child-user-service",
+              "ztip-txn-08child-order-service",
+              "ztip-txn-08child-notification-service"
             ]
           },
           "actual_result": {
             "child_transaction_receipts_collected": [
-              "ztap-rcpt-08child-user-service-001",
-              "ztap-rcpt-08child-order-service-001",
-              "ztap-rcpt-08child-notification-service-001"
+              "ztip-rcpt-08child-user-service-001",
+              "ztip-rcpt-08child-order-service-001",
+              "ztip-rcpt-08child-notification-service-001"
             ]
           },
           "passed": true
@@ -365,20 +365,20 @@
 
       "child_receipt_refs": [
         {
-          "child_transaction_id": "ztap-txn-08child-user-service",
-          "child_receipt_ref": "ztap-rcpt-08child-user-service-001",
-          "child_request_hash": "e665a795cc3cca657d5b79937787ac1f4c1d492deab6d3c2a3f66caa1edd7b0a",
+          "child_transaction_id": "ztip-txn-08child-user-service",
+          "child_receipt_ref": "ztip-rcpt-08child-user-service-001",
+          "child_request_hash": "3f3414982436aef70410fc530bc2861b2864045703aafd681d8ae2b59ed50c6f",
           "child_receipt_hash": "9ce22a0a06ae9a0d348d50523ef70643b5231bad761e144b5db1975177ed522f"
         },
         {
-          "child_transaction_id": "ztap-txn-08child-order-service",
-          "child_receipt_ref": "ztap-rcpt-08child-order-service-001",
-          "child_request_hash": "79671a0b59cf1be7527d862f5a7bc6815eab0bb0f35d460493d862284d25b916",
+          "child_transaction_id": "ztip-txn-08child-order-service",
+          "child_receipt_ref": "ztip-rcpt-08child-order-service-001",
+          "child_request_hash": "8a6aa6ba9c8524ab4c520e73530605974e9467aa4283356a92498dd6c321a4c1",
           "child_receipt_hash": "ac45a6cb45bf3d7307f18c1ef45e4daa352ddead3b16a28bf3ef43196ea317d3"
         },
         {
-          "child_transaction_id": "ztap-txn-08child-notification-service",
-          "child_receipt_ref": "ztap-rcpt-08child-notification-service-001",
+          "child_transaction_id": "ztip-txn-08child-notification-service",
+          "child_receipt_ref": "ztip-rcpt-08child-notification-service-001",
           "child_request_hash": "0e2b95303ee4d150fe85cd1e8f8b859e8dbbfe62fee08f5a321220cd713c5f2b",
           "child_receipt_hash": "a24dae9d174718a8d79870c9c16bd56eefebbd60d74e6c6e7924372209bed125"
         }
@@ -395,7 +395,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "c8ab7d15bcab5206f4816d0b8763dbce9a491a085b5a1111390be73ae99da31e"
+        "hash_value": "9482e79c17871a225a4ce44f248d796b39d45362bd85ad280eec35f5193fa943"
       }
     }
 

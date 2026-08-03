@@ -1,4 +1,4 @@
-"""RFC 8785 JSON Canonicalization Scheme (JCS) for ZTAP envelopes.
+"""RFC 8785 JSON Canonicalization Scheme (JCS) for ZTIP envelopes.
 
 SPEC.md ("Integrity and Hashing -> Algorithm") mandates SHA-256 but leaves the
 canonicalization rules "to be finalized before the v1 schema is frozen". This
@@ -12,7 +12,7 @@ Deterministic rules:
   * integers: shortest decimal form
   * booleans / null: ``true`` / ``false`` / ``null``
 
-ZTAP envelope values are strings, integers, booleans, arrays, and objects.
+ZTIP envelope values are strings, integers, booleans, arrays, and objects.
 Non-integer numbers are not part of the envelope vocabulary; they are rejected
 rather than silently mis-canonicalized.
 """
@@ -59,7 +59,7 @@ def _number(value: Any) -> str:
     if value.is_integer():
         return str(int(value))
     raise NotImplementedError(
-        "ZTAP envelopes are integer-only; non-integer float canonicalization is "
+        "ZTIP envelopes are integer-only; non-integer float canonicalization is "
         "intentionally unimplemented to avoid silent divergence between implementations"
     )
 

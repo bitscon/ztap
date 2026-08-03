@@ -1,9 +1,9 @@
 {
-  "_ztap_example": {
+  "_ztip_example": {
     "title": "Failed — Partial State (PARTIAL_STATE_BLOCKED)",
     "scenario": "A three-step container workload update is authorized and starts executing. Steps 1 and 2 complete successfully. Step 3 fails (image not found in registry). Because atomicity_mode is atomic_required and the config change in step 2 cannot be rolled back, the executor fails with PARTIAL_STATE_BLOCKED. The receipt records full partial state for operator remediation.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "accepted", "executing", "failed"],
-    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
+    "draft_notice": "This example conforms to ZTIP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztip verify)."
   },
 
   "envelopes": [
@@ -13,7 +13,7 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "transaction_request",
-      "transaction_id": "ztap-txn-05ccdd990011",
+      "transaction_id": "ztip-txn-05ccdd990011",
       "created_at": "2026-04-24T14:00:00Z",
 
       "source_actor": {
@@ -84,7 +84,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "4d1bad6b4d2b166641d3d1400ab7bee228308e4e9c69b7575ab48e27f02b04ff"
+        "hash_value": "a49db1038949a357dd8a81ad33efd9347806fa8786f474ba97688fe474d8345a"
       }
     },
 
@@ -93,9 +93,9 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "authorization_decision",
-      "transaction_id": "ztap-txn-05ccdd990011",
-      "decision_id": "ztap-dec-05ccdd990011-001",
-      "request_hash": "4d1bad6b4d2b166641d3d1400ab7bee228308e4e9c69b7575ab48e27f02b04ff",
+      "transaction_id": "ztip-txn-05ccdd990011",
+      "decision_id": "ztip-dec-05ccdd990011-001",
+      "request_hash": "a49db1038949a357dd8a81ad33efd9347806fa8786f474ba97688fe474d8345a",
 
       "control_plane": {
         "actor_id": "control-plane-primary",
@@ -120,7 +120,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "7e5b9869eb42d2521cca589e5b2919f60c3b452a12ac220c81d58609c4899088"
+        "hash_value": "124a2e7911b7958320917f0625c16916301869ad6f3c4aa5f64779ab647d6038"
       }
     },
 
@@ -130,10 +130,10 @@
 
       "ztap_version": "1.0-draft",
       "envelope_type": "execution_receipt",
-      "transaction_id": "ztap-txn-05ccdd990011",
-      "receipt_id": "ztap-rcpt-05ccdd990011-001",
-      "request_hash": "4d1bad6b4d2b166641d3d1400ab7bee228308e4e9c69b7575ab48e27f02b04ff",
-      "authorization_decision_ref": "ztap-dec-05ccdd990011-001",
+      "transaction_id": "ztip-txn-05ccdd990011",
+      "receipt_id": "ztip-rcpt-05ccdd990011-001",
+      "request_hash": "a49db1038949a357dd8a81ad33efd9347806fa8786f474ba97688fe474d8345a",
+      "authorization_decision_ref": "ztip-dec-05ccdd990011-001",
 
       "source_actor": {
         "actor_id": "agent-planner-005",
@@ -222,7 +222,7 @@
           "suggested_next_actions": [
             "Verify api-gateway:v4.3.0 has been pushed to registry.acme-corp.internal",
             "Revert config api-gateway/routing to cfg-2026-04-10 if rolling back to v4.2.0",
-            "Create a new ZTAP transaction to restart api-gateway:v4.2.0 for immediate service restoration"
+            "Create a new ZTIP transaction to restart api-gateway:v4.2.0 for immediate service restoration"
           ]
         }
       },
@@ -232,7 +232,7 @@
       "integrity": {
         "canonicalization": "RFC8785-JCS",
         "hash_algorithm": "SHA-256",
-        "hash_value": "8fe0309e7ebe4b285641bdf2143ce964b74c4572da63d6ca3909d27088e28632"
+        "hash_value": "6ef464e88c8ada085d9c3f4217b5423b333a628efea033359b1f70c5bd093d72"
       }
     }
 

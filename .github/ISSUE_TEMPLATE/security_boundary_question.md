@@ -19,7 +19,7 @@ assignees: ''
 <!-- Suggested clarification language or behavior -->
 
 ## Scope Classification
-<!-- Is this about ZTAP core, implementation behavior, or ZTI Core? -->
-- [ ] ZTAP core
+<!-- Is this about ZTIP core, implementation behavior, or ZTI Core? -->
+- [ ] ZTIP core
 - [ ] Implementation behavior
 - [ ] ZTI Core

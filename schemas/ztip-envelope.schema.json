@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "ztap-envelope.schema.json",
-  "title": "ZTAP Envelope",
-  "description": "Validates any ZTAP 1.0-draft envelope type.",
+  "$id": "ztip-envelope.schema.json",
+  "title": "ZTIP Envelope",
+  "description": "Validates any ZTIP 1.0-draft envelope type.",
   "oneOf": [
     {
       "$ref": "transaction-request.schema.json"
@@ -143,12 +143,12 @@
         {
           "type": "string",
           "enum": [
-            "ztap.core/fileops",
-            "ztap.core/gitops",
-            "ztap.core/testops",
-            "ztap.core/approval",
-            "ztap.core/evidence",
-            "ztap.core/generic"
+            "ztip.core/fileops",
+            "ztip.core/gitops",
+            "ztip.core/testops",
+            "ztip.core/approval",
+            "ztip.core/evidence",
+            "ztip.core/generic"
           ]
         },
         {

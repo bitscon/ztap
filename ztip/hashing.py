@@ -1,4 +1,4 @@
-"""ZTAP envelope integrity hashing: SHA-256 over the RFC 8785 canonical form.
+"""ZTIP envelope integrity hashing: SHA-256 over the RFC 8785 canonical form.
 
 The stored ``integrity.hash_value`` is computed over the envelope with:
   * non-normative annotation fields (keys beginning with ``_``) removed, and

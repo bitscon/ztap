@@ -1,12 +1,12 @@
-# ZTAP Conformance Draft
+# ZTIP Conformance Draft
 
-*Zero Trust Agent Protocol — What It Means to Be Compliant*
+*Zero Trust Intelligence Protocol — What It Means to Be Compliant*
 
 ---
 
 ## Status
 
-**DRAFT — Conformance target for ZTAP `1.0-draft`.**
+**DRAFT — Conformance target for ZTIP `1.0-draft`.**
 
 This document defines conformance requirements for implementations of the Zero Trust Agent
 Protocol. It is derived from `SPEC.md` and `SCHEMA.md`. Where this document conflicts with
@@ -22,7 +22,7 @@ Do not build production certification processes against this draft.
 
 ## Conformance Philosophy
 
-ZTAP conformance is grounded in the following non-negotiable principles:
+ZTIP conformance is grounded in the following non-negotiable principles:
 
 **Fail-closed is a protocol invariant, not a configuration option.**
 A conforming implementation must reject invalid, unknown, expired, tampered, or unauthorized
@@ -30,23 +30,23 @@ transactions under all circumstances. There is no permissive fallback mode. Ambi
 to denial.
 
 **Integrity is mandatory.**
-Every ZTAP envelope must carry a valid `integrity` object. Implementations must compute and
-verify hashes. An envelope without a verifiable hash is not a ZTAP envelope.
+Every ZTIP envelope must carry a valid `integrity` object. Implementations must compute and
+verify hashes. An envelope without a verifiable hash is not a ZTIP envelope.
 
 **Encryption is policy-conditional.**
-ZTAP v1 does not require encryption. Envelopes are plain JSON by default and must be human-
+ZTIP v1 does not require encryption. Envelopes are plain JSON by default and must be human-
 auditable without decryption. Encryption may be layered on top for specific deployment
 contexts, but it is not a core conformance requirement and must not be a prerequisite for
 envelope processing.
 
 **Transport is out of scope.**
-ZTAP conformance is not concerned with how envelopes are delivered. A conforming
+ZTIP conformance is not concerned with how envelopes are delivered. A conforming
 implementation must not assume any transport. Governance is enforced at the envelope level,
 not at the network layer.
 
-**ZTAP governs the action, not the pipe.**
+**ZTIP governs the action, not the pipe.**
 A conforming actor, runtime, or control plane must refuse governed work unless a valid,
-verified ZTAP authorization record exists for the specific action being requested. The fact
+verified ZTIP authorization record exists for the specific action being requested. The fact
 that a message arrived over a secure channel does not make it authorized. The authorization
 record governs. The transport does not.
 
@@ -54,36 +54,36 @@ record governs. The transport does not.
 
 ## Conformance Levels
 
-ZTAP defines three conformance levels. Higher levels include the requirements of all lower
+ZTIP defines three conformance levels. Higher levels include the requirements of all lower
 levels. A conforming implementation must declare which level it targets.
 
 ---
 
 ### Level 1 — Envelope Validator
 
-An Envelope Validator can parse, validate, and report on the structural correctness of ZTAP
+An Envelope Validator can parse, validate, and report on the structural correctness of ZTIP
 envelopes. It does not need to evaluate policy, manage actor registrations, or process
 transactions end-to-end.
 
 **An Envelope Validator MUST:**
 
-- Parse any ZTAP envelope presented to it.
+- Parse any ZTIP envelope presented to it.
 - Validate that all required shared fields are present: `ztap_version`, `envelope_type`,
   `transaction_id`, `integrity`.
-- Validate that `envelope_type` is one of the five defined ZTAP types.
+- Validate that `envelope_type` is one of the five defined ZTIP types.
 - Reject envelopes with an unsupported or unrecognized `ztap_version` major version.
-- Validate that actor `role` fields contain only defined ZTAP protocol role values.
+- Validate that actor `role` fields contain only defined ZTIP protocol role values.
 - Reject envelopes where `role` contains tool names, model names, vendor names, or any value
-  not in the ZTAP protocol role set.
+  not in the ZTIP protocol role set.
 - Validate that `integrity.canonicalization` and `integrity.hash_algorithm` are present.
 - Validate that `integrity.hash_value` is present and non-empty.
 - Verify the envelope hash: recompute the hash using the declared canonicalization and
   algorithm, and confirm it matches `integrity.hash_value`.
-- Validate that all reason codes appearing in envelopes are either core ZTAP codes or
+- Validate that all reason codes appearing in envelopes are either core ZTIP codes or
   namespaced extension codes. Reject un-namespaced unknown codes.
-- Validate that all evidence types appearing in envelopes are either core ZTAP types or
+- Validate that all evidence types appearing in envelopes are either core ZTIP types or
   namespaced extension types. Reject un-namespaced unknown types.
-- Report structural validation failures with a structured reason code from the ZTAP core set.
+- Report structural validation failures with a structured reason code from the ZTIP core set.
 
 **An Envelope Validator MAY:**
 
@@ -165,7 +165,7 @@ governance is finally enforced by either accepting or refusing action.
 **A Level 3 Governed Executor MUST satisfy all Level 1 requirements, plus:**
 
 **Authorization verification before action:**
-- Refuse to perform any governed action unless it holds a valid, verified ZTAP authorization
+- Refuse to perform any governed action unless it holds a valid, verified ZTIP authorization
   record for that specific action. This is non-negotiable. An unverified message — regardless
   of how it arrived — is not sufficient basis for action.
 - Verify the following before accepting a transaction:
@@ -178,7 +178,7 @@ governance is finally enforced by either accepting or refusing action.
   - The `requested_capabilities` are within its registered capability claims.
 - Reject transactions that fail any of these checks with the appropriate reason code.
 - Never execute based on an unverified message, an ambient instruction, or an informal
-  approval that has not been recorded as a ZTAP authorization record.
+  approval that has not been recorded as a ZTIP authorization record.
 
 **Receipt production:**
 - Produce an `execution_receipt` for every terminal transaction state.
@@ -208,7 +208,7 @@ Violation of any invariant makes an implementation non-conforming.
 |---|---|
 | Unsupported major `ztap_version` | Reject with `SCHEMA_INVALID` |
 | Missing required field | Reject with `SCHEMA_INVALID` |
-| Invalid `role` value (any non-ZTAP value) | Reject with `ROLE_INVALID` |
+| Invalid `role` value (any non-ZTIP value) | Reject with `ROLE_INVALID` |
 | Tool name, model name, or vendor name as `role` | Reject with `ROLE_INVALID` |
 | Unregistered actor | Reject with `ACTOR_UNREGISTERED` |
 | Missing registered capability | Reject with `CAPABILITY_MISSING` |
@@ -233,10 +233,10 @@ These invariants are not configurable. They are not defaults. They are protocol 
 
 ## Role and Capability Conformance
 
-Roles are governance classifications defined by the ZTAP protocol. A conforming implementation
+Roles are governance classifications defined by the ZTIP protocol. A conforming implementation
 must enforce the following:
 
-- Only the defined ZTAP protocol roles are valid `role` values: `operator`, `control_plane`,
+- Only the defined ZTIP protocol roles are valid `role` values: `operator`, `control_plane`,
   `source_actor`, `target_actor`, `planner`, `executor`, `validator`, `auditor`, `runtime`.
 - Tool names, model names, vendor product names, SaaS platform names, and runtime identifiers
   are not valid roles and must be rejected with `ROLE_INVALID`.
@@ -251,7 +251,7 @@ must enforce the following:
 
 Capability identifiers follow an open governed registry model. A conforming implementation must:
 
-- Accept ZTAP core capabilities by their reserved simple names (e.g., `file.read`, `git.push`,
+- Accept ZTIP core capabilities by their reserved simple names (e.g., `file.read`, `git.push`,
   `test.run`). The full core capability set is defined in `SCHEMA.md`.
 - Require extension capabilities to use a reverse-domain namespaced format
   (e.g., `org.example/deploy_service`). Extension capabilities without a namespace are
@@ -265,8 +265,8 @@ Capability identifiers follow an open governed registry model. A conforming impl
 
 Action profiles follow the same open governed registry model. A conforming control plane must:
 
-- Recognize ZTAP core profiles (`ztap.core/fileops`, `ztap.core/gitops`, `ztap.core/testops`,
-  `ztap.core/approval`, `ztap.core/evidence`, `ztap.core/generic`).
+- Recognize ZTIP core profiles (`ztip.core/fileops`, `ztip.core/gitops`, `ztip.core/testops`,
+  `ztip.core/approval`, `ztip.core/evidence`, `ztip.core/generic`).
 - Accept extension profiles only if they are namespaced (`org.example/deploy`).
 - Reject un-namespaced unknown profile values with `SCHEMA_INVALID` unless control-plane
   policy explicitly permits unrecognized profiles.
@@ -301,7 +301,7 @@ A conforming control plane must additionally:
 
 ### Multi-Version Integrity Conformance
 
-A conforming control plane that stores envelopes from multiple ZTAP versions must:
+A conforming control plane that stores envelopes from multiple ZTIP versions must:
 
 - Verify each stored envelope using the `canonicalization` and `hash_algorithm` declared
   in that envelope's own `integrity` object — not the control plane's current default.
@@ -368,7 +368,7 @@ A conforming receipt must:
 ## Evidence Conformance
 
 A conforming implementation must:
-- Recognize and correctly process all ZTAP core evidence types defined in Section 10 of
+- Recognize and correctly process all ZTIP core evidence types defined in Section 10 of
   `SCHEMA.md`.
 - Accept extension evidence types only if they are namespaced (`org.example/type-name`).
 - Reject un-namespaced unknown evidence types with `SCHEMA_INVALID`.
@@ -380,9 +380,9 @@ A conforming implementation must:
 
 ## Reason Code Conformance
 
-ZTAP uses an open governed registry for reason codes. A conforming implementation must:
+ZTIP uses an open governed registry for reason codes. A conforming implementation must:
 
-- Recognize and correctly handle all ZTAP core reason codes.
+- Recognize and correctly handle all ZTIP core reason codes.
 - Accept extension reason codes only if they are namespaced (`org.example/CODE_NAME`).
 - Reject un-namespaced unknown reason codes with `SCHEMA_INVALID`.
 - Not use free-text in place of reason codes for machine-governed decisions.
@@ -392,23 +392,23 @@ ZTAP uses an open governed registry for reason codes. A conforming implementatio
 
 ## Trust Boundary Conformance
 
-**ZTAP does not secure the pipe. ZTAP governs the action.**
+**ZTIP does not secure the pipe. ZTIP governs the action.**
 
 A conforming actor, runtime, tool, or control plane must refuse governed work unless a
-valid, verified ZTAP transaction exists and is verified at the point of action.
+valid, verified ZTIP transaction exists and is verified at the point of action.
 
 Specifically, a conforming Level 3 Governed Executor must:
 - Refuse any instruction to perform governed work that does not arrive with a valid,
-  unexpired ZTAP authorization record.
+  unexpired ZTIP authorization record.
 - Not treat transport-level authentication (API keys, TLS, session tokens) as a substitute
-  for a ZTAP authorization record.
+  for a ZTIP authorization record.
 - Not infer authorization from conversational context, AI model confidence, or ambient
   trust in the source system.
 - Not execute based on an unsigned, unverified, or informal instruction, even from a system
   it considers "trusted."
 
 The corollary: an ungoverned message can exist in the world. It cannot be promoted to
-governed, authorized work inside a ZTAP-compliant environment without passing through the
+governed, authorized work inside a ZTIP-compliant environment without passing through the
 control plane's evaluation and receiving a valid authorization record.
 
 ---
@@ -444,7 +444,7 @@ because they are common failure modes in multi-agent governance systems.
 
 **Execution boundary violations:**
 - A target actor executing based on an unverified message, ambient instruction, or informal
-  approval that does not carry a valid ZTAP authorization record.
+  approval that does not carry a valid ZTIP authorization record.
 - A control plane issuing authorization while its registries are in an inconsistent state.
 - A runtime or adapter escalating its own execution authority without a governance artifact.
 
@@ -537,7 +537,7 @@ finalized conformance specification can be published:
    required fields. Pending further specification.
 
 6. **Profile versioning.** When a profile's parameter schema changes, what is the profile
-   version expression format? (`ztap.core/gitops@2`? `ztap.core/gitops/v2`?)
+   version expression format? (`ztip.core/gitops@2`? `ztip.core/gitops/v2`?)
 
 ---
 
@@ -552,7 +552,7 @@ specification authorities); `WHITEPAPER.md` and the repo governance files
 
 **Remaining:**
 
-1. **Conformance test fixtures** — a set of valid and intentionally invalid ZTAP envelopes
+1. **Conformance test fixtures** — a set of valid and intentionally invalid ZTIP envelopes
    for use in automated conformance testing. These support the test matrix above.
 
 2. **Resolve the open questions above** — including the profile/version expression format —
@@ -560,6 +560,6 @@ specification authorities); `WHITEPAPER.md` and the repo governance files
 
 ---
 
-> ZTAP Conformance Draft — `1.0-draft`.
+> ZTIP Conformance Draft — `1.0-draft`.
 > Derived from `SPEC.md` and `SCHEMA.md`.
 > **Freedom for engineers. Governance for the organization.**

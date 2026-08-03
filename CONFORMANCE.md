@@ -283,13 +283,17 @@ A conforming implementation must:
 - Use RFC 8785 JSON Canonicalization Scheme (JCS) as the default canonicalization method.
 - Use SHA-256 as the default hash algorithm.
 - Compute the hash by:
-  1. Constructing the full envelope with `integrity.hash_value` set to an empty string.
-  2. Applying RFC 8785 JCS canonicalization.
-  3. Computing SHA-256 over the canonical byte sequence.
-  4. Encoding the result as a lowercase hex string.
-  5. Setting `integrity.hash_value` to this value.
-- Note: only `integrity.hash_value` is excluded from the hash input. All other `integrity`
-  fields — `canonicalization`, `hash_algorithm`, `signed` — are included. This ensures the
+  1. Constructing the full envelope, then removing the `integrity.hash_value` field.
+     (Removal, not an empty-string placeholder — the two are not hash-equivalent under
+     RFC 8785.) All other `integrity` fields remain present and unchanged.
+  2. Stripping all underscore-prefixed annotation keys, recursively, if any are present.
+  3. Applying RFC 8785 JCS canonicalization.
+  4. Computing SHA-256 over the canonical byte sequence.
+  5. Encoding the result as a lowercase hex string.
+  6. Setting `integrity.hash_value` to this value.
+- Note: only `integrity.hash_value` (and underscore-prefixed annotation keys, which are
+  not envelope fields) is excluded from the hash input. All other `integrity` fields —
+  `canonicalization`, `hash_algorithm`, `signed` — are included. This ensures the
   declared algorithm and canonicalization method are themselves tamper-evident.
 - Verify the hash on every received envelope before processing. Reject hash mismatches with
   `INTEGRITY_FAILED`.

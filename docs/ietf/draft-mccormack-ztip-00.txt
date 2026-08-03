@@ -415,7 +415,7 @@ Author's Address
 
    Chad McCormack
    Zero Trust Intelligence
-   Email: info@bitscon.net
+   Email: chad@bitscon.net
    URI:   https://zerotrustintelligence.io
 
 

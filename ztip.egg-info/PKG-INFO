@@ -1,13 +1,19 @@
-<p align="center">
-  <img src="docs/assets/ztip-banner.svg" alt="ZTIP — Zero Trust Intelligence Protocol. The open protocol for governed agent transactions. Code freedom, Verified." width="100%" />
-</p>
-
-<p align="center">
-  <a href="https://pypi.org/project/ztip/"><img src="https://img.shields.io/pypi/v/ztip?color=f97316" alt="PyPI" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-f97316" alt="License: MIT" /></a>
-  <a href="SPEC.md"><img src="https://img.shields.io/badge/spec-1.0--draft-f97316" alt="Spec: 1.0-draft" /></a>
-  <img src="https://img.shields.io/badge/status-pre--release-8e95a3" alt="Status: pre-release" />
-</p>
+Metadata-Version: 2.4
+Name: ztip
+Version: 1.0.0.dev1
+Summary: ZTIP reference runtime — RFC 8785 canonicalization, SHA-256 hashing, and integrity verification for the Zero Trust Intelligence Protocol
+Author: Chad McCormack
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/bitscon/ztip
+Project-URL: Repository, https://github.com/bitscon/ztip
+Keywords: ztip,zero-trust,ai-agents,integrity,audit,protocol
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Quality Assurance
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
 
 # ZTIP — Zero Trust Intelligence Protocol
 

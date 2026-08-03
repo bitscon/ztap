@@ -1,0 +1,61 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ZTIP — Zero Trust Intelligence Protocol. The open protocol for governed agent transactions. Code freedom, Verified.">
+  <defs>
+    <radialGradient id="glow" cx="18%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.16"/>
+      <stop offset="55%" stop-color="#f97316" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#ffffff" fill-opacity="0.045"/>
+    </pattern>
+    <linearGradient id="chain" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0.65"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground -->
+  <rect width="1200" height="300" fill="#030507"/>
+  <rect width="1200" height="300" fill="url(#dots)"/>
+  <rect width="1200" height="300" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="1199" height="299" fill="none" stroke="#ffffff" stroke-opacity="0.09"/>
+
+  <!-- mark: bordered box, ZTI family -->
+  <g transform="translate(64,86)">
+    <rect x="0" y="0" width="128" height="128" rx="22" fill="#f97316" fill-opacity="0.08" stroke="#f97316" stroke-width="3"/>
+    <text x="64" y="79" text-anchor="middle" font-family="ui-monospace,'IBM Plex Mono','SFMono-Regular',Menlo,Consolas,monospace" font-size="40" font-weight="600" fill="#f97316" letter-spacing="2">ZTIP</text>
+  </g>
+
+  <!-- wordmark + names -->
+  <g transform="translate(236,86)">
+    <text x="0" y="52" font-family="ui-monospace,'IBM Plex Mono','SFMono-Regular',Menlo,Consolas,monospace" font-size="58" font-weight="700" fill="#f2f4f8" letter-spacing="1">ZTIP</text>
+    <text x="0" y="88" font-family="-apple-system,'Segoe UI','IBM Plex Sans',Helvetica,Arial,sans-serif" font-size="24" fill="#8e95a3">Zero Trust Intelligence Protocol</text>
+    <text x="0" y="126" font-family="ui-monospace,'IBM Plex Mono','SFMono-Regular',Menlo,Consolas,monospace" font-size="16" fill="#f97316" fill-opacity="0.9">The open protocol for governed agent transactions</text>
+  </g>
+
+  <!-- lifecycle glyph: request -> verify -> receipt, hash-chained -->
+  <g transform="translate(852,104)">
+    <g>
+      <rect x="0" y="0" width="84" height="64" rx="10" fill="#0f1116" stroke="#ffffff" stroke-opacity="0.15"/>
+      <text x="42" y="38" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="13" fill="#c8cdd8">request</text>
+    </g>
+    <path d="M92 32 H116" stroke="#f97316" stroke-opacity="0.6" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M112 26 L120 32 L112 38" fill="none" stroke="#f97316" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(126,0)">
+      <rect x="0" y="0" width="84" height="64" rx="10" fill="#f97316" fill-opacity="0.10" stroke="#f97316" stroke-opacity="0.55"/>
+      <path d="M42 14 c10 5 16 5 16 5 v16 c0 12 -16 17 -16 17 c0 0 -16 -5 -16 -17 v-16 c0 0 6 0 16 -5z" fill="none" stroke="#f97316" stroke-width="2"/>
+      <path d="M35 32 l5 5 l10 -10" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <path d="M218 32 H242" stroke="#22c55e" stroke-opacity="0.6" stroke-width="2" stroke-dasharray="5 4"/>
+    <path d="M238 26 L246 32 L238 38" fill="none" stroke="#22c55e" stroke-opacity="0.8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(252,0)">
+      <rect x="0" y="0" width="84" height="64" rx="10" fill="#0f1116" stroke="#22c55e" stroke-opacity="0.45"/>
+      <text x="42" y="38" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="13" fill="#22c55e">receipt</text>
+    </g>
+    <path d="M0 86 H336" stroke="url(#chain)" stroke-width="1.5" stroke-dasharray="2 6"/>
+    <text x="168" y="108" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="12" fill="#8e95a3">sha-256 · RFC 8785 · hash-linked</text>
+  </g>
+
+  <!-- footer line -->
+  <text x="1136" y="272" text-anchor="end" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="13" fill="#8e95a3">MIT · 1.0-draft · Code freedom, <tspan fill="#f97316">Verified.</tspan></text>
+</svg>

@@ -3,7 +3,7 @@
     "title": "Failed — Partial State (PARTIAL_STATE_BLOCKED)",
     "scenario": "A three-step container workload update is authorized and starts executing. Steps 1 and 2 complete successfully. Step 3 fails (image not found in registry). Because atomicity_mode is atomic_required and the config change in step 2 cannot be rolled back, the executor fails with PARTIAL_STATE_BLOCKED. The receipt records full partial state for operator remediation.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "accepted", "executing", "failed"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target."
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
   },
 
   "envelopes": [

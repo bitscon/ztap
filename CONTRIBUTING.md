@@ -10,11 +10,11 @@ In scope:
 - Protocol documentation (`SPEC.md`, `SCHEMA.md`, `CONFORMANCE.md`)
 - JSON Schema files under `schemas/`
 - Example envelopes under `examples/`
+- The reference runtime under `ztap/` and its tests under `tests/`
 - Validation and contributor tooling under `scripts/`
 
 Out of scope for this repo:
-- ZTI Core implementation code
-- SaaS/runtime product code
+- ZTI Core or other commercial control-plane product code
 - Transport-specific protocol bindings as required core behavior
 
 ## Protocol Guardrails

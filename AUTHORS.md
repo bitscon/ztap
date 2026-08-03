@@ -7,7 +7,7 @@ Founder / protocol steward
 
 ## Project Stewardship
 
-ZTAP is part of the Zero-Trust Intelligence (ZTI) protocol family.
+ZTAP is part of the Zero Trust Intelligence (ZTI) ecosystem.
 
 - ZTI defines the doctrine.
 - ZTAP defines the open protocol for governed agent transactions.

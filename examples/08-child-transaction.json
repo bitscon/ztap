@@ -2,7 +2,7 @@
   "_ztap_example": {
     "title": "Fan-Out Pattern — Parent and Child Transactions",
     "scenario": "A coordinated release of three microservices. ZTAP v1 is strictly one-source-one-target. Fan-out uses a parent transaction (the release intent) and separate child transactions per service, linked by parent_transaction_id. This example shows the parent and two of three children.",
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "design_rationale": {
       "why_no_multi_target_in_v1": "Multi-target transactions complicate authority, receipt structure, partial failure, and atomicity. v1 is strictly one-source-one-target to keep every transaction's authorization subject, failure point, and receipt unambiguous.",
       "fan_out_pattern": "The parent records coordinated intent. Each child is independently authorized and executed. Children link to the parent via parent_transaction_id. The orchestrator collects all child receipts.",

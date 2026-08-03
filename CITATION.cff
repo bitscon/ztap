@@ -6,7 +6,6 @@ authors:
 repository-code: https://github.com/bitscon/ztap
 url: https://github.com/bitscon/ztap
 version: 1.0-draft
-date-released: 2026-04-24
 license: MIT
 abstract: >
   ZTAP is an open governance envelope and transaction protocol for verifiable

@@ -25,10 +25,11 @@ In scope for this repo:
 - ZTAP specification and conformance text
 - JSON Schemas under `schemas/`
 - Example envelopes under `examples/`
+- The reference runtime under `ztap/` (canonicalization, hashing, verification)
 - Validation tooling under `scripts/`
 
 Out of scope for this repo:
-- ZTI Core SaaS implementation details
+- ZTI Core (separate commercial product) implementation details
 - Third-party agents and runtimes
 - Third-party transports and infrastructure
 

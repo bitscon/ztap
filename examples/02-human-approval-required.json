@@ -3,7 +3,7 @@
     "title": "Human Approval Required",
     "scenario": "A planning agent requests a production database schema migration. Policy requires explicit operator approval before proceeding. This example shows the initial human_approval_required decision, then the human_approved decision after approval is received. The final decision carries a fully populated approval_scope binding the approval to this specific transaction.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approval_required", "human_approved", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "notes_on_human_approval_model": "ZTAP does not define how approval notification is delivered to the operator. The control plane issues a new authorization_decision envelope with status 'human_approved' once approval is received. The original human_approval_required envelope is immutable and retained. Both envelopes appear in the audit trail."
   },
 

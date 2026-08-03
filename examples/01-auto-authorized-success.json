@@ -3,7 +3,7 @@
     "title": "Happy Path — Auto-Authorized Success",
     "scenario": "A planning agent requests a production deployment. The control plane evaluates policy and auto-authorizes. The executor deploys the service, verification passes, and a succeeded receipt is returned.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target."
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
   },
 
   "envelopes": [

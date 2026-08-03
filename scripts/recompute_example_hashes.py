@@ -30,8 +30,9 @@ def illustrative_hash(descriptor: str) -> str:
     evidence files, actor-registry state snapshots, or child envelopes omitted
     for brevity). Those cannot be the hash of any envelope present, so we give
     them a recomputable illustrative digest of their descriptor rather than
-    leaving a placeholder (a defect per AGENTS.md). Examples already declare
-    their hashes illustrative via ``draft_notice``.
+    leaving a placeholder (a defect per AGENTS.md). These descriptor digests
+    are deterministic and recomputable, consistent with the examples'
+    ``draft_notice``.
     """
     return hashlib.sha256(descriptor.encode("utf-8")).hexdigest()
 

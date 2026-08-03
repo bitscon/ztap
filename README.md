@@ -114,7 +114,7 @@ under `examples/`.*
 
 ```json
 {
-  "ztap_version": "0.1-draft",
+  "ztap_version": "1.0-draft",
   "transaction_id": "txn_abc123",
   "requesting_agent": "planner-agent-7f3a",
   "target_capability": "deploy",
@@ -135,9 +135,9 @@ under `examples/`.*
 }
 ```
 
-> **Note:** This example illustrates the concept of a governed transaction artifact. Exact field
-> names, structure, and required fields are subject to formal specification. See `VISION.md` for
-> the governing principles behind the schema design.
+> **Note:** This example illustrates the concept of a governed transaction artifact. The
+> specified form differs — see `SCHEMA.md` and the JSON Schemas under `schemas/` for the
+> canonical envelope model, and `VISION.md` for the governing principles behind the design.
 
 In this example, the transaction was authorized by policy automatically — no human approval was
 required. A different policy configuration might have required a human to approve before
@@ -193,7 +193,7 @@ Contributions, questions, and alignment discussions are welcome.
 
 ## Authorship and Stewardship
 
-ZTAP was created by **Chad McCormack** as part of the Zero-Trust Intelligence (ZTI) protocol family.
+ZTAP was created by **Chad McCormack** as part of the Zero Trust Intelligence (ZTI) ecosystem.
 
 This repository is maintained under the `bitscon` GitHub organization and released under the MIT License.
 

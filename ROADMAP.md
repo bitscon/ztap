@@ -9,11 +9,11 @@
 - Expand conformance test coverage and negative-path examples.
 
 ## Phase 3: Whitepaper and Public Launch
-- Publish protocol whitepaper.
+- Publish protocol whitepaper. *(delivered — `WHITEPAPER.md`)*
 - Prepare public-facing launch materials and onboarding docs.
 
 ## Phase 4: Reference Validators / SDKs
-- Provide reference validator implementations.
+- Provide reference validator implementations. *(delivered — the `ztap/` runtime and `scripts/validate-examples.py`)*
 - Publish minimal SDK utilities for envelope creation and verification.
 
 ## Phase 5: Ecosystem Compatibility

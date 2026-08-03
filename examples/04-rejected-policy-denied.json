@@ -3,7 +3,7 @@
     "title": "Rejected — Policy Denied",
     "scenario": "A planning agent requests a destructive data purge against a production database. The control plane rejects: the requesting actor lacks the data-steward role required for this capability in production. No execution occurs. A rejection receipt is produced.",
     "lifecycle_states": ["created", "submitted", "evaluated", "rejected"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "governance_note": "Rejection occurs before any execution. The target actor is never contacted. No action is taken against the target system. The transaction terminates with a rejection receipt."
   },
 

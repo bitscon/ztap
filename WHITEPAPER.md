@@ -274,7 +274,7 @@ ZTI Core is intended to be a separate, commercial implementation of a ZTAP-compl
 
 ZTI Core is designed to implement ZTAP. It is not ZTAP. The protocol specification in this repository defines the open standard. ZTI Core is one commercial product that implements that standard.
 
-This distinction matters for adoption. Organizations that want to build their own ZTAP-compliant control plane can do so using the SPEC.md, SCHEMA.md, and CONFORMANCE.md documents in this repository. Organizations that want a managed, commercial implementation can use ZTI Core. The protocol remains open regardless.
+This distinction matters for adoption. Organizations that want to build their own ZTAP-compliant control plane can do so using the SPEC.md, SCHEMA.md, and CONFORMANCE.md documents in this repository. Organizations that want a supported commercial implementation can use ZTI Core. The protocol remains open regardless.
 
 ZTAP's openness is not marketing positioning — it is a design requirement. A protocol whose conformance requirements are only satisfiable by one vendor's product is not an open protocol. ZTAP's conformance levels, test matrix, and schema are published precisely so that any organization can implement and verify compliance independently.
 
@@ -318,7 +318,7 @@ A Level 1 implementation can parse and validate ZTAP envelopes: check required f
 
 A Level 2 implementation manages the full transaction lifecycle: actor and capability registration, policy evaluation, authorization decisions, human approval workflows, receipt ingestion, and hash-linked audit retention.
 
-**Adoption use case:** Deploy or configure a control plane (self-hosted or using ZTI Core) that your agent executors submit transactions to.
+**Adoption use case:** Deploy or configure a control plane (self-hosted — built in-house or using ZTI Core) that your agent executors submit transactions to.
 
 ### Level 3 — Governed Executor / Runtime
 
@@ -377,7 +377,7 @@ Tightening machine-readable schema validation. Expanding conformance test covera
 Publishing the protocol whitepaper. Finalizing public-facing launch materials and onboarding documentation.
 
 **Phase 4 — Reference Validators and SDKs**
-Providing reference validator implementations that other tools can build on or verify against. Publishing minimal SDK utilities for envelope creation and hash verification.
+Providing reference validator implementations that other tools can build on or verify against (the `ztap/` reference runtime is delivered). Publishing minimal SDK utilities for envelope creation and hash verification.
 
 **Phase 5 — Ecosystem Compatibility**
 Documenting compatibility patterns for MCP and A2A where appropriate. Preserving ZTAP's transport neutrality while providing practical integration guidance.

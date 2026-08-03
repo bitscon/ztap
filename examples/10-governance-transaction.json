@@ -3,7 +3,7 @@
     "title": "Governance Transaction — Actor Registration Update",
     "scenario": "The operations team needs to register a new AI executor agent with elevated deployment capabilities. This is a governance-class transaction: it modifies the actor registry and grants production capability claims. Governance transactions use the same ZTAP envelope structure as operational transactions but are held to stricter authorization standards — operator approval required, elevated evidence, and the receipt records prior state and new state.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approved", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "governance_note": "A governance transaction modifies the rules under which future operational transactions are evaluated. An actor that can register itself with new capabilities via an auto-authorized transaction would undermine the governance model. Governance transactions require explicit operator approval regardless of other auto-authorization policies."
   },
 

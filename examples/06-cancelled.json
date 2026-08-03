@@ -3,7 +3,7 @@
     "title": "Cancelled — Operator Cancellation After Authorization",
     "scenario": "A batch archive job is authorized. Before the executor accepts, an on-call operator cancels the transaction — an unplanned maintenance window conflicts with the target storage system. The operator submits a cancellation_request amendment. The control plane evaluates it and issues a cancelled receipt.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "cancelled"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "governance_note": "A cancellation_request amendment does not automatically cancel the transaction. The control plane must evaluate the amendment and authorize the cancellation. Both the amendment and the control plane's response are retained in the audit trail."
   },
 

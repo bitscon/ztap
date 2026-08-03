@@ -6,15 +6,15 @@
 
 ## Status
 
-**DRAFT — Prose Schema. Not machine-readable. Not for implementation.**
+**DRAFT — Prose field model for `1.0-draft`.**
 
 This document defines the field-level structure of ZTAP envelopes in prose. It resolves the
 open questions documented in `SPEC.md` and establishes the schema decisions that machine-
 readable schema files and reference implementations must conform to.
 
-This is a draft. Field names are stable enough to reason about but not finalized. No
-machine-readable schema files (JSON Schema, Protobuf, OpenAPI, etc.) should be generated
-from this document until it has been reviewed and its open questions resolved.
+This is a draft. Field names are stable enough to reason about but not finalized. The
+machine-readable JSON Schema files under `schemas/` are derived from this document and MUST
+stay in sync with it — a change to either updates both in the same commit.
 
 Current protocol working version: `1.0-draft`
 
@@ -1452,8 +1452,8 @@ The deployment completes and verification passes.
 
 ## Open Questions
 
-The following questions are unresolved after this draft. They do not block prose schema work
-but must be resolved before machine-readable schema files are released.
+The blocking questions raised by this draft were resolved before the machine-readable schema
+files under `schemas/` were produced. The open items that remain do not block them.
 
 The following questions were resolved by operator decision and are documented here for
 traceability. Open questions that remain unresolved follow.
@@ -1495,11 +1495,11 @@ traceability. Open questions that remain unresolved follow.
    `authorization_decision` with a new `decision_id` and `authorization_status: "human_approved"`.
    The original envelope is immutable. Both envelopes are retained. `approval_scope` binds the
    approval to the specific transaction, request hash, action IDs, target actor, and capabilities.
-   `examples/02-human-approval-required.json` should be updated to use `"human_approved"`.
+   `examples/02-human-approval-required.json` uses `"human_approved"` accordingly.
 
 **All prior blocking questions resolved.** See traceability list above.
 
-**Remaining open questions (do not block schemas):**
+**Subsequently resolved (did not block schemas):**
 
 8. ~~**Multi-version audit log.**~~ Resolved. Every envelope is verified per its own declared
    `ztap_version`. Audit stores must retain `ztap_version`, `canonicalization`, and
@@ -1537,42 +1537,31 @@ This document has defined the prose schema for all five ZTAP v1 envelope types, 
 and integrity objects, the validity window model, atomicity fields, reason codes, and
 versioning rules.
 
-**Resolve open questions 1–4 and 7 first.** Questions 1 (`requested_action` structure),
-2 (`verification_requirements` structure), 3 (reason code registry governance), 4 (evidence
-type registry), and 7 (hash exclusion rule) are the most consequential. Decisions on 1 and 2
-shape how interoperable ZTAP implementations can be. Decision on 7 affects every hash
-computation in the protocol.
+**Delivered so far:**
 
-**Recommended next steps in order:**
+1. **Open-question review** — the blocking questions above are resolved (see the
+   traceability list under Open Questions).
 
-1. **Operator review of open questions** — resolve the 10 questions above, prioritizing 1, 2,
-   3, 4, and 7.
+2. **`examples/`** — ten reference lifecycle bundles covering every envelope type, every
+   authorization outcome, and the key failure modes (auto-authorized success,
+   human-approval, evidence-required, rejection, `PARTIAL_STATE_BLOCKED` failure,
+   cancellation, expiry, child transaction, break-glass, governance transaction), with
+   real recomputable integrity hashes.
 
-2. **Create `examples/`** — produce reference envelopes for every envelope type, every
-   authorization outcome, and key failure modes. Examples validate that the prose schema
-   produces sensible, human-readable JSON before machine-readable schema files are written.
-   Examples should include:
-   - happy path (auto-authorized, succeeded)
-   - human-approval-required path
-   - evidence-required path
-   - rejection path
-   - failure with `PARTIAL_STATE_BLOCKED`
-   - cancellation
-   - expiry
-
-3. **Create `schemas/`** — machine-readable schema files (JSON Schema recommended for
-   interoperability). These are derived from this document, not the other way around.
+3. **`schemas/`** — machine-readable JSON Schema files derived from this document.
    `SCHEMA.md` is the authoritative specification; `schemas/` is its implementation.
 
-4. **Create `WHITEPAPER.md`** — the external-facing adoption document. More credible now
-   that the schema exists to back it up.
+4. **`WHITEPAPER.md`** — the external-facing adoption document.
 
-5. **Create repo governance files** — `CONTRIBUTING.md`, `LICENSE`, `CHANGELOG.md`, and
-   a `CONFORMANCE.md` that formalizes minimum control plane conformance requirements from
+5. **Repo governance files** — `CONTRIBUTING.md`, `LICENSE`, `CHANGELOG.md`, and
+   `CONFORMANCE.md`, which formalizes minimum control plane conformance requirements from
    `SPEC.md` Section 9.
+
+**Remaining before v1:** resolve the non-blocking open questions above and freeze field
+names for a `1.0` release.
 
 ---
 
-> ZTAP Schema Draft — v1.0-draft. Prose schema only.
-> Derived from `SPEC.md`. To be implemented as `schemas/` after open questions are resolved.
+> ZTAP Schema Draft — `1.0-draft`.
+> Derived from `SPEC.md`; implemented as the JSON Schemas under `schemas/`.
 > **Freedom for engineers. Governance for the organization.**

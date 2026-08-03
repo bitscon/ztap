@@ -6,20 +6,23 @@
 
 ## Status
 
-**DRAFT — Pre-Schema. Not for implementation.**
+**DRAFT — `1.0-draft`. Pre-release; not yet a frozen production target.**
 
-This document is an early specification draft. It defines the transaction lifecycle, governance
+This document is the specification draft. It defines the transaction lifecycle, governance
 model, and core concepts of the Zero Trust Agent Protocol in prose.
 
 Field names, schema structures, transport bindings, and API interfaces are NOT finalized
 here. Hash canonicalization is the exception: RFC 8785 JCS with SHA-256 is finalized for v1
-(see Integrity and Hashing). The machine-readable schema drafts live in `SCHEMA.md` and
-`schemas/`. This document establishes the governing principles and lifecycle model that all
-subsequent schema and implementation work must conform to.
+(see Integrity and Hashing). The machine-readable JSON Schemas live in `schemas/` (with the
+prose field model in `SCHEMA.md`), and a reference runtime lives in `ztap/`. This document
+establishes the governing principles and lifecycle model that all schema and implementation
+work must conform to.
 
-This specification will be versioned. The current working version is `0.1-draft`.
+This specification is versioned. The current working version is `1.0-draft` — the one
+version string shared by the spec, the schemas, and the examples.
 
-Do not build production systems against this draft.
+Treat `1.0-draft` envelopes as pre-release: suitable for evaluation and reference
+implementations, not yet a frozen target for production guarantees.
 
 ---
 
@@ -1058,9 +1061,10 @@ detectable at any link.
 
 ## Open Questions
 
-> **Traceability note:** The original pre-schema questions listed below have been addressed
-> by operator decisions recorded in `SCHEMA.md`. They remain here for historical traceability
-> until the schema is finalized and a changelog or decision log replaces them.
+> **Traceability note:** The original pre-schema questions listed below have largely been
+> addressed by operator decisions recorded in `SCHEMA.md` (see Next Steps for the items still
+> open). They remain here for historical traceability until the schema is finalized and a
+> changelog or decision log replaces them.
 
 The following decisions required operator input before the ZTAP schema could be drafted:
 
@@ -1110,27 +1114,26 @@ The following decisions required operator input before the ZTAP schema could be 
 This document has established the doctrine, lifecycle, governance model, and core principles
 that govern ZTAP. The logical sequence from here:
 
-**Immediate: Resolve open questions.**
-The remaining questions in the Open Questions section gate schema stability. Answers to
-questions 1 (validity window), 2 (receipt structure), and 8 (multi-target) are required
-before the machine-readable schema files can be frozen with confidence. Question 9
-(canonicalization) is resolved: RFC 8785 JCS with SHA-256, specified in `SCHEMA.md` and
-implemented by the reference runtime.
+**Immediate: Resolve the remaining open questions.**
+Most of the questions in the Open Questions section are resolved by decisions recorded in
+`SCHEMA.md` — including question 1 (validity window), question 2 (receipt structure), and
+question 9 (canonicalization: RFC 8785 JCS with SHA-256, implemented by the reference
+runtime). The items still gating a confident v1 freeze are question 6 (retry/re-issue
+semantics) and question 8 (multi-target actions).
 
-**Next: Create `SCHEMA.md` or `schemas/`.**
-Once the open questions are resolved, a formal schema document can define field names, required
-vs. optional fields, envelope types, versioning, and hash construction rules. This may be a
-single `SCHEMA.md` prose document before producing machine-readable schema files.
+**Delivered: `SCHEMA.md` and `schemas/`.**
+The formal schema exists: `SCHEMA.md` defines field names, required vs. optional fields,
+envelope types, versioning, and hash construction rules in prose, and the machine-readable
+JSON Schema files live under `schemas/`.
 
-**Following: Create `examples/`.**
-Reference examples — both valid and deliberately invalid — help implementors understand the
-protocol and allow validators to test compliance. Examples should cover the happy path, each
-failure mode, and each authorization outcome.
+**Delivered: `examples/`.**
+Ten reference lifecycle bundles ship under `examples/`, covering the happy path, each failure
+mode, and each authorization outcome, with real recomputable integrity hashes.
 
-**Later: `WHITEPAPER.md`.**
-The external-facing argument for ZTAP adoption is more credible once the specification exists.
-The whitepaper synthesizes the problem, the solution, and the governance model for an executive
-or architect audience. It is not a technical reference — it is the adoption document.
+**Delivered: `WHITEPAPER.md`.**
+The external-facing adoption document ships alongside this specification. It synthesizes the
+problem, the solution, and the governance model for an executive or architect audience. It is
+not a technical reference — it is the adoption document.
 
 **Future: Cross-organizational federation.**
 Multi-organization ZTAP interaction — where one organization's agents transact with another's,
@@ -1140,6 +1143,6 @@ specification revision after v1 is stable.
 
 ---
 
-> ZTAP Specification Draft v0.1 — Pre-Schema.
+> ZTAP Specification Draft — `1.0-draft`.
 > Zero Trust Agent Protocol: the open protocol for governed agent transactions.
 > **Freedom for engineers. Governance for the organization.**

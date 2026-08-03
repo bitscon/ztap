@@ -543,29 +543,20 @@ finalized conformance specification can be published:
 
 ## Next Steps
 
-After this conformance draft is reviewed, the recommended sequence is:
+**Delivered since this conformance draft was written:** the resolved decisions are applied
+in `examples/` (including `authorization_status: "human_approved"` in example 02 and the
+`requested_action` / `verification_requirements` structures throughout); the
+machine-readable JSON Schemas ship under `schemas/` (implementation targets, not
+specification authorities); `WHITEPAPER.md` and the repo governance files
+(`CONTRIBUTING.md`, `LICENSE`, `CHANGELOG.md`) exist; and the repository is public.
 
-1. **Update `examples/`** — Apply resolved decisions:
-   - Update `examples/02-human-approval-required.json` to use `authorization_status:
-     "human_approved"` on the final decision envelope.
-   - Update all examples to use the new `requested_action` wrapper with `action_id`,
-     `action_type`, `profile`, `risk_level`, and `expected_outputs`.
-   - Update `verification_requirements` in all examples to use `check_id`, `check_type`,
-     and `expected_result` format.
+**Remaining:**
 
-2. **Create machine-readable schemas** — JSON Schema (or equivalent) files derived from
-   `SCHEMA.md`. These are implementation targets, not specification authorities.
+1. **Conformance test fixtures** — a set of valid and intentionally invalid ZTAP envelopes
+   for use in automated conformance testing. These support the test matrix above.
 
-3. **Create conformance test fixtures** — A set of valid and intentionally invalid ZTAP
-   envelopes for use in automated conformance testing. These support the test matrix above.
-
-4. **Create `WHITEPAPER.md`** — The external-facing adoption document. The specification is
-   now mature enough to support a credible whitepaper argument for ZTAP adoption.
-
-5. **Create repo governance files** — `CONTRIBUTING.md`, `LICENSE`, `CHANGELOG.md`.
-
-6. **Prepare public GitHub launch** — README, license, initial release tag, and contribution
-   guidelines.
+2. **Resolve the open questions above** — including the profile/version expression format —
+   and freeze the conformance targets for a `1.0` release.
 
 ---
 

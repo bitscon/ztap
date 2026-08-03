@@ -255,7 +255,7 @@ verified programmatically.
 
 Agent orchestration platforms, IDE plugins, and CI/CD tools adopt ZTAP artifact production
 natively. Governance becomes a byproduct of normal engineering workflows, not a separate gate.
-ZTI Core and compatible control planes become available as managed services.
+ZTI Core and compatible control planes may later also be offered as managed services.
 
 ### Cross-organizational federation *(future direction)*
 
@@ -271,18 +271,18 @@ This is a future direction. It is not in scope for the initial specification.
 
 ## What Comes Next
 
-ZTAP's immediate next steps are doctrine and specification work:
+ZTAP's doctrine and specification groundwork is delivered:
 
-1. **Transaction lifecycle model** — define the canonical lifecycle of a ZTAP transaction: from
-   initiation through policy evaluation, authorization, execution, and artifact finalization.
-2. **Formal schema specification** — define required and optional fields, versioning strategy,
-   and hash construction rules.
-3. **Control plane interface definition** — define what a compliant control plane must expose
-   for ZTAP artifact submission, authorization issuance, and audit retrieval.
-4. **Reference implementation** — a minimal library that produces and validates ZTAP artifacts,
-   usable independent of any specific agent framework.
+1. **Transaction lifecycle model** — specified in `SPEC.md`: initiation through policy
+   evaluation, authorization, execution, and artifact finalization.
+2. **Formal schema specification** — `SCHEMA.md` and the JSON Schemas under `schemas/`:
+   required and optional fields, versioning strategy, and hash construction rules.
+3. **Control plane interface definition** — the conformance requirements in `CONFORMANCE.md`.
+4. **Reference implementation** — the `ztap/` runtime: a minimal library and CLI that
+   canonicalizes, hashes, and verifies ZTAP artifacts, independent of any agent framework.
 
-Schema files and implementation code will follow specification work, not precede it.
+Specification work led; schema files and implementation code followed. What comes next is the
+v1 freeze: closing the remaining draft ambiguities and freezing field names for `1.0`.
 
 ---
 

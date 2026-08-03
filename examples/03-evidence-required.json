@@ -3,7 +3,7 @@
     "title": "Evidence Required",
     "scenario": "A planning agent requests deployment to a regulated production environment. Policy requires a passing test suite report before the control plane will authorize. The source actor submits an evidence_record. The control plane re-evaluates and issues an auto_authorized decision.",
     "lifecycle_states": ["created", "submitted", "evaluated", "evidence_required", "evidence submitted", "evaluated", "authorized", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target."
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify)."
   },
 
   "envelopes": [

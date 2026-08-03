@@ -3,7 +3,7 @@
     "title": "Expired — Transaction Not Accepted Before expires_at",
     "scenario": "A time-sensitive deployment is authorized with a 15-minute window. The executor agent is unavailable and does not accept before expires_at. The control plane detects expiry and produces an expired receipt. A new transaction must be submitted to retry.",
     "lifecycle_states": ["created", "submitted", "evaluated", "authorized", "expired"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "governance_note": "Expiry is terminal. The control plane produces the expired receipt when expires_at elapses. No execution occurred."
   },
 

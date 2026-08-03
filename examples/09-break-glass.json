@@ -3,7 +3,7 @@
     "title": "Break-Glass — Emergency Authorization (Governed, Not Bypassed)",
     "scenario": "A production database is returning errors. The incident is active and affecting user payments. An on-call engineer needs to run an emergency remediation query that normally requires multi-day planning approval. The break-glass path is used — but it is a GOVERNED path with elevated evidence requirements. The transaction carries an incident reference, named approver, expiration, compensating controls, and post-incident review commitment. Break-glass has MORE required evidence than standard authorization, not less.",
     "lifecycle_states": ["created", "submitted", "evaluated", "human_approved (break-glass)", "accepted", "executing", "verifying", "succeeded"],
-    "draft_notice": "Field names and hash values are illustrative. This example conforms to ZTAP SCHEMA.md v1.0-draft and is not a finalized schema target.",
+    "draft_notice": "This example conforms to ZTAP SCHEMA.md v1.0-draft. Field names remain draft and may change before the v1 schema freeze; integrity hash values are real and recomputable with the reference runtime (ztap verify).",
     "governance_note": "A break-glass action that bypasses authorization is not a legitimate break-glass — it is an unauthorized action. ZTAP does not have a bypass mode. This example shows that emergency access is governed access with stricter evidence requirements."
   },
 

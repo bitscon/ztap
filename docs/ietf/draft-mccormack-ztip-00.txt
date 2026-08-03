@@ -4,7 +4,7 @@
 
 Network Working Group                                       C. McCormack
 Internet-Draft                                   Zero Trust Intelligence
-Intended status: Informational                               August 2026
+Intended status: Informational                             3 August 2026
 Expires: 4 February 2027
 
 
@@ -58,7 +58,7 @@ McCormack                Expires 4 February 2027                [Page 1]
 Internet-Draft                    ZTIP                       August 2026
 
 
-   This Internet-Draft will expire on 2 February 2027.
+   This Internet-Draft will expire on 4 February 2027.
 
 Copyright Notice
 
